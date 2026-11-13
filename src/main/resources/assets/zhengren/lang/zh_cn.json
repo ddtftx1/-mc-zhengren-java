@@ -1,0 +1,6 @@
+{
+  "zhengren.command.header": "§8===== §c整人大师 §8=====",
+  "zhengren.command.on": "§a整人模式已开启，祝你好运 :)",
+  "zhengren.command.off": "§e整人模式已关闭，世界安静了。",
+  "zhengren.command.fired": "§c已触发事件: %s"
+}

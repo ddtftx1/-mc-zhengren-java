@@ -1,0 +1,6 @@
+{
+  "zhengren.command.header": "§8===== §cZhengren Master §8=====",
+  "zhengren.command.on": "§aTroll mode enabled. Good luck :)",
+  "zhengren.command.off": "§eTroll mode disabled. The world is quiet again.",
+  "zhengren.command.fired": "§cTriggered event: %s"
+}
