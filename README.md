@@ -282,3 +282,13 @@ A：每个事件都有冷却时间、权重、触发条件（比如必须身上�
 *14 个 agent 分工编写了 571 个整人事件 · 全部经过真实编译验证*
 
 </div>
+---
+
+## 📄 许可证
+
+本项目采用 [MIT License](LICENSE) 开源。
+
+Copyright (c) 2026 ddtftx1
+
+> Minecraft 是 Mojang Studios 的商标。本项目与 Mojang / Microsoft 无关联。
+> 本许可证仅适用于本仓库中由本项目作者创作的代码与文档。
