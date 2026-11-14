@@ -66,5 +66,20 @@ public final class TrollEvents {
         DoomEvents.register();
         // 第三批：合并进来的「精神污染」（原 mindbreak 模组）
         com.zhengren.trollmod.mindbreak.MindbreakEvents.register();
+        // 第四批：扩容批次（14 个新分类，目标事件总数 2000）
+        com.zhengren.trollmod.expansion.EnchantEvents.register();
+        com.zhengren.trollmod.expansion.FarmEvents.register();
+        com.zhengren.trollmod.expansion.BuildEvents.register();
+        com.zhengren.trollmod.expansion.DimensionEvents.register();
+        com.zhengren.trollmod.expansion.TradeEvents.register();
+        com.zhengren.trollmod.expansion.SkyEvents.register();
+        com.zhengren.trollmod.expansion.HallucinationEvents.register();
+        com.zhengren.trollmod.expansion.FoodEvents.register();
+        com.zhengren.trollmod.expansion.MovementEvents.register();
+        com.zhengren.trollmod.expansion.CombatEvents.register();
+        com.zhengren.trollmod.expansion.MiningEvents.register();
+        com.zhengren.trollmod.expansion.PuppetEvents.register();
+        com.zhengren.trollmod.expansion.PhysicsEvents.register();
+        com.zhengren.trollmod.expansion.FestivalEvents.register();
     }
 }

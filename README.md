@@ -1,11 +1,11 @@
 # 🎭 整人大师 × 精神污染 (Zhengren Master × Mindbreak)
 
-> 两个整人模组合并成一个：**615 个整人事件** · 15 大分类 · 5 档残酷等级 · 5 件精神污染神器 · 交互型整活回调 · 客户端结局级画面整活 · 崩溃指数递增 · 狂暴模式
+> 两个整人模组合并后再扩容：**2000 个整人事件** · 29 大分类 · 5 档残酷等级 · 5 件精神污染神器 · 交互型整活回调 · 客户端结局级画面整活 · 崩溃指数递增 · 狂暴模式
 
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.20.1-62b47a?style=flat-square)](https://www.minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Fabric-Loader%20%E2%89%A50.15-dbd0b4?style=flat-square)](https://fabricmc.net/)
 [![Java](https://img.shields.io/badge/Java-17-orange?style=flat-square)]()
-[![Events](https://img.shields.io/badge/Events-615-red?style=flat-square)]()
+[![Events](https://img.shields.io/badge/Events-2000-red?style=flat-square)]()
 
 > ⚠️ **合并说明**：本模组由 `zhengren`（整人大师，MC 1.20.1）与 `mindbreak`（精神污染，MC 1.21.1）合并而成。
 > 原 mindbreak 的 1.21.1 代码已全部移植到 **MC 1.20.1 / Java 17**，并与整人大师的框架深度打通，而不是简单堆在同一个 jar 里。
@@ -20,16 +20,16 @@
 
 | 维度 | 合并前 | 合并后 |
 |---|---|---|
-| 事件表 | mindbreak 自己一个 `ChaosEvents` 列表（43 个）<br>zhengren 一个 `TrollRegistry`（571 个） | **一个 `TrollRegistry`，共 615 个事件**，全部可被 `/zr list`、`/zr info`、`/zr fire` 操作 |
+| 事件表 | mindbreak 自己一个 `ChaosEvents` 列表（43 个）<br>zhengren 一个 `TrollRegistry`（571 个） | **一个 `TrollRegistry`，共 2000 个事件**（合并时 615，扩容 +1385），全部可被 `/zr list`、`/zr info`、`/zr fire` 操作 |
 | 调度 | mindbreak 每 20 tick 掷概率（7%/10%/13%）<br>zhengren 按权重+冷却+等级+崩溃指数抽取 | **只有 `TrollScheduler` 一套**。精神污染事件带自己的权重/冷却/等级，参与同一套加权抽取，受崩溃指数与每分钟限流约束 |
-| 延时任务 | mindbreak 有 `ChaosScheduler`<br>zhengren 没有 | **提升为公共能力 `DelayScheduler`**，通过 `ctx.later(ticks, action)` 暴露给全部 615 个事件 |
+| 延时任务 | mindbreak 有 `ChaosScheduler`<br>zhengren 没有 | **提升为公共能力 `DelayScheduler`**，通过 `ctx.later(ticks, action)` 暴露给全部 2000 个事件 |
 | 配置 | 两个模组各自的开关/强度 | **一份 `config/zhengren.json`**：`enabled`、`mindbreakEnabled`、`mindbreakIntensity`、`mindbreakHooks`、`chatMangle`、黑名单等统一生效 |
 | 命令 | `/zr` 与 `/mindbreak` 两套状态 | `/zr` 与 `/mindbreak`（别名 `/mb`）**共享同一份状态**；`/zr` 新增 `intensity`、`gift` |
 | 物品 | mindbreak 五件神器，只驱动自己的随机逻辑 | 五件神器注册在 `zhengren` 命名空间，`离谱棒` 直接触发**统一事件表**里的随机事件（可能触发整人大师的原生事件） |
 
 **具体的互通点：**
 
-1. **精神污染事件进入统一事件表** —— `TrollEvents.bootstrap()` 调用 `MindbreakEvents.register()`，44 个事件以分类 `精神污染` 注册进 `TrollRegistry`，总数 571 → **615**。
+1. **精神污染事件进入统一事件表** —— `TrollEvents.bootstrap()` 调用 `MindbreakEvents.register()`，44 个事件以分类 `精神污染` 注册进 `TrollRegistry`，总数 571 → **615**；后续扩容批次再并入 14 个新分类 1385 个事件，最终 **2000**。
 2. **强度实时生效** —— `TrollScheduler.pick()` 对分类为 `精神污染` 的事件按 `mindbreakIntensity`（1/2/3 → 0.5×/1×/2×）实时缩放权重，改强度不用重启。
 3. **开关统一** —— `mindbreakEnabled=false` 时精神污染事件退出随机调度（仍可 `/zr fire` 手动触发）；总开关 `enabled=false` 则全部停止。
 4. **反向赋能** —— 至少 3 个精神污染事件改用了整人大师独有、mindbreak 原本没有的能力（客户端假崩溃/黑屏 `ctx.glitch`、假成就弹窗 `ctx.fakeAchievement`、标题 `ctx.title`、陨石雨 `ctx.meteorShower` 等）。
@@ -65,7 +65,7 @@
 
 | 功能 | 说明 |
 |---|---|
-| 🎲 **615 个随机整人事件** | 分为 15 大分类，从"笑一下"到"直接砸键盘"（含合并自精神污染的 44 个） |
+| 🎲 **2000 个随机整人事件** | 分为 29 大分类，从"笑一下"到"直接砸键盘"（含合并自精神污染的 44 个） |
 | 🔥 **5 档残酷等级** | 小整 / 烦人 / 抓狂 / 崩溃 / 地狱，可自由限制上限 |
 | 📈 **崩溃指数（Rage）** | 被整越多，触发越快、越狠；`/zr stats` 可查看 |
 | ⚡ **狂暴模式** | `/zr chaos 60` — 接下来 60 秒，**每秒**整你一次 |
@@ -106,7 +106,7 @@
 ## 📦 安装
 
 1. 安装 Fabric Loader（1.20.1）。
-2. 把 `fabric-api` 和本模组的 `zhengren-1.1.0.jar` 一起放进 `.minecraft/mods/`。
+2. 把 `fabric-api` 和本模组的 `zhengren-2.0.0.jar` 一起放进 `.minecraft/mods/`。
 3. 启动游戏，**开一个世界，然后开始受苦**。
 4. 想让它停下来？`/zr off`。
 
@@ -120,7 +120,7 @@ cd zhengren-mod
 ./gradlew build        # Windows: gradlew.bat build
 ```
 
-产物：`build/libs/zhengren-1.1.0.jar`
+产物：`build/libs/zhengren-2.0.0.jar`
 
 ### Linux / 中文路径环境的两个坑（合并时实际踩到并已修好）
 
@@ -186,7 +186,7 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 |---|---|
 | `/mb toggle` | 切换 `mindbreakEnabled`（只关精神污染事件，不动总开关） |
 | `/mb intensity <1-3>` | `/zr intensity <1-3>` |
-| `/mb trigger <id>` | `/zr fire <id>`（含全部 615 个事件，不限于精神污染） |
+| `/mb trigger <id>` | `/zr fire <id>`（含全部 2000 个事件，不限于精神污染） |
 | `/mb list` | 只列出「精神污染」那 44 个事件 |
 | `/mb gift` | `/zr gift` |
 | `/mb chaos` | 随机连发 5 次统一事件表里的随机事件 |
@@ -267,7 +267,7 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 ---
 
-## 🗂️ 事件总览（615 个）
+## 🗂️ 事件总览（2000 个）
 
 | 分类 | 数量 | 残酷等级分布（小整/烦人/抓狂/崩溃/地狱） | 代表事件 |
 |---|---:|---|---|
@@ -286,10 +286,47 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 | 🌑 **结局级画面** | **46** | 6 / 10 / 12 / 12 / 6 | 假永久封禁、假更新卡 99%、假世界重载、画面撕裂、输入反转 |
 | ☄️ **末日与毁灭** | **45** | 3 / 5 / 13 / 12 / 12 | `doom_meteor_apocalypse` 陨石天启、`doom_world_end` 世界终章、审判日 |
 | 🌀 **精神污染**（合并） | **44** | 9 / 24 / 9 / 1 / 1 | `chat_spam` 嘴替、`fake_death` 假死亡抖包袱、`total_chaos` 终极混沌、`relic_gift` 神器馈赠 |
-| **合计** | **615** | **111 / 176 / 154 / 110 / 64** | 用 `/zr list` 查看全部 |
+| 🔮 **附魔与装备** | **99** | 18 / 32 / 27 / 15 / 7 | 附魔失败反噬、盔甲缩水、耐久蒸发、铁砧砸头、下界合金降级 |
+| 🌾 **农田与畜牧** | **99** | 18 / 32 / 27 / 15 / 7 | 作物一夜枯萎、骨粉催生怪物、牲畜叛逃、蜂群暴走、鸡蛋孵出惊喜 |
+| 🧱 **建筑与红石** | **99** | 18 / 32 / 27 / 15 / 7 | 红石线路自己重连、门认不出你、床拒绝服务、蓝图被抹除 |
+| 🔥 **下界与末地** | **99** | 18 / 32 / 27 / 15 / 7 | 传送门送你回原地、灵魂火自己熄灭、猪灵翻脸、末影人围观、虚空拉人 |
+| 🏘️ **村庄与交易** | **99** | 18 / 32 / 27 / 15 / 7 | 村民物价暴涨、绿宝石记账、铁傀儡误伤、袭击提前到、流浪商人陷阱 |
+| 🌦️ **天气与时间** | **99** | 18 / 32 / 27 / 15 / 7 | 血月、日食、酸雨、沙尘暴、时钟被拨乱、床下埋雷 |
+| 👻 **幻觉与视觉** | **99** | 18 / 32 / 27 / 15 / 7 | 假矿脉、假 HUD、假病毒、假世界重载、幻听、画面撕裂（最吃客户端整活） |
+| 🍗 **饥饿与食物** | **99** | 18 / 32 / 27 / 15 / 7 | 饥饿值过山车、可疑的炖菜、吃太快、暴饮暴食、食物中毒 |
+| 🏃 **移动与传送** | **99** | 18 / 32 / 27 / 15 / 7 | 坐标漂移、传送连锁、卡墙、头顶封顶、摔落伤害加码 |
+| ⚔️ **战斗与武器** | **99** | 18 / 32 / 27 / 15 / 7 | 武器背刺、盾牌罢工、暴击变空挥、护甲值蒸发、怪物突然变强 |
+| ⛏️ **挖掘与矿石** | **99** | 18 / 32 / 27 / 15 / 7 | 矿脉逃跑、钻石换脸、深板岩回声、洞穴塌方、时运被反向 |
+| 🎭 **控制与傀儡** | **99** | 18 / 32 / 27 / 15 / 7 | 身体不听使唤、视角被夺、强制骑乘、槽位乱跳、输入失灵 |
+| 🪂 **物理与重力** | **99** | 18 / 32 / 27 / 15 / 7 | 重力反转、失重、弹射升天、惯性猛撞、铁砧雨 |
+| 🎉 **节日与彩蛋** | **98** | 18 / 32 / 26 / 15 / 7 | 春节、中秋、圣诞、万圣节、愚人节、跨年倒计时、生日与致敬彩蛋 |
+| **合计** | **2000** | **363 / 624 / 531 / 320 / 162** | 用 `/zr list` 查看全部（67 页，每页 30 个） |
 
 > 完整事件清单：游戏内输入 `/zr list` 分页查看，或 `/zr info <id>` 查看详情。
 > 「精神污染」分类的 44 个事件继承自 mindbreak 模组，id 保持原样，可直接 `/zr fire chat_spam`。
+> 最后 14 个分类（附魔与装备 … 节日与彩蛋，共 1385 个事件）来自 v2.0.0 扩容批次。
+
+### 🧱 扩容批次（v2.0.0）
+
+从 615 扩到 2000 事件时，新文件**刻意不 import 任何 `net.minecraft.*` 类型** —— 只用 `ctx.*` 门面方法、
+`TrollPools.*` 常量池和 `GlitchIds.*`，与原有 14 个原生分类文件的写法完全一致。
+
+这么做的好处是：**新事件不可能因为 Minecraft 版本 API 变动而编译失败**，只依赖项目自身的稳定门面。
+因此每个文件都能用"只编译这一个文件"的方式秒级校验，并且强制以下自检：
+
+- 事件数精确等于配额
+- id 全部带本分类前缀且全局唯一
+- `grep -c 'net\.minecraft'` 必须为 `0`
+- `.desc()` / `.run()` / `.build()` 一个都不能缺
+
+另外对**危险 API 做了等级约束**：改地形类（`boomDestructive` / `lavaPit` / `voidPit`）只允许出现在
+`BRUTAL` 及以上；`GlitchIds.FAKE_CRASH` / `FAKE_BAN`（按钮真的会退出游戏）只允许 `APOCALYPSE`
+（`FAKE_BAN` 至少 `NIGHTMARE`）。
+
+> 想加自己的事件？照 `src/main/java/com/zhengren/trollmod/events/WorldEvents.java` 的写法，
+> 在 `expansion/` 下新建一个类，`TrollEvents.category("你的分类")` 然后在 `register()` 里
+> `TrollEvents.reg(TrollEvent.of(...).desc(...).run(ctx -> {...}).build())`，
+> 最后在 `core/TrollEvents.java` 的 `bootstrap()` 里加一行调用即可。
 
 ---
 
@@ -359,7 +396,8 @@ A：每个事件都有冷却时间、权重、触发条件（比如必须身上�
 <div align="center">
 
 **由 DeepSeek Harness Agent Teams 构建**
-*14 个 agent 分工编写了 571 个整人事件，另一次合并把 mindbreak 的 43 个事件与 5 件神器并入 · 全部经过真实编译验证*
+*14 个 agent 分工编写了 571 个整人事件；另一次合并把 mindbreak 的 43 个事件（+1 个桥接事件，共 44 个）与 5 件神器并入；
+v2.0.0 再由 7 个 agent 扩容出 14 个新分类 1385 个事件，最终 2000 个 · 全部经过真实编译与实机启动验证*
 
 </div>
 ---
