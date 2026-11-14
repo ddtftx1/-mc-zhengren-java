@@ -1185,3 +1185,20 @@ data/zhengren/recipes/ 复数 5 个；assets/zhengren/{textures,models}/item 各
 ```
 
 **结论：修复后的构建在真实服务端上启动干净、事件表规模正确、两套命令状态完全互通、精神污染事件已融入统一事件表。**
+
+---
+
+## 附录 G：发布版本号变更说明（v1.0.0 → v1.1.0）
+
+本报告正文中的构建日志、jar 路径与 `fabric.mod.json` 摘录均来自**验证当时**的 `1.0.0` 产物，
+为保证证据真实性**未作改写**。此后为本次合并发布了新版本：
+
+- `gradle.properties: mod_version` 由 `1.0.0` 改为 **`1.1.0`**
+- 构建产物随之更名为 **`build/libs/zhengren-1.1.0.jar`**（`archives_base_name` 未变，仍是 `zhengren`）
+- jar 内 `fabric.mod.json` 的 `version` 由 `${version}` 展开为 **`1.1.0`**（已用 `unzip -p` 复核）
+
+除版本字符串外，**代码与资源无任何改动**；因此本报告 §A~§F 的全部结论对 `1.1.0` 依然成立
+（`clean build` 已用新版本号重跑一遍，`BUILD SUCCESSFUL in 2m 28s`）。
+
+> 命名空间变更提醒：物品 id 由 `mindbreak:` 改为 `zhengren:`，旧存档中的 mindbreak 物品会失效。
+> 就语义化版本而言这属于破坏性变更，如需更严格的版本语义，可改为 `2.0.0`。

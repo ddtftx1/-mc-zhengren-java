@@ -106,7 +106,7 @@
 ## 📦 安装
 
 1. 安装 Fabric Loader（1.20.1）。
-2. 把 `fabric-api` 和本模组的 `zhengren-1.0.0.jar` 一起放进 `.minecraft/mods/`。
+2. 把 `fabric-api` 和本模组的 `zhengren-1.1.0.jar` 一起放进 `.minecraft/mods/`。
 3. 启动游戏，**开一个世界，然后开始受苦**。
 4. 想让它停下来？`/zr off`。
 
@@ -120,7 +120,7 @@ cd zhengren-mod
 ./gradlew build        # Windows: gradlew.bat build
 ```
 
-产物：`build/libs/zhengren-1.0.0.jar`
+产物：`build/libs/zhengren-1.1.0.jar`
 
 ### Linux / 中文路径环境的两个坑（合并时实际踩到并已修好）
 
