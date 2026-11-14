@@ -1,5 +1,8 @@
 # 验收报告 — 整人大师 (zhengren) v1.0.0
 
+> ⚠️ **本报告是合并前的历史记录**，仅描述 571 事件的原始 `zhengren` 模组。
+> 合并 `mindbreak`（精神污染）之后的验收结论见 **[VERIFICATION-MERGE.md](VERIFICATION-MERGE.md)**（615 个事件 / 44 个精神污染事件 / 5 件神器 / 互通性 8 项）。
+
 构建时间：2026-11-12（两轮扩容）
 构建环境：OpenJDK 17.0.2 · Gradle 8.7 · Fabric Loom 1.6.12 · Yarn 1.20.1+build.10 · Fabric API 0.92.12+1.20.1 · MC 1.20.1
 

@@ -51,6 +51,19 @@ public class TrollConfig {
     /** 白名单玩家名（为空表示所有玩家都整） */
     public List<String> targets = new ArrayList<>();
 
+    // ==================================================================
+    // 「精神污染」合并开关（原 mindbreak 模组的功能）
+    // ==================================================================
+
+    /** 是否让「精神污染」事件参与随机调度（关闭后仍可用 /zr fire 手动触发） */
+    public boolean mindbreakEnabled = true;
+    /** 精神污染强度 1-3：1 温柔 / 2 正常 / 3 不做人，影响精神污染事件的抽取权重 */
+    public int mindbreakIntensity = 2;
+    /** 是否启用交互型整活回调（挖方块被拒、方块变身、床拒绝你、打怪背刺……） */
+    public boolean mindbreakHooks = true;
+    /** 是否启用聊天内容扭曲 */
+    public boolean chatMangle = true;
+
     private transient Set<String> disabledSet = new LinkedHashSet<>();
     private transient Set<String> targetSet = new LinkedHashSet<>();
     private transient long[] recentFires = new long[0];
@@ -121,6 +134,24 @@ public class TrollConfig {
         if (glitchPower > 5.0) {
             glitchPower = 5.0;
         }
+        if (mindbreakIntensity < 1) {
+            mindbreakIntensity = 1;
+        }
+        if (mindbreakIntensity > 3) {
+            mindbreakIntensity = 3;
+        }
+    }
+
+    /**
+     * 「精神污染」事件的权重倍率，由 {@link #mindbreakIntensity} 推导。
+     * 用于 {@link TrollScheduler#pick} 的实时加权，因此改强度不需要重载事件表。
+     */
+    public double mindbreakWeightScale() {
+        return switch (mindbreakIntensity) {
+            case 1 -> 0.5;
+            case 3 -> 2.0;
+            default -> 1.0;
+        };
     }
 
     public boolean isDisabled(String id) {

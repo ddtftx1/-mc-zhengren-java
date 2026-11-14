@@ -11,8 +11,11 @@ import com.zhengren.trollmod.core.TrollEvent;
 import com.zhengren.trollmod.core.TrollRegistry;
 import com.zhengren.trollmod.core.TrollScheduler;
 import com.zhengren.trollmod.core.TrollTier;
+import com.zhengren.trollmod.item.ModItems;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -107,6 +110,20 @@ public final class TrollCommand {
                                     feedback(ctx.getSource(), "§6最高残酷等级：" + TrollTier.byLevel(c.maxTier).colored());
                                     return 1;
                                 })))
+                // 合并入口：等价于 /mindbreak intensity <1-3>
+                .then(CommandManager.literal("intensity")
+                        .then(CommandManager.argument("level", IntegerArgumentType.integer(1, 3))
+                                .executes(ctx -> {
+                                    TrollConfig c = cfg();
+                                    c.mindbreakIntensity = IntegerArgumentType.getInteger(ctx, "level");
+                                    c.reindex();
+                                    c.save();
+                                    feedback(ctx.getSource(), "§6精神污染强度：" + c.mindbreakIntensity
+                                            + " §7(等价于 /mindbreak intensity)");
+                                    return 1;
+                                })))
+                // 合并入口：等价于 /mindbreak gift
+                .then(CommandManager.literal("gift").executes(ctx -> gift(ctx.getSource())))
                 .then(CommandManager.literal("interval")
                         .then(CommandManager.argument("min", IntegerArgumentType.integer(1, 3600))
                                 .then(CommandManager.argument("max", IntegerArgumentType.integer(1, 3600))
@@ -168,11 +185,30 @@ public final class TrollCommand {
         feedback(src, "§8===== §c整人大师 §8=====");
         feedback(src, "§7/zr on §f| §7off §f| §7count §f| §7stats §f| §7rage");
         feedback(src, "§7/zr mode <1-5> §f| §7interval <秒> <秒> §f| §7damage <true|false>");
-        feedback(src, "§7/zr chaos [秒] §f| §7calm §f| §7list [页] §f| §7info <id>");
+        feedback(src, "§7/zr intensity <1-3> §f| §7gift §f| §7chaos [秒] §f| §7calm §f| §7list [页] §f| §7info <id>");
         feedback(src, "§7/zr fire <id> [玩家] §f| §7random [玩家]");
+        feedback(src, "§8已合并精神污染：§7/zr list 可看到全部事件 §8(§7/mindbreak§8、§7/mb§8 亦可用)");
         feedback(src, "§7当前：" + (cfg().enabled ? "§a开启" : "§c关闭")
                 + " §7最高等级：" + TrollTier.byLevel(cfg().maxTier).colored()
                 + " §7间隔：" + cfg().minIntervalSeconds + "-" + cfg().maxIntervalSeconds + "s");
+        return 1;
+    }
+
+    /** 合并入口：等价于 /mindbreak gift，发全套精神污染神器。 */
+    private static int gift(ServerCommandSource src) {
+        ServerPlayerEntity p = src.getPlayer();
+        if (p == null) {
+            feedback(src, "§c该指令需要玩家执行。");
+            return 0;
+        }
+        List<Item> items = ModItems.all();
+        for (Item item : items) {
+            ItemStack stack = new ItemStack(item);
+            if (!p.giveItemStack(stack)) {
+                p.dropItem(stack, false);
+            }
+        }
+        feedback(src, "§6精神污染五件套已发放 §7(共 " + items.size() + " 件，等价于 /mindbreak gift)");
         return 1;
     }
 
@@ -215,7 +251,7 @@ public final class TrollCommand {
             feedback(src, "§c需要指定玩家。");
             return 0;
         }
-        TrollEvent e = TrollScheduler.randomEvent(cfg());
+        TrollEvent e = TrollScheduler.randomEventFiltered(cfg());
         if (e == null) {
             feedback(src, "§c没有可用事件。");
             return 0;

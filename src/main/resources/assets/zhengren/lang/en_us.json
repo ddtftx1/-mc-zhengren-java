@@ -2,5 +2,10 @@
   "zhengren.command.header": "§8===== §cZhengren Master §8=====",
   "zhengren.command.on": "§aTroll mode enabled. Good luck :)",
   "zhengren.command.off": "§eTroll mode disabled. The world is quiet again.",
-  "zhengren.command.fired": "§cTriggered event: %s"
+  "zhengren.command.fired": "§cTriggered event: %s",
+  "item.zhengren.absurd_stick": "Absurd Stick",
+  "item.zhengren.curse_book": "Potty-Mouth Tome",
+  "item.zhengren.chaos_pearl": "Chaos Pearl",
+  "item.zhengren.regret_cake": "Regret Cake",
+  "item.zhengren.mystery_meat": "Mystery Meat"
 }

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "minecraft:rotten_flesh" },
+    { "item": "minecraft:spider_eye" },
+    { "item": "minecraft:sugar" }
+  ],
+  "result": {
+    "item": "zhengren:mystery_meat",
+    "count": 1
+  }
+}

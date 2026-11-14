@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "minecraft:cake" },
+    { "item": "minecraft:rotten_flesh" },
+    { "item": "minecraft:sugar" }
+  ],
+  "result": {
+    "item": "zhengren:regret_cake",
+    "count": 1
+  }
+}

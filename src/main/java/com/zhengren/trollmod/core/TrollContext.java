@@ -964,6 +964,20 @@ public class TrollContext {
         player.closeHandledScreen();
     }
 
+    /**
+     * 延迟执行一段逻辑（合并自 mindbreak 的延时调度器）。
+     *
+     * <p>这是合并后新增的通用能力：原先整人大师的 571 个事件只能瞬时执行，
+     * 现在任何事件都可以做"10 秒后把东西还给你"这种后续动作。</p>
+     *
+     * <pre>{@code
+     * ctx.later(200, () -> ctx.msg("……开个玩笑，东西还你。"));
+     * }</pre>
+     */
+    public void later(int delayTicks, Runnable action) {
+        DelayScheduler.schedule(server, delayTicks, action);
+    }
+
     // ==================================================================
     // 第二批 API：多人 / 社交
     // ==================================================================

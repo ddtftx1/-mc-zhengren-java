@@ -21,6 +21,12 @@ import com.zhengren.trollmod.events.WorldEvents;
  */
 public final class TrollEvents {
 
+    /**
+     * 合并进来的「精神污染」（原 mindbreak 模组）事件统一使用的分类名。
+     * 调度器用它识别扩展事件，从而按 {@code mindbreakIntensity} 缩放权重。
+     */
+    public static final String CATEGORY_MINDBREAK = "精神污染";
+
     private static String currentCategory = "通用";
 
     private TrollEvents() {
@@ -58,5 +64,7 @@ public final class TrollEvents {
         SocialEvents.register();
         NightmareEvents.register();
         DoomEvents.register();
+        // 第三批：合并进来的「精神污染」（原 mindbreak 模组）
+        com.zhengren.trollmod.mindbreak.MindbreakEvents.register();
     }
 }

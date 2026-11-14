@@ -1,12 +1,47 @@
-# 🎭 整人大师 Zhengren Master
+# 🎭 整人大师 × 精神污染 (Zhengren Master × Mindbreak)
 
-> 一个**专心致志搞你心态**的 Minecraft 模组。
-> **571 个整人事件** · 14 大分类 · 5 档残酷等级 · 客户端结局级画面整活 · 崩溃指数递增 · 狂暴模式
+> 两个整人模组合并成一个：**615 个整人事件** · 15 大分类 · 5 档残酷等级 · 5 件精神污染神器 · 交互型整活回调 · 客户端结局级画面整活 · 崩溃指数递增 · 狂暴模式
 
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.20.1-62b47a?style=flat-square)](https://www.minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Fabric-Loader%20%E2%89%A50.15-dbd0b4?style=flat-square)](https://fabricmc.net/)
 [![Java](https://img.shields.io/badge/Java-17-orange?style=flat-square)]()
-[![Events](https://img.shields.io/badge/Events-571-red?style=flat-square)]()
+[![Events](https://img.shields.io/badge/Events-615-red?style=flat-square)]()
+
+> ⚠️ **合并说明**：本模组由 `zhengren`（整人大师，MC 1.20.1）与 `mindbreak`（精神污染，MC 1.21.1）合并而成。
+> 原 mindbreak 的 1.21.1 代码已全部移植到 **MC 1.20.1 / Java 17**，并与整人大师的框架深度打通，而不是简单堆在同一个 jar 里。
+> 详见下文 [🔄 两模组如何互通](#-两模组如何互通)。
+
+---
+
+## 🔄 两模组如何互通
+
+合并后的设计原则是**只有一套系统**。两个模组的内容共用同一个事件表、同一个调度器、同一份配置、同一套命令，
+因此它们可以互相触发、统一开关、统一调强度：
+
+| 维度 | 合并前 | 合并后 |
+|---|---|---|
+| 事件表 | mindbreak 自己一个 `ChaosEvents` 列表（43 个）<br>zhengren 一个 `TrollRegistry`（571 个） | **一个 `TrollRegistry`，共 615 个事件**，全部可被 `/zr list`、`/zr info`、`/zr fire` 操作 |
+| 调度 | mindbreak 每 20 tick 掷概率（7%/10%/13%）<br>zhengren 按权重+冷却+等级+崩溃指数抽取 | **只有 `TrollScheduler` 一套**。精神污染事件带自己的权重/冷却/等级，参与同一套加权抽取，受崩溃指数与每分钟限流约束 |
+| 延时任务 | mindbreak 有 `ChaosScheduler`<br>zhengren 没有 | **提升为公共能力 `DelayScheduler`**，通过 `ctx.later(ticks, action)` 暴露给全部 615 个事件 |
+| 配置 | 两个模组各自的开关/强度 | **一份 `config/zhengren.json`**：`enabled`、`mindbreakEnabled`、`mindbreakIntensity`、`mindbreakHooks`、`chatMangle`、黑名单等统一生效 |
+| 命令 | `/zr` 与 `/mindbreak` 两套状态 | `/zr` 与 `/mindbreak`（别名 `/mb`）**共享同一份状态**；`/zr` 新增 `intensity`、`gift` |
+| 物品 | mindbreak 五件神器，只驱动自己的随机逻辑 | 五件神器注册在 `zhengren` 命名空间，`离谱棒` 直接触发**统一事件表**里的随机事件（可能触发整人大师的原生事件） |
+
+**具体的互通点：**
+
+1. **精神污染事件进入统一事件表** —— `TrollEvents.bootstrap()` 调用 `MindbreakEvents.register()`，44 个事件以分类 `精神污染` 注册进 `TrollRegistry`，总数 571 → **615**。
+2. **强度实时生效** —— `TrollScheduler.pick()` 对分类为 `精神污染` 的事件按 `mindbreakIntensity`（1/2/3 → 0.5×/1×/2×）实时缩放权重，改强度不用重启。
+3. **开关统一** —— `mindbreakEnabled=false` 时精神污染事件退出随机调度（仍可 `/zr fire` 手动触发）；总开关 `enabled=false` 则全部停止。
+4. **反向赋能** —— 至少 3 个精神污染事件改用了整人大师独有、mindbreak 原本没有的能力（客户端假崩溃/黑屏 `ctx.glitch`、假成就弹窗 `ctx.fakeAchievement`、标题 `ctx.title`、陨石雨 `ctx.meteorShower` 等）。
+5. **桥接事件 `relic_gift`** —— 随机事件也能直接把五件神器塞进玩家背包。
+6. **交互回调统一管控** —— 原 mindbreak 的 8 个交互回调（挖方块被拒、方块变身、床拒绝你、打怪背刺、聊天被曲解、死亡遗言、加入/重生问候）全部受 `enabled` + `mindbreakEnabled` + `mindbreakHooks` + `chatMangle` 约束；**原先那套独立的 tick 概率轮询已彻底删除**。
+
+### 与原 mindbreak 的差异（升级须知）
+
+- MC 版本从 1.21.1 降到 **1.20.1**（以整人大师为基线，因为 1.20.1 侧有 57 万字节的既有事件代码与已验证的构建环境）。
+- 物品命名空间从 `mindbreak:` 改为 **`zhengren:`**，配方目录从 `data/mindbreak/recipe/`（1.21 单数）改为 `data/zhengren/recipes/`（1.20.1 复数），配方 JSON 格式同步转换为 1.20.1 语法。
+- 原 mindbreak 的 `ChaosManager`（独立开关/强度/计数）、`ChaosEvents`（独立事件列表）、`ChaosScheduler`（已升级为公共 `DelayScheduler`）不再作为独立系统存在。
+- 旧存档里的 `mindbreak:` 物品会变成未知物品 —— 这是跨模组合并的必然代价。
 
 ---
 
@@ -30,7 +65,7 @@
 
 | 功能 | 说明 |
 |---|---|
-| 🎲 **571 个随机整人事件** | 分为 14 大分类，从"笑一下"到"直接砸键盘" |
+| 🎲 **615 个随机整人事件** | 分为 15 大分类，从"笑一下"到"直接砸键盘"（含合并自精神污染的 44 个） |
 | 🔥 **5 档残酷等级** | 小整 / 烦人 / 抓狂 / 崩溃 / 地狱，可自由限制上限 |
 | 📈 **崩溃指数（Rage）** | 被整越多，触发越快、越狠；`/zr stats` 可查看 |
 | ⚡ **狂暴模式** | `/zr chaos 60` — 接下来 60 秒，**每秒**整你一次 |
@@ -87,8 +122,23 @@ cd zhengren-mod
 
 产物：`build/libs/zhengren-1.0.0.jar`
 
+### Linux / 中文路径环境的两个坑（合并时实际踩到并已修好）
+
+1. **必须设置 UTF-8 locale**。如果工作目录路径含中文（例如 `/.../整人模组工作区/zhengren-mod`），
+   在 `LANG` 为空的容器里 JVM 的 `sun.jnu.encoding` 会退化成 ASCII，Gradle 启动直接抛
+   `InvalidPathException: Malformed input or input contains unmappable characters`。构建请用：
+
+   ```bash
+   export LANG=C.UTF-8 LC_ALL=C.UTF-8
+   JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64 ./gradlew build
+   ```
+
+2. **`authlib` / `text2speech` 需要 Mojang 官方源**。BMCLAPI 镜像对这两个坐标返回 403，
+   `build.gradle` 里已显式加入 `https://libraries.minecraft.net/` 仓库兜底。
+
 > 🧪 本项目使用 **Fabric Loom 1.6.12 + Gradle 8.7 + Yarn 1.20.1+build.10 + OpenJDK 17** 实际编译验证通过
 > （`compileJava → processResources → jar → remapJar` 全绿，产物已重映射为 intermediary 命名空间）。
+> ⚠️ Loom 1.6.12 与 Gradle 8.14+ 不兼容（`Problems.forNamespace` API 变更），请使用 wrapper 自带的 8.7。
 
 **关于 `libs/fabric-api/`**：为了在**完全离线**的机器上也能构建，本项目把 Fabric API 0.92.12 的 53 个模块 jar
 直接放在 `libs/fabric-api/` 下（由官方 fat jar 解包得到），`build.gradle` 用
@@ -125,6 +175,23 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 | `/zr info <id>` | 查看单个事件的名称/等级/权重/冷却/说明 |
 | `/zr fire <id> [玩家]` | 手动对某人触发指定事件 |
 | `/zr random [玩家]` | 手动触发一个随机事件 |
+| `/zr intensity <1-3>` | **「精神污染」强度**（合并新增）：影响那 44 个事件的抽取权重 |
+| `/zr gift` | **领取五件精神污染神器**（合并新增）：离谱棒 / 嘴臭之书 / 混乱珍珠 / 后悔蛋糕 / 神秘不明肉 |
+
+### `/mindbreak` 兼容指令（别名 `/mb`）
+
+为兼容原 mindbreak 模组的操作习惯保留，**内部完全共用同一份状态**（与 `/zr` 改的是同一个 `config/zhengren.json`）：
+
+| 指令 | 等价于 |
+|---|---|
+| `/mb toggle` | 切换 `mindbreakEnabled`（只关精神污染事件，不动总开关） |
+| `/mb intensity <1-3>` | `/zr intensity <1-3>` |
+| `/mb trigger <id>` | `/zr fire <id>`（含全部 615 个事件，不限于精神污染） |
+| `/mb list` | 只列出「精神污染」那 44 个事件 |
+| `/mb gift` | `/zr gift` |
+| `/mb chaos` | 随机连发 5 次统一事件表里的随机事件 |
+| `/mb stats` | 事件总数 / 精神污染数量 / 强度 / 开关状态 |
+| `/mb help` | 帮助 |
 
 示例：
 
@@ -134,6 +201,9 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 /zr interval 5 15      # 提高频率：5~15 秒一次
 /zr fire chaos_ultimate_combo    # 手动体验终极连击
 /zr fire glitch_total_meltdown @a # 让所有人体验假崩溃
+/zr fire chat_spam     # 触发合并进来的精神污染事件
+/zr intensity 3        # 精神污染事件权重 ×2
+/zr gift               # 一次领全五件神器
 ```
 
 ---
@@ -157,7 +227,11 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
   "maxEventsPerMinute": 14,
   "glitchPower": 1.0,
   "disabled": [],
-  "targets": []
+  "targets": [],
+  "mindbreakEnabled": true,
+  "mindbreakIntensity": 2,
+  "mindbreakHooks": true,
+  "chatMangle": true
 }
 ```
 
@@ -177,6 +251,10 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 | `glitchPower` | 0.1-5.0 | 客户端画面整活强度倍率 |
 | `disabled` | 数组 | **黑名单事件 id**，写进去的事件永远不会触发 |
 | `targets` | 数组 | 只整这些玩家名；留空 = 整所有人 |
+| `mindbreakEnabled` | bool | 「精神污染」事件是否参与随机调度（关掉后仍可 `/zr fire <id>` 手动触发） |
+| `mindbreakIntensity` | 1-3 | 「精神污染」事件权重倍率：1→0.5×、2→1×、3→2×，**改完立刻生效** |
+| `mindbreakHooks` | bool | 是否启用交互型整活（挖方块被拒、方块变身、床拒绝你、打怪背刺、死亡遗言、进出问候） |
+| `chatMangle` | bool | 是否启用聊天内容扭曲（18% 概率被曲解后以你的名义发出） |
 
 例：只想被"小整"和"烦人"级别整，并且讨厌假崩溃：
 
@@ -189,7 +267,7 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 ---
 
-## 🗂️ 事件总览（571 个）
+## 🗂️ 事件总览（615 个）
 
 | 分类 | 数量 | 残酷等级分布（小整/烦人/抓狂/崩溃/地狱） | 代表事件 |
 |---|---:|---|---|
@@ -207,9 +285,11 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 | 👥 **多人与社交** | **46** | 12 / 13 / 11 / 6 / 4 | 假 OP、假封禁、`social_swap_places` 位置互换、全员连坐 |
 | 🌑 **结局级画面** | **46** | 6 / 10 / 12 / 12 / 6 | 假永久封禁、假更新卡 99%、假世界重载、画面撕裂、输入反转 |
 | ☄️ **末日与毁灭** | **45** | 3 / 5 / 13 / 12 / 12 | `doom_meteor_apocalypse` 陨石天启、`doom_world_end` 世界终章、审判日 |
-| **合计** | **571** | **102 / 152 / 145 / 109 / 63** | 用 `/zr list` 查看全部 |
+| 🌀 **精神污染**（合并） | **44** | 9 / 24 / 9 / 1 / 1 | `chat_spam` 嘴替、`fake_death` 假死亡抖包袱、`total_chaos` 终极混沌、`relic_gift` 神器馈赠 |
+| **合计** | **615** | **111 / 176 / 154 / 110 / 64** | 用 `/zr list` 查看全部 |
 
 > 完整事件清单：游戏内输入 `/zr list` 分页查看，或 `/zr info <id>` 查看详情。
+> 「精神污染」分类的 44 个事件继承自 mindbreak 模组，id 保持原样，可直接 `/zr fire chat_spam`。
 
 ---
 
@@ -279,7 +359,7 @@ A：每个事件都有冷却时间、权重、触发条件（比如必须身上�
 <div align="center">
 
 **由 DeepSeek Harness Agent Teams 构建**
-*14 个 agent 分工编写了 571 个整人事件 · 全部经过真实编译验证*
+*14 个 agent 分工编写了 571 个整人事件，另一次合并把 mindbreak 的 43 个事件与 5 件神器并入 · 全部经过真实编译验证*
 
 </div>
 ---

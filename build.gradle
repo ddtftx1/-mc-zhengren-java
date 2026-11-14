@@ -12,8 +12,10 @@ base {
 
 repositories {
     maven {
-        name = 'LocalOffline'
-        url = uri('file:///C:/Users/Administrator/Documents/deepseek-harness/default-workspace/tools/m2repo')
+        // Mojang 官方库（authlib / text2speech 等）。BMCLAPI 镜像对这些坐标返回 403，
+        // 这里显式声明官方源保证可解析。
+        name = 'MojangLibraries'
+        url = 'https://libraries.minecraft.net/'
     }
     maven {
         name = 'AliyunPublic'
