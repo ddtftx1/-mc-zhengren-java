@@ -23,19 +23,19 @@ public class TrollConfig {
 
     /** 总开关 */
     public boolean enabled = true;
-    /** 允许出现的最高残酷等级 1-5 */
-    public int maxTier = 5;
+    /** 允许出现的最高残酷等级 1-6（6 = 绝望） */
+    public int maxTier = 6;
     /** 两次事件之间的最小间隔（秒） */
-    public int minIntervalSeconds = 20;
+    public int minIntervalSeconds = 8;
     /** 两次事件之间的最大间隔（秒） */
-    public int maxIntervalSeconds = 75;
+    public int maxIntervalSeconds = 30;
     /** 随着游戏时间推移越来越狠 */
     public boolean escalation = true;
     /** 是否在聊天栏提示刚刚发生了什么 */
     public boolean announce = true;
     /** 是否允许"大规模地形改造"类事件（boomDestructive / meteorShower 的 TNT 模式 / lavaPit）。
-     *  注意：小型爆炸、`ctx.spawnTnt`、`voidPit`、`cageWith` 等仍会造成局部方块变化——这是本模组的整人本质，无法完全关闭。 */
-    public boolean allowWorldDamage = false;
+     *  v3.0.0 起默认开启——本模组不打算给玩家留全尸。 */
+    public boolean allowWorldDamage = true;
     /** 是否影响创造模式玩家 */
     public boolean affectCreative = true;
     /** 是否允许客户端画面类整活（假崩溃界面等） */
@@ -43,9 +43,28 @@ public class TrollConfig {
     /** 是否允许踢出类事件（假掉线） */
     public boolean fakeKick = true;
     /** 每分钟最多触发的事件数 */
-    public int maxEventsPerMinute = 14;
+    public int maxEventsPerMinute = 40;
     /** 客户端整活强度倍率 0.1 - 5.0 */
     public double glitchPower = 1.0;
+
+    // ==================================================================
+    // v3.0.0「残酷化」总控
+    // ==================================================================
+
+    /** 残酷度 1-5：全局放大伤害、效果时长、爆炸威力、物品损失与位移强度。
+     *  默认 5（最高）——要整就整到底。 */
+    public int brutality = 5;
+    /** 温和事件是否附带"残酷惩罚"：等级 ≤ 烦人 的事件执行完后，额外追加一次重击。
+     *  这让 2000 个事件里那些"只是嘴上说说"的事件也真的会掉血、掉东西、被埋。 */
+    public boolean punishmentRider = true;
+    /** 惩罚附加的触发概率（0-100）。默认 100 = 每次温和事件都追加。 */
+    public int punishmentChance = 100;
+    /** 连击概率（0-100）：事件结束后有概率立刻再触发一个随机事件。 */
+    public int chainChance = 45;
+    /** 连击最多嵌套层数（防止无限递归）。 */
+    public int maxChainDepth = 3;
+    /** 玩家死亡后是否继续追击：重生时立即补一次重击。 */
+    public boolean noMercy = true;
     /** 黑名单事件 ID */
     public List<String> disabled = new ArrayList<>();
     /** 白名单玩家名（为空表示所有玩家都整） */
@@ -63,6 +82,17 @@ public class TrollConfig {
     public boolean mindbreakHooks = true;
     /** 是否启用聊天内容扭曲 */
     public boolean chatMangle = true;
+
+    /**
+     * 配置文件版本（v3.0.0 新增）。
+     *
+     * <p>用于把**旧版本的默认值**迁移到新版本的默认值。判断依据是"当前值是否恰好等于旧默认值"——
+     * 因此用户手动改过的设置不会被覆盖，而从未动过的设置会自动跟上新版本的残酷默认值。</p>
+     *
+     * <p>初始值必须是 {@code 0}（未标记）而不是 {@code 3}：Gson 对没有该字段的旧 JSON 会保留
+     * 字段初始值，若初始值就是 3，迁移将永远不会触发。</p>
+     */
+    public int configVersion = 0;
 
     private transient Set<String> disabledSet = new LinkedHashSet<>();
     private transient Set<String> targetSet = new LinkedHashSet<>();
@@ -87,10 +117,51 @@ public class TrollConfig {
         }
         if (cfg == null) {
             cfg = new TrollConfig();
+        } else {
+            cfg.migrateIfNeeded();
         }
         cfg.reindex();
         cfg.save();
         return cfg;
+    }
+
+    /**
+     * 旧配置迁移。只在 {@code configVersion < 3} 时执行一次。
+     *
+     * <p>关键点：v2.0.0 的默认 {@code maxTier} 是 5，而 v3.0.0 新增了第 6 档「绝望」。
+     * 若不迁移，从 v2 升级上来的存档会因为 {@code maxTier=5} 而**永远抽不到那 258 个绝望事件**，
+     * 残酷化等于白做。这里只在值仍等于旧默认值时才改写，避免覆盖用户的自定义。</p>
+     */
+    private void migrateIfNeeded() {
+        if (configVersion >= 3) {
+            return;
+        }
+        boolean changed = false;
+        // maxTier：旧默认/旧上限 5 → 新的 6（否则绝望档不可达）
+        if (maxTier == 5) {
+            maxTier = 6;
+            changed = true;
+        }
+        // 节奏：旧默认 20~75 秒 / 14 次每分钟 → 新默认 8~30 秒 / 40 次
+        if (minIntervalSeconds == 20 && maxIntervalSeconds == 75) {
+            minIntervalSeconds = 8;
+            maxIntervalSeconds = 30;
+            changed = true;
+        }
+        if (maxEventsPerMinute == 14) {
+            maxEventsPerMinute = 40;
+            changed = true;
+        }
+        // 地形破坏：旧默认 false → 新默认 true
+        if (!allowWorldDamage) {
+            allowWorldDamage = true;
+            changed = true;
+        }
+        configVersion = 3;
+        if (changed) {
+            ZhengrenMod.LOGGER.info("[整人大师] 已把旧版默认配置迁移到 v3 残酷默认值"
+                    + "（maxTier=6 / 间隔 8-30s / 每分钟 40 / 允许破坏地形）");
+        }
     }
 
     public void save() {
@@ -116,8 +187,8 @@ public class TrollConfig {
         if (maxTier < 1) {
             maxTier = 1;
         }
-        if (maxTier > 5) {
-            maxTier = 5;
+        if (maxTier > 6) {
+            maxTier = 6;
         }
         if (minIntervalSeconds < 1) {
             minIntervalSeconds = 1;
@@ -140,6 +211,56 @@ public class TrollConfig {
         if (mindbreakIntensity > 3) {
             mindbreakIntensity = 3;
         }
+        if (brutality < 1) {
+            brutality = 1;
+        }
+        if (brutality > 5) {
+            brutality = 5;
+        }
+        if (punishmentChance < 0) {
+            punishmentChance = 0;
+        }
+        if (punishmentChance > 100) {
+            punishmentChance = 100;
+        }
+        if (chainChance < 0) {
+            chainChance = 0;
+        }
+        if (chainChance > 100) {
+            chainChance = 100;
+        }
+        if (maxChainDepth < 0) {
+            maxChainDepth = 0;
+        }
+        if (maxChainDepth > 10) {
+            maxChainDepth = 10;
+        }
+    }
+
+    /**
+     * 残酷度倍率。用于放大伤害、效果时长、爆炸威力等一切"痛感"数值。
+     *
+     * <p>1→0.5×（还留一丝人性）／2→1.0×（原始强度）／3→1.8×／4→3.0×／5→5.0×</p>
+     */
+    public double brutalityScale() {
+        return switch (brutality) {
+            case 1 -> 0.5;
+            case 2 -> 1.0;
+            case 3 -> 1.8;
+            case 4 -> 3.0;
+            default -> 5.0;
+        };
+    }
+
+    /** 附加效果的等级加成：残酷度越高，给的药水效果等级越高。 */
+    public int brutalityAmplifierBonus() {
+        return switch (brutality) {
+            case 1 -> 0;
+            case 2 -> 0;
+            case 3 -> 1;
+            case 4 -> 2;
+            default -> 3;
+        };
     }
 
     /**

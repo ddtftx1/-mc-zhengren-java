@@ -93,6 +93,28 @@ public class TrollContext {
         return config;
     }
 
+    // ==================================================================
+    // v3.0.0 残酷度（brutality）
+    // ==================================================================
+
+    /**
+     * 当前残酷度倍率，作用于伤害、效果时长、爆炸威力、位移强度等一切"痛感"数值。
+     * 由 {@link TrollConfig#brutality}（1-5）决定：0.5× / 1.0× / 1.8× / 3.0× / 5.0×。
+     */
+    public double brutality() {
+        return config == null ? 1.0 : config.brutalityScale();
+    }
+
+    /** 效果时长按残酷度放大（上限 1 小时，避免数值溢出）。 */
+    public int scaledTicks(int ticks) {
+        return (int) Math.min(72000L, Math.max(1L, (long) (ticks * brutality())));
+    }
+
+    /** 药水效果等级加成。 */
+    public int brutalityAmp() {
+        return config == null ? 0 : config.brutalityAmplifierBonus();
+    }
+
     public String playerName() {
         return player.getName().getString();
     }
@@ -308,33 +330,41 @@ public class TrollContext {
         teleport(other.getX(), other.getY(), other.getZ());
     }
 
+    /** 位移距离按残酷度放大（上限 500 格，避免直接扔出世界边界） */
+    public int scaledRange(int range) {
+        return (int) Math.min(500L, Math.max(1L, (long) (range * brutality())));
+    }
+
     /** 随机水平传送（保持大致高度） */
     public void scatter(int range) {
-        double tx = x() + ri(-range, range);
-        double tz = z() + ri(-range, range);
+        int r = scaledRange(range);
+        double tx = x() + ri(-r, r);
+        double tz = z() + ri(-r, r);
         int top = world().getTopY(Heightmap.Type.MOTION_BLOCKING, (int) tx, (int) tz);
         teleport(tx, Math.max(world().getBottomY() + 2, Math.min(top + 1, y() + 20)), tz);
     }
 
     /** 随机传送到很远的地方 */
     public void scatterFar(int range) {
-        double tx = x() + ri(-range, range);
-        double tz = z() + ri(-range, range);
-        double ty = y() + ri(-8, 25);
+        int r = scaledRange(range);
+        double tx = x() + ri(-r, r);
+        double tz = z() + ri(-r, r);
+        double ty = y() + ri(-8, 25) * brutality();
         teleport(tx, Math.max(world().getBottomY() + 3, Math.min(ty, 300)), tz);
     }
 
     public void lift(double height) {
-        teleport(x(), Math.min(y() + height, 300), z());
+        teleport(x(), Math.min(y() + height * brutality(), 300), z());
     }
 
     public void launch(double power) {
-        player.setVelocity(player.getVelocity().x, power, player.getVelocity().z);
+        player.setVelocity(player.getVelocity().x, power * brutality(), player.getVelocity().z);
         player.velocityModified = true;
     }
 
     public void fling(double dx, double dy, double dz) {
-        player.setVelocity(dx, dy, dz);
+        double s = brutality();
+        player.setVelocity(dx * s, dy * s, dz * s);
         player.velocityModified = true;
     }
 
@@ -411,16 +441,60 @@ public class TrollContext {
 
     /** 随机拿走一个物品 */
     public boolean takeRandomItem() {
+        return takeRandomItems(1) > 0;
+    }
+
+    /**
+     * 随机拿走 n 个物品（残酷度越高，语义上的"一个"越接近于"一把"）。
+     *
+     * @return 实际拿走的数量
+     */
+    public int takeRandomItems(int n) {
         PlayerInventory in = inv();
-        for (int attempt = 0; attempt < 12; attempt++) {
+        int taken = 0;
+        int attempts = 0;
+        while (taken < n && attempts < 40) {
+            attempts++;
             int slot = rng.nextInt(in.size());
             ItemStack s = in.getStack(slot);
             if (!s.isEmpty()) {
                 in.setStack(slot, ItemStack.EMPTY);
-                return true;
+                taken++;
             }
         }
-        return false;
+        return taken;
+    }
+
+    /** 一次性夺走背包、经验与所有增益效果。 */
+    public void stripAll() {
+        clearInventory();
+        clearEffects();
+        player.setExperienceLevel(0);
+        player.setExperiencePoints(0);
+    }
+
+    /** 活埋：黑曜石棺材 + 头顶封盖 + 脚下岩浆。 */
+    public void buryAlive() {
+        cageWith(Blocks.OBSIDIAN);
+        placeFloor(Blocks.LAVA, 1);
+        effect(StatusEffects.BLINDNESS, 200, 1);
+        damage("magic", 2.0f);
+    }
+
+    /**
+     * 彻底抹除：夺走一切、活埋、雷击、爆炸、致盲、凋零，然后杀掉。
+     *
+     * <p>这是「绝望」档的终结技。不要在同一 tick 里连放两次。</p>
+     */
+    public void obliterate() {
+        stripAll();
+        buryAlive();
+        lightning();
+        boomAtPlayer(6.0f);
+        effect(StatusEffects.WITHER, 300, 2);
+        effect(StatusEffects.BLINDNESS, 300, 1);
+        damage("outofworld", 20.0f);
+        kill();
     }
 
     public void clearInventory() {
@@ -462,7 +536,8 @@ public class TrollContext {
     }
 
     public void dropRandom() {
-        takeRandomItem();
+        // 残酷度越高，一次丢得越多
+        takeRandomItems(1 + (int) (brutality() / 1.5));
     }
 
     /** 丢出背包里所有东西 */
@@ -570,7 +645,9 @@ public class TrollContext {
     // ==================================================================
 
     public void effect(StatusEffect effect, int ticks, int amplifier) {
-        player.addStatusEffect(new StatusEffectInstance(effect, ticks, amplifier));
+        int t = scaledTicks(ticks);
+        int a = amplifier + brutalityAmp();
+        player.addStatusEffect(new StatusEffectInstance(effect, t, Math.min(255, a)));
     }
 
     public void effectRandom(int ticks, int amplifier) {
@@ -593,24 +670,25 @@ public class TrollContext {
     }
 
     public void damage(float amount) {
-        player.damage(world().getDamageSources().generic(), amount);
+        player.damage(world().getDamageSources().generic(), (float) (amount * brutality()));
     }
 
     public void damage(String kind, float amount) {
+        float a = (float) (amount * brutality());
         switch (kind) {
-            case "magic" -> player.damage(world().getDamageSources().magic(), amount);
-            case "fall" -> player.damage(world().getDamageSources().fall(), amount);
-            case "fire" -> player.damage(world().getDamageSources().onFire(), amount);
-            case "lava" -> player.damage(world().getDamageSources().lava(), amount);
-            case "drown" -> player.damage(world().getDamageSources().drown(), amount);
-            case "starve" -> player.damage(world().getDamageSources().starve(), amount);
-            case "wither" -> player.damage(world().getDamageSources().wither(), amount);
-            case "freeze" -> player.damage(world().getDamageSources().freeze(), amount);
-            case "cactus" -> player.damage(world().getDamageSources().cactus(), amount);
-            case "outofworld" -> player.damage(world().getDamageSources().outOfWorld(), amount);
-            case "lightning" -> player.damage(world().getDamageSources().generic(), amount);
-            case "flyintowall" -> player.damage(world().getDamageSources().flyIntoWall(), amount);
-            default -> player.damage(world().getDamageSources().generic(), amount);
+            case "magic" -> player.damage(world().getDamageSources().magic(), a);
+            case "fall" -> player.damage(world().getDamageSources().fall(), a);
+            case "fire" -> player.damage(world().getDamageSources().onFire(), a);
+            case "lava" -> player.damage(world().getDamageSources().lava(), a);
+            case "drown" -> player.damage(world().getDamageSources().drown(), a);
+            case "starve" -> player.damage(world().getDamageSources().starve(), a);
+            case "wither" -> player.damage(world().getDamageSources().wither(), a);
+            case "freeze" -> player.damage(world().getDamageSources().freeze(), a);
+            case "cactus" -> player.damage(world().getDamageSources().cactus(), a);
+            case "outofworld" -> player.damage(world().getDamageSources().outOfWorld(), a);
+            case "lightning" -> player.damage(world().getDamageSources().generic(), a);
+            case "flyintowall" -> player.damage(world().getDamageSources().flyIntoWall(), a);
+            default -> player.damage(world().getDamageSources().generic(), a);
         }
     }
 
@@ -619,7 +697,8 @@ public class TrollContext {
     }
 
     public void heal(float amount) {
-        player.heal(amount);
+        // 残酷度越高，治疗越无力——最后干脆几乎治不动
+        player.heal((float) (amount / brutality()));
     }
 
     public void kill() {
@@ -627,11 +706,11 @@ public class TrollContext {
     }
 
     public void setFire(int seconds) {
-        player.setOnFireFor(seconds);
+        player.setOnFireFor((int) Math.min(600, Math.max(1, seconds * brutality())));
     }
 
     public void setFireTicks(int ticks) {
-        player.setFireTicks(ticks);
+        player.setFireTicks(scaledTicks(ticks));
     }
 
     public void extinguish() {
@@ -781,9 +860,13 @@ public class TrollContext {
         lightningAt(x() + ri(-6, 6), y(), z() + ri(-6, 6));
     }
 
+    /** 爆炸威力上限，防止把客户端直接炸崩 */
+    private static final float MAX_BOOM = 40.0f;
+
     /** 爆炸（不破坏地形） */
     public void boom(double px, double py, double pz, float power) {
-        world().createExplosion(null, px, py, pz, power, World.ExplosionSourceType.NONE);
+        world().createExplosion(null, px, py, pz,
+                (float) Math.min(MAX_BOOM, power * brutality()), World.ExplosionSourceType.NONE);
     }
 
     public void boomAtPlayer(float power) {
@@ -795,7 +878,8 @@ public class TrollContext {
         World.ExplosionSourceType type = config.allowWorldDamage
                 ? World.ExplosionSourceType.TNT
                 : World.ExplosionSourceType.NONE;
-        world().createExplosion(null, px, py, pz, power, type);
+        world().createExplosion(null, px, py, pz,
+                (float) Math.min(MAX_BOOM, power * brutality()), type);
     }
 
     public void timeOfDay(long time) {
@@ -1021,7 +1105,7 @@ public class TrollContext {
         if (o == null) {
             return;
         }
-        o.damage(world().getDamageSources().generic(), amount);
+        o.damage(world().getDamageSources().generic(), (float) (amount * brutality()));
     }
 
     public void lightningAtPlayer(ServerPlayerEntity o) {
@@ -1075,8 +1159,10 @@ public class TrollContext {
     }
 
     public void effectAll(StatusEffect effect, int ticks, int amplifier) {
+        int t = scaledTicks(ticks);
+        int a = Math.min(255, amplifier + brutalityAmp());
         for (ServerPlayerEntity p : allPlayers()) {
-            p.addStatusEffect(new StatusEffectInstance(effect, ticks, amplifier));
+            p.addStatusEffect(new StatusEffectInstance(effect, t, a));
         }
     }
 
@@ -1162,7 +1248,8 @@ public class TrollContext {
     /** 陨石雨：配置允许破坏地形时用 TNT，否则改用铁砧（只砸人不毁地） */
     public void meteorShower(int count, double height) {
         boolean damage = config.allowWorldDamage;
-        for (int i = 0; i < count; i++) {
+        int n = (int) Math.min(80L, Math.max(1L, (long) (count * brutality())));
+        for (int i = 0; i < n; i++) {
             double ox = x() + ri(-10, 10);
             double oz = z() + ri(-10, 10);
             double oy = y() + height + ri(0, 8);

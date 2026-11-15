@@ -3,6 +3,7 @@ package com.zhengren.trollmod;
 import com.zhengren.trollmod.command.MindbreakCommand;
 import com.zhengren.trollmod.command.TrollCommand;
 import com.zhengren.trollmod.core.DelayScheduler;
+import com.zhengren.trollmod.core.PunishmentPool;
 import com.zhengren.trollmod.core.TrollConfig;
 import com.zhengren.trollmod.core.TrollEvents;
 import com.zhengren.trollmod.core.TrollRegistry;
@@ -58,10 +59,15 @@ public class ZhengrenMod implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> CONFIG = TrollConfig.load());
 
         int[] tiers = TrollRegistry.countPerTier();
-        LOGGER.info("[整人大师] 加载完成：共 {} 个整人事件（小整{} / 烦人{} / 抓狂{} / 崩溃{} / 地狱{}），"
-                        + "其中「精神污染」{} 个",
+        LOGGER.info("[整人大师] 加载完成：共 {} 个整人事件（小整{} / 烦人{} / 抓狂{} / 崩溃{} / 地狱{} / 绝望{}），"
+                        + "其中「精神污染」{} 个；残酷度={}（×{}）惩罚附加={} 连击={}% 不赦={}",
                 TrollRegistry.size(), tiers[1], tiers[2], tiers[3], tiers[4], tiers[5],
-                MindbreakEvents.size());
+                tiers.length > 6 ? tiers[6] : 0,
+                MindbreakEvents.size(),
+                CONFIG.brutality, CONFIG.brutalityScale(),
+                CONFIG.punishmentRider, CONFIG.chainChance, CONFIG.noMercy);
+        LOGGER.info("[整人大师] 惩罚池共 {} 种残酷惩罚；最高等级={}", PunishmentPool.size(),
+                com.zhengren.trollmod.core.TrollTier.byLevel(CONFIG.maxTier).cn());
         if (!TrollRegistry.duplicates().isEmpty()) {
             LOGGER.warn("[整人大师] 发现 {} 个重复事件 ID: {}", TrollRegistry.duplicates().size(),
                     TrollRegistry.duplicates());

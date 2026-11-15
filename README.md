@@ -1,6 +1,6 @@
 # 🎭 整人大师 × 精神污染 (Zhengren Master × Mindbreak)
 
-> 两个整人模组合并后再扩容：**2000 个整人事件** · 29 大分类 · 5 档残酷等级 · 5 件精神污染神器 · 交互型整活回调 · 客户端结局级画面整活 · 崩溃指数递增 · 狂暴模式
+> 两个整人模组合并、扩容、再残酷化：**2000 个整人事件** · 29 大分类 · **6 档残酷等级**（新增「绝望」） · 5 件精神污染神器 · 交互型整活回调 · 客户端结局级画面整活 · 崩溃指数递增 · 狂暴模式
 
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.20.1-62b47a?style=flat-square)](https://www.minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Fabric-Loader%20%E2%89%A50.15-dbd0b4?style=flat-square)](https://fabricmc.net/)
@@ -106,7 +106,7 @@
 ## 📦 安装
 
 1. 安装 Fabric Loader（1.20.1）。
-2. 把 `fabric-api` 和本模组的 `zhengren-2.0.0.jar` 一起放进 `.minecraft/mods/`。
+2. 把 `fabric-api` 和本模组的 `zhengren-3.0.0.jar` 一起放进 `.minecraft/mods/`。
 3. 启动游戏，**开一个世界，然后开始受苦**。
 4. 想让它停下来？`/zr off`。
 
@@ -120,7 +120,7 @@ cd zhengren-mod
 ./gradlew build        # Windows: gradlew.bat build
 ```
 
-产物：`build/libs/zhengren-2.0.0.jar`
+产物：`build/libs/zhengren-3.0.0.jar`
 
 ### Linux / 中文路径环境的两个坑（合并时实际踩到并已修好）
 
@@ -168,7 +168,8 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 | `/zr rage` | 只看崩溃指数 |
 | `/zr chaos [秒]` | **狂暴模式**：每 1 秒触发一次事件（默认 30 秒） |
 | `/zr calm` | 停止狂暴模式 |
-| `/zr mode <1-5>` | 设置最高残酷等级（1=只小整，5=允许地狱级） |
+| `/zr mode <1-6>` | 设置最高残酷等级（1=只小整，5=允许地狱级，**6=允许绝望级**） |
+| `/zr brutality [1-5]` | **残酷度总控（v3.0.0 新增）**：不带参数查看当前值，带参数设置。1→×0.5，5→×5（默认 5） |
 | `/zr interval <最小秒> <最大秒>` | 设置随机事件的间隔区间 |
 | `/zr damage <true\|false>` | 是否允许破坏地形类事件（默认 false） |
 | `/zr list [页码]` | 分页列出全部事件 id |
@@ -214,18 +215,25 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 ```json
 {
+  "configVersion": 3,
   "enabled": true,
-  "maxTier": 5,
-  "minIntervalSeconds": 20,
-  "maxIntervalSeconds": 75,
+  "maxTier": 6,
+  "minIntervalSeconds": 8,
+  "maxIntervalSeconds": 30,
   "escalation": true,
   "announce": true,
-  "allowWorldDamage": false,
+  "allowWorldDamage": true,
   "affectCreative": true,
   "clientGlitches": true,
   "fakeKick": true,
-  "maxEventsPerMinute": 14,
+  "maxEventsPerMinute": 40,
   "glitchPower": 1.0,
+  "brutality": 5,
+  "punishmentRider": true,
+  "punishmentChance": 100,
+  "chainChance": 45,
+  "maxChainDepth": 3,
+  "noMercy": true,
   "disabled": [],
   "targets": [],
   "mindbreakEnabled": true,
@@ -235,26 +243,51 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 ```
 
+> ⚠️ **v3.0.0 起默认值就是「不留情」**：最高等级 6（绝望）、允许破坏地形、残酷度 5（×5）、
+> 事件间隔 8~30 秒、每分钟上限 40、温和事件 100% 附带残酷惩罚、45% 连击、死亡后追击。
+> 想给自己留活路就把 `brutality` 调小、`maxTier` 调到 3 以下、`allowWorldDamage` 关掉。
+
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `enabled` | bool | 总开关，等同于 `/zr off` |
-| `maxTier` | 1-5 | 允许出现的最高残酷等级 |
+| `maxTier` | 1-6 | 允许出现的最高残酷等级（**6 = 绝望**） |
 | `minIntervalSeconds` | int | 两次事件之间最小间隔 |
 | `maxIntervalSeconds` | int | 两次事件之间最大间隔 |
-| `escalation` | bool | 是否随崩溃指数自动加速、加重 |
+| `escalation` | bool | 是否随崩溃指数自动加速、加重（v3.0.0 起压得更狠，最多压到 8%，下限 1 秒） |
 | `announce` | bool | 是否在聊天栏提示"刚刚发生了什么" |
-| `allowWorldDamage` | bool | 是否允许**大规模地形改造**（陨石雨的 TNT 模式、岩浆灌溉、大规模爆炸）。注意：小型爆炸、`spawnTnt`、挖坑、围笼等局部方块变化仍会发生——这是整人模组的本质 |
+| `allowWorldDamage` | bool | 是否允许**大规模地形改造**（陨石雨的 TNT 模式、岩浆灌溉、大规模爆炸）。v3.0.0 起**默认开启** |
 | `affectCreative` | bool | 是否整创造模式玩家 |
 | `clientGlitches` | bool | 是否下发客户端画面整活 |
 | `fakeKick` | bool | 是否允许"假掉线"类事件 |
 | `maxEventsPerMinute` | int | 频率上限，防止事件太密导致卡顿 |
 | `glitchPower` | 0.1-5.0 | 客户端画面整活强度倍率 |
+| **`brutality`** | 1-5 | **残酷度总控（v3.0.0 新增）**：全局放大伤害、效果时长、爆炸威力、位移与物品损失。1→×0.5／2→×1／3→×1.8／4→×3／**5→×5（默认）** |
+| **`punishmentRider`** | bool | **温和事件附带残酷惩罚（v3.0.0 新增）**：等级 ≤ 烦人的事件执行完后，额外抽一个重击 |
+| **`punishmentChance`** | 0-100 | 惩罚附加的触发概率，默认 100 |
+| **`chainChance`** | 0-100 | **事件连击概率（v3.0.0 新增）**：一个事件结束后有概率立刻再触发一个随机事件，默认 45 |
+| **`maxChainDepth`** | 0-10 | 连击最多嵌套层数，默认 3 |
+| **`noMercy`** | bool | **死亡后追击（v3.0.0 新增）**：玩家重生时立刻补一次残酷惩罚 |
 | `disabled` | 数组 | **黑名单事件 id**，写进去的事件永远不会触发 |
 | `targets` | 数组 | 只整这些玩家名；留空 = 整所有人 |
 | `mindbreakEnabled` | bool | 「精神污染」事件是否参与随机调度（关掉后仍可 `/zr fire <id>` 手动触发） |
 | `mindbreakIntensity` | 1-3 | 「精神污染」事件权重倍率：1→0.5×、2→1×、3→2×，**改完立刻生效** |
 | `mindbreakHooks` | bool | 是否启用交互型整活（挖方块被拒、方块变身、床拒绝你、打怪背刺、死亡遗言、进出问候） |
 | `chatMangle` | bool | 是否启用聊天内容扭曲（18% 概率被曲解后以你的名义发出） |
+
+> 🩸 **`brutality` 怎么起作用**：它不是让事件变多，而是让**同一个事件更痛**。
+> 伤害、药水效果时长与等级、爆炸威力、传送距离、抛飞力度、一次夺走的物品数，全部按倍率放大。
+> 治疗反而会被**削弱**（`heal` 除以倍率）——残酷度 5 时你几乎治不回来。
+> 另外 `/zr brutality <1-5>` 可以随时在游戏里改。
+
+> 🔁 **从 v2.0.0 升级会自动迁移旧配置**
+> `config/zhengren.json` 新增了 `configVersion` 字段。首次以 v3.0.0 启动时会执行一次迁移：
+> 凡是**仍然等于 v2 旧默认值**的项会自动升级到 v3 的残酷默认值
+> （`maxTier` 5→6、间隔 20/75→8/30 秒、每分钟上限 14→40、`allowWorldDamage` false→true）。
+> **你手动改过的值不会被覆盖**（判断依据就是"是否仍等于旧默认值"）。
+>
+> ⚠️ 这一步很关键：如果不迁移，从 v2 升级的存档会因为 `maxTier=5` 而**永远抽不到那 258 个「绝望」事件**。
+> 迁移会在日志里打印 `已把旧版默认配置迁移到 v3 残酷默认值`。
+> 想手动确认：`/zr mode` 应显示 **绝望**，而不是「地狱」。
 
 例：只想被"小整"和"烦人"级别整，并且讨厌假崩溃：
 
@@ -339,10 +372,31 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 | 3 | 🟠 **抓狂** | 开始骂人 | 刷怪围殴、传送到远处、装备消失、活埋、着火 |
 | 4 | 🔴 **崩溃** | 拍桌子 | 假崩溃界面、闪电劈脸、虚空边缘、基岩棺材 |
 | 5 | ⚫ **地狱** | 直接退游戏 | 组合连招、天谴、末日降临、终极熔毁 |
+| 6 | ☠️ **绝望** | *（没有反应了）* | **v3.0.0 新增**：夺走一切、假希望、假救援、活埋+陨石+雷击+凋零，然后杀掉。死了还会被追打 |
+
+**当前分布（v3.0.0 残酷化后）**：小整 32 / 烦人 218 / 抓狂 528 / 崩溃 518 / 地狱 446 / **绝望 258**
+—— 温和档只占 12.5%，后三档占 61%。**这个模组不再打算让你好过了。**
 
 高阶事件的权重更低、冷却更长，但**一旦触发就一定让你记一辈子**。
 
+### 🩸 v3.0.0「残酷化」做了什么
+
+v2.0.0 的问题是有 49% 的事件偏轻（小整+烦人）。v3.0.0 从**四个层面**把它掰过来了：
+
+| 层面 | 做法 |
+|---|---|
+| **引擎** | 新增 `brutality` 残酷度总控（默认 ×5）：**同一个事件，伤害、效果时长、爆炸威力、位移、一次夺走的物品数全部放大**；治疗反被削弱 |
+| **等级重排** | 1764 个事件的等级整体上移，温和档从 987 个压到 250 个；新增第 6 档「绝望」 |
+| **惩罚附加** | 等级 ≤ 烦人的事件执行完后，**100% 追加一次随机残酷惩罚**（`PunishmentPool`，40 种：夺装备、活埋、雷击三连、怪物小队、TNT 齐射、陨石、假崩溃、剥夺视野……） |
+| **内容** | 1326 个"文案很轻但等级被上调"的事件补写了残酷化尾巴；258 个「绝望」事件的文案与桥段由 7 个 agent 重写为阴森版本（假希望、先给后夺、假救援、永恒折磨） |
+
+再加上**事件连击**（45% 概率立刻再触发一个）与**重生不赦**（死一次逃不掉），
+你现在面对的不是"偶尔被整一下"，而是**持续性的围剿**。
+
+> 想把这些全关掉：`/zr brutality 1`、`/zr mode 3`、`/zr off`，或直接改 `config/zhengren.json`。
+
 ---
+
 
 ## 🧠 它是怎么工作的
 

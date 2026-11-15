@@ -25,11 +25,31 @@ public final class TrollScheduler {
     public static long chaosUntilTick = 0;
     public static int chaosIntervalTicks = 20;
 
+    /** v3.0.0：连击嵌套深度（只在服务端线程使用） */
+    private static int chainDepth = 0;
+
     private TrollScheduler() {
     }
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(TrollScheduler::onServerTick);
+        // v3.0.0「不留情」：玩家重生时立刻补一次惩罚，别想靠死一次逃课
+        net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AFTER_RESPAWN.register(
+                (oldPlayer, newPlayer, alive) -> {
+                    TrollConfig cfg = ZhengrenMod.CONFIG;
+                    if (cfg == null || !cfg.enabled || !cfg.noMercy) {
+                        return;
+                    }
+                    try {
+                        TrollContext ctx = new TrollContext(newPlayer.getServer(), newPlayer, cfg,
+                                state(newPlayer), RNG, null);
+                        PunishmentPool.apply(ctx);
+                        newPlayer.sendMessage(Text.literal(
+                                "§0§l[不赦]§r §7死了也一样。你以为重生是奖励？"), false);
+                    } catch (Throwable t) {
+                        ZhengrenMod.LOGGER.warn("[整人大师] 重生追击失败: {}", t.toString());
+                    }
+                });
     }
 
     public static PlayerTrollState state(ServerPlayerEntity player) {
@@ -108,10 +128,11 @@ public final class TrollScheduler {
         int base = (cfg.minIntervalSeconds + RNG.nextInt(
                 Math.max(1, cfg.maxIntervalSeconds - cfg.minIntervalSeconds + 1))) * 20;
         if (cfg.escalation) {
-            double factor = 1.0 - Math.min(0.65, st.rage / 400.0);
+            // v3.0.0：崩溃指数把间隔压得更狠，最多压到 8%，下限 1 秒
+            double factor = 1.0 - Math.min(0.92, st.rage / 250.0);
             base = (int) (base * factor);
         }
-        return Math.max(60, base);
+        return Math.max(20, base);
     }
 
     /** 按权重挑一个可用的整人事件 */
@@ -176,22 +197,59 @@ public final class TrollScheduler {
     public static boolean fire(MinecraftServer server, ServerPlayerEntity player, TrollConfig cfg,
                                PlayerTrollState st, TrollEvent event) {
         TrollContext ctx = new TrollContext(server, player, cfg, st, RNG, event);
+        boolean happened = false;
         try {
             event.run(ctx);
+            happened = true;
         } catch (Throwable t) {
             ZhengrenMod.LOGGER.error("[整人大师] 事件 {} 执行失败: {}", event.id(), t.toString());
-            return false;
         }
-        st.markRun(event.id(), server.getTicks());
-        if (event.oncePerPlayer()) {
-            st.firedOnce.add(event.id());
+        if (happened) {
+            st.markRun(event.id(), server.getTicks());
+            if (event.oncePerPlayer()) {
+                st.firedOnce.add(event.id());
+            }
+            // 残酷度越高，崩溃指数涨得越快（间隔随之骤缩）
+            st.rage += event.tier().level() * 2.0 + (cfg.brutality - 1);
+
+            if (cfg.announce) {
+                player.sendMessage(Text.literal("§8[§c整人大师§8] " + event.tier().colored()
+                        + " §f" + event.display() + " §7(#" + event.id() + ")"), false);
+            }
+
+            // ---------- v3.0.0：温和事件附带残酷惩罚 ----------
+            boolean rider = cfg.punishmentRider
+                    && event.tier().level() <= 2
+                    && RNG.nextInt(100) < cfg.punishmentChance;
+            if (rider) {
+                try {
+                    PunishmentPool.apply(ctx);
+                    if (cfg.announce) {
+                        player.sendMessage(Text.literal("§0§l[残酷惩罚]§r §7小人只是嘴上说说，系统不。"), false);
+                    }
+                } catch (Throwable t) {
+                    ZhengrenMod.LOGGER.warn("[整人大师] 惩罚附加失败: {}", t.toString());
+                }
+            }
+
+            // ---------- v3.0.0：连击 ----------
+            if (chainDepth < cfg.maxChainDepth && RNG.nextInt(100) < cfg.chainChance) {
+                TrollEvent next = pick(server, player, cfg, st, server.getTicks());
+                if (next != null) {
+                    chainDepth++;
+                    try {
+                        if (cfg.announce) {
+                            player.sendMessage(Text.literal("§8[§c连击 §7" + chainDepth + "/"
+                                    + cfg.maxChainDepth + "§8]"), false);
+                        }
+                        fire(server, player, cfg, st, next);
+                    } finally {
+                        chainDepth--;
+                    }
+                }
+            }
         }
-        st.rage += event.tier().level() * 1.5;
-        if (cfg.announce) {
-            player.sendMessage(Text.literal("§8[§c整人大师§8] " + event.tier().colored()
-                    + " §f" + event.display() + " §7(#" + event.id() + ")"), false);
-        }
-        return true;
+        return happened;
     }
 
     public static boolean fireById(MinecraftServer server, ServerPlayerEntity player, String id) {

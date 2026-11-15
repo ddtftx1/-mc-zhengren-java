@@ -38,7 +38,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_sign_sass", "告示牌学会顶嘴", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_sign_sass", "告示牌学会顶嘴", TrollTier.ANNOYING)
                 .desc("你身边的告示牌自动改写内容，专挑你不想听的说")
                 .weight(125)
                 .cooldownSeconds(60)
@@ -49,7 +49,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_door_creak", "门在装鬼", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_door_creak", "门在装鬼", TrollTier.ANNOYING)
                 .desc("门自己开了一条缝，又自己关上，全程没人碰")
                 .weight(125)
                 .cooldownSeconds(50)
@@ -60,18 +60,20 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_ladder_grease", "梯子抹了黄油", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_ladder_grease", "梯子抹了黄油", TrollTier.BRUTAL)
                 .desc("爬梯子的手感突然变得异常顺滑，顺滑到有点可疑")
                 .weight(120)
                 .cooldownSeconds(70)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.7f);
                     ctx.actionBar("§e梯子呈 §l镜面抛光§r§e 状态。");
                     ctx.msg("§7保养记录：本梯子由 §8不明人士§7 上油。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_button_confetti", "按钮喷彩纸", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_button_confetti", "按钮喷彩纸", TrollTier.ANNOYING)
                 .desc("按一下按钮，喷出来的不是红石信号，是一团彩色碎屑")
                 .weight(120)
                 .cooldownSeconds(40)
@@ -82,18 +84,20 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_repeater_patience", "中继器多了一档", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_repeater_patience", "中继器多了一档", TrollTier.BRUTAL)
                 .desc("你的中继器被人偷偷调慢了，理由是「让你多等一会儿，静一静心」")
                 .weight(120)
                 .cooldownSeconds(80)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 0.6f, 1.5f);
                     ctx.msg("§7中继器公示：§e新增档位 §l看你急不急§r§e。");
                     ctx.sys("电路延迟 +4 刻（也许更多，谁知道呢）。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_observer_stare", "观察者盯着你", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_observer_stare", "观察者盯着你", TrollTier.ANNOYING)
                 .desc("墙上的观察者把脸转向你，并且持续输出「已检测到菜鸟」信号")
                 .weight(120)
                 .cooldownSeconds(55)
@@ -104,34 +108,40 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_lantern_flicker", "灯笼闪三下", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_lantern_flicker", "灯笼闪三下", TrollTier.BRUTAL)
                 .desc("灯笼表演了一段接触不良，纯属吓你一跳")
                 .weight(115)
                 .cooldownSeconds(45)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.glitch(GlitchIds.BLACKOUT, 6, 1);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 0.7f, 1.7f);
                     ctx.msg("§e灯：§8我没事§7，就是§8想看你怕一下§7。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_carpet_drift", "地毯自己挪窝", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_carpet_drift", "地毯自己挪窝", TrollTier.BRUTAL)
                 .desc("地毯悄悄平移了一格，你踩的时候脚感不太对")
                 .weight(110)
                 .cooldownSeconds(90)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     ctx.setBlock(1, -1, 0, ctx.pick(TrollPools.TROLL_BLOCKS));
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.7f, 1.5f);
                     ctx.msg("§7地毯声明：§8这是风水调整§7。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_scaffold_song", "脚手架在哼歌", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_scaffold_song", "脚手架在哼歌", TrollTier.BRUTAL)
                 .desc("脚手架随你的脚步发出音阶，踩得越急它唱得越难听")
                 .weight(115)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     for (int i = 0; i < 3; i++) {
                         ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.6f, 0.8f + i * 0.25f);
                     }
@@ -139,28 +149,32 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_stair_pixel", "台阶高了一像素", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_stair_pixel", "台阶高了一像素", TrollTier.BRUTAL)
                 .desc("台阶被抬高了看不出来的一点点，你上楼时微妙地绊了一下")
                 .weight(110)
                 .cooldownSeconds(70)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 0.5f, 1.9f);
                     ctx.msg("§7台阶：§8我长高了 §e0.5 像素§7，你不服你改我。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_glass_wiped", "玻璃被擦得吱吱响", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_glass_wiped", "玻璃被擦得吱吱响", TrollTier.BRUTAL)
                 .desc("身边响起刺耳的擦玻璃声，玻璃却比刚才更花了")
                 .weight(110)
                 .cooldownSeconds(65)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.soundSelf(ctx.pick(TrollPools.AMBIENT_CREEPY), 1.0f, 1.6f);
                     ctx.particleAtPlayer(ctx.pick(TrollPools.TAUNT_PARTICLES), 12);
                     ctx.msg("§7保洁已完成，视野清晰度：§c-15%§7。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_cauldron_bubble", "炼药锅自己冒泡", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_cauldron_bubble", "炼药锅自己冒泡", TrollTier.ANNOYING)
                 .desc("空炼药锅咕嘟咕嘟，凑近看又什么都没有")
                 .weight(105)
                 .cooldownSeconds(75)
@@ -171,49 +185,57 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_bed_rumple", "被子被谁睡皱了", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_bed_rumple", "被子被谁睡皱了", TrollTier.BRUTAL)
                 .desc("你的床凭空出现一个睡过的凹陷，重生点倒是还在")
                 .weight(110)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "床挺软，就是枕头有点高。");
                     ctx.msg("§7你的床§8被使用过§7，重生点暂无变动。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_frame_tilt", "展示框歪了", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_frame_tilt", "展示框歪了", TrollTier.BRUTAL)
                 .desc("你挂的展示框集体歪了五度，物品跟着一起斜")
                 .weight(105)
                 .cooldownSeconds(80)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.spin(5.0f);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.8f, 1.3f);
                     ctx.msg("§7展示框：§8这叫 §l艺术倾斜§r§8，你不懂。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_painting_swap", "画的内容换了", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_painting_swap", "画的内容换了", TrollTier.BRUTAL)
                 .desc("画框里的画换成了更让你不舒服的那一张")
                 .weight(105)
                 .cooldownSeconds(100)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.soundSelf(ctx.pick(TrollPools.AMBIENT_CREEPY), 0.8f, 0.9f);
                     ctx.msg("§7这幅画的名字是《§8刚才还不是这样§7》。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_trapdoor_wink", "活板门眨了眨眼", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_trapdoor_wink", "活板门眨了眨眼", TrollTier.BRUTAL)
                 .desc("活板门开合了一下，像在对你抛媚眼，怪吓人的")
                 .weight(115)
                 .cooldownSeconds(55)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 1.5f);
                     ctx.particleAtPlayer(ctx.pick(TrollPools.TAUNT_PARTICLES), 6);
                     ctx.actionBar("§7活板门：§8嘿。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_hopper_sigh", "漏斗叹了口气", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("build_hopper_sigh", "漏斗叹了口气", TrollTier.ANNOYING)
                 .desc("漏斗吸走一件东西，又吐回来，纯粹为了证明它活着")
                 .weight(115)
                 .cooldownSeconds(70)
@@ -232,7 +254,7 @@ public final class BuildEvents {
         // ANNOYING —— 烦人，会皱眉
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("build_piston_fling", "活塞送你一程", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_piston_fling", "活塞送你一程", TrollTier.BRUTAL)
                 .desc("脚下的活塞突然伸出，把你当方块一样推出去")
                 .weight(135)
                 .cooldownSeconds(70)
@@ -246,11 +268,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_repeater_slowdown", "全线限速", TrollTier.ANNOYING)
-                .desc("你所有的红石延迟统一加长，机器开始按慢动作运行")
+        TrollEvents.reg(TrollEvent.of("build_repeater_slowdown", "全线限速", TrollTier.NIGHTMARE)
+                .desc("所有红石延迟被统一加长，机器按慢动作运行，你也一样")
                 .weight(130)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.scatterFar(120);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 0);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 0.8f, 0.7f);
                     ctx.msg("§7红石管理局通知：§e本区域信号§l限速§r§e，恢复时间未定。");
@@ -258,11 +282,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_comparator_liar", "比较器学会了撒谎", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_comparator_liar", "比较器学会了撒谎", TrollTier.BRUTAL)
                 .desc("比较器输出的信号强度纯属虚构，你调试一晚上也白搭")
                 .weight(130)
                 .cooldownSeconds(100)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.sys("比较器输出：§e" + ctx.ri(1, 15) + "§7（真值：§8拒绝透露§7）");
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.9f, 1.1f);
                     ctx.msg("§7比较器：§8你猜我读了几个物品？§7。");
@@ -270,7 +296,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_hopper_clog", "漏斗堵了", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_hopper_clog", "漏斗堵了", TrollTier.BRUTAL)
                 .desc("漏斗里被塞满各种奇妙垃圾，转运速度归零")
                 .weight(130)
                 .cooldownSeconds(90)
@@ -282,11 +308,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_dispenser_junk", "发射器六亲不认", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_dispenser_junk", "发射器六亲不认", TrollTier.BRUTAL)
                 .desc("发射器把里面的东西全朝着你的脸打出来")
                 .weight(130)
                 .cooldownSeconds(80)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     for (int i = 0; i < 3; i++) {
                         ctx.give(ctx.pick(TrollPools.JUNK), 1);
                     }
@@ -297,11 +325,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_dropper_misfire", "投掷器投错方向", TrollTier.ANNOYING)
-                .desc("投掷器把东西丢到了你找不到的地方，还贴心附上坐标（假的）")
+        TrollEvents.reg(TrollEvent.of("build_dropper_misfire", "投掷器投错方向", TrollTier.NIGHTMARE)
+                .desc("东西被丢到你找不到的地方，附上的坐标是假的")
                 .weight(125)
                 .cooldownSeconds(85)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     if (!ctx.invEmpty()) {
                         ctx.dropRandom();
                     }
@@ -311,11 +341,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_lever_reverse", "拉杆逻辑反了", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_lever_reverse", "拉杆逻辑反了", TrollTier.BRUTAL)
                 .desc("拉杆开变成关、关变成开，你盯着它看了十秒才反应过来")
                 .weight(125)
                 .cooldownSeconds(80)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 0.9f, 0.6f);
                     ctx.actionBar("§7拉杆状态：§e开=关，关=开§7。");
                     ctx.msg("§8恭喜，你的电路从今天起需要一个 §7NOT§8 门。");
@@ -349,12 +381,14 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_trapdoor_pit", "脚下的活板门", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_trapdoor_pit", "脚下的活板门", TrollTier.BRUTAL)
                 .desc("站的地方变成活板门并且缓缓打开，重力开始接手")
                 .weight(130)
                 .cooldownSeconds(80)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.breakUnder();
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 1.2f);
                     ctx.msg("§7活板门：§8请下楼，§7楼梯就是没有楼梯。");
@@ -362,12 +396,14 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_ladder_missing_rung", "梯子少了一节", TrollTier.ANNOYING)
-                .desc("爬到一半发现梯子中间被抽走一格，你只能原地挂机")
+        TrollEvents.reg(TrollEvent.of("build_ladder_missing_rung", "梯子缺了一节", TrollTier.NIGHTMARE)
+                .desc("爬到一半发现中间被抽走一格，你只能原地挂着")
                 .weight(120)
                 .cooldownSeconds(85)
                 .when(ctx -> !ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     ctx.breakAt(ctx.pos());
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.8f);
                     ctx.msg("§7维修记录：§8某一节梯子去休假了§7。");
@@ -375,11 +411,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_scaffold_sag", "脚手架塌了个角", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_scaffold_sag", "脚手架塌了个角", TrollTier.BRUTAL)
                 .desc("你脚下的脚手架往下沉了一格，还发出非常不妙的声音")
                 .weight(120)
                 .cooldownSeconds(85)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.7f);
                     ctx.setBlock(0, -1, 0, TrollPools.TROLL_BLOCKS[3]);
                     ctx.msg("§7脚手架质检结果：§c不合格§7，但先用着。");
@@ -387,7 +425,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_torch_blackout", "照明集体离职", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_torch_blackout", "照明集体离职", TrollTier.BRUTAL)
                 .desc("周围亮度骤降，你手里的火把也闹脾气")
                 .weight(120)
                 .cooldownSeconds(90)
@@ -400,11 +438,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_lantern_dim", "灯笼变成小夜灯", TrollTier.ANNOYING)
-                .desc("灯笼亮度被调成了暧昧的昏暗，照明范围肉眼可见地缩水")
+        TrollEvents.reg(TrollEvent.of("build_lantern_dim", "灯光被调暗", TrollTier.NIGHTMARE)
+                .desc("照明范围肉眼可见地缩水，黑暗开始主动向你靠拢")
                 .weight(115)
                 .cooldownSeconds(100)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("wither", 3.0f);
                     ctx.particle(ctx.pick(TrollPools.SPOOKY_PARTICLES), 15);
                     ctx.soundSelf(ctx.pick(TrollPools.AMBIENT_CREEPY), 0.8f, 1.0f);
                     ctx.msg("§7照明参数：§8气氛优先，可视距离其次§7。");
@@ -412,18 +452,20 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_sign_rewrite", "告示牌被改字", TrollTier.ANNOYING)
-                .desc("你写的指路牌被改成了满分阴阳，路人也看不懂")
+        TrollEvents.reg(TrollEvent.of("build_sign_rewrite", "告示牌被改字", TrollTier.NIGHTMARE)
+                .desc("你写的指路牌被改成满分阴阳，路人看了都绕道")
                 .weight(120)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.breakRandomTool();
                     ctx.fakeChat("告示牌", "§7" + ctx.pick(TrollPools.FAKE_LINES));
                     ctx.sys("内容已被 §8匿名建筑评论家§7 修改。");
                     ctx.addRage(5);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_bed_trampoline", "床改行蹦床", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_bed_trampoline", "床改行蹦床", TrollTier.BRUTAL)
                 .desc("想睡觉的时候被床弹起来三次，睡意全没了")
                 .weight(120)
                 .cooldownSeconds(110)
@@ -447,11 +489,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_chest_swap", "箱子里的东西互换了", TrollTier.ANNOYING)
-                .desc("两个箱子的内容物交换了，你放置的秩序荡然无存")
+        TrollEvents.reg(TrollEvent.of("build_chest_swap", "箱内互换", TrollTier.NIGHTMARE)
+                .desc("两个箱子的内容物被交换，你建立的秩序荡然无存")
                 .weight(120)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     ctx.shuffleInventory();
                     ctx.scrambleHotbar();
                     ctx.msg("§7整理爱好者提示：§8你的箱子内容已重新随机分布§7。");
@@ -459,11 +503,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_shulker_recolor", "潜影盒换了个色", TrollTier.ANNOYING)
-                .desc("潜影盒的颜色在你转身之后变了，里面的东西还在但很没安全感")
+        TrollEvents.reg(TrollEvent.of("build_shulker_recolor", "潜影盒被换色", TrollTier.NIGHTMARE)
+                .desc("你转身的工夫盒子换了颜色，东西还在，安全感没了")
                 .weight(115)
                 .cooldownSeconds(110)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     ctx.particle(ctx.pick(TrollPools.SPOOKY_PARTICLES), 12);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.9f, 1.2f);
                     ctx.msg("§7潜影盒：§8换个心情，也换个色。");
@@ -471,7 +517,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_lighting_strobe", "照明爆闪", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_lighting_strobe", "照明爆闪", TrollTier.BRUTAL)
                 .desc("墙面灯光开始高频闪烁，眼睛先受不了的是你")
                 .weight(115)
                 .cooldownSeconds(80)
@@ -483,7 +529,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_stairs_soap", "楼梯打了肥皂", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_stairs_soap", "楼梯打了肥皂", TrollTier.BRUTAL)
                 .desc("楼梯表面突然变得极滑，走一步出一身汗")
                 .weight(120)
                 .cooldownSeconds(85)
@@ -495,12 +541,14 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_slab_shrink", "台阶缩水", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_slab_shrink", "台阶缩水", TrollTier.BRUTAL)
                 .desc("脚下的台阶变成了半砖，还差两厘米就能站住")
                 .weight(115)
                 .cooldownSeconds(90)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.breakUnder();
                     ctx.setBlock(1, -1, 0, ctx.pick(TrollPools.TROLL_BLOCKS));
                     ctx.msg("§7工程变更通知：§8台阶厚度调整为 §e0.5§8，请重新学习走路§7。");
@@ -508,7 +556,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_glass_fog", "玻璃起雾了", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_glass_fog", "玻璃起雾了", TrollTier.BRUTAL)
                 .desc("玻璃上泛起一层雾，你把脸贴上去也看不清外面")
                 .weight(115)
                 .cooldownSeconds(100)
@@ -520,7 +568,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_fence_lift", "栅栏把你抬过去", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_fence_lift", "栅栏把你抬过去", TrollTier.BRUTAL)
                 .desc("你想翻栅栏，栅栏说不用，我送你过去，然后你越过了自己的院子")
                 .weight(115)
                 .cooldownSeconds(100)
@@ -532,7 +580,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_gate_slam", "栅门夹了一下", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_gate_slam", "栅门夹了一下", TrollTier.BRUTAL)
                 .desc("栅门在你通过时快速开合，夹得你怀疑人生")
                 .weight(115)
                 .cooldownSeconds(90)
@@ -558,11 +606,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_minecart_hijack", "矿车被远程接管", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_minecart_hijack", "矿车被接管", TrollTier.NIGHTMARE)
                 .desc("矿车突然不受你控制，朝更刺激的方向驶去")
                 .weight(115)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.fling(ctx.rd(-1.2, 1.2), 1.2, ctx.rd(-1.2, 1.2));
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.8f);
                     ctx.msg("§7矿车：§8方向盘我拿走了§7，坐稳。");
@@ -570,11 +620,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_button_echo", "按钮回声", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_button_echo", "按钮回声", TrollTier.NIGHTMARE)
                 .desc("按一下按钮，机关响了十下，每一响都在别的地方")
                 .weight(120)
                 .cooldownSeconds(80)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     for (int i = 0; i < 5; i++) {
                         ctx.soundAt(ctx.pick(TrollPools.IMPACT), ctx.x() + ctx.ri(-6, 6), ctx.y() + ctx.ri(0, 3),
                                 ctx.z() + ctx.ri(-6, 6), 0.8f, ctx.rf(0.7f, 1.4f));
@@ -584,11 +636,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_dust_reverse", "红石粉方向反了", TrollTier.ANNOYING)
-                .desc("红石线路的流向被调头，你的装置开始向后运行")
+        TrollEvents.reg(TrollEvent.of("build_dust_reverse", "红石反向", TrollTier.NIGHTMARE)
+                .desc("线路流向被调头，你的装置开始朝着反方向运行")
                 .weight(125)
                 .cooldownSeconds(95)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.scatterBlocks(ctx.pick(TrollPools.TROLL_BLOCKS), 12);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 0.9f, 0.7f);
                     ctx.msg("§7红石粉：§8今天走 §l逆行§r§8 路线。");
@@ -596,7 +650,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_observer_loop", "观察者陷入死循环", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_observer_loop", "观察者陷入死循环", TrollTier.BRUTAL)
                 .desc("两个观察者开始互相观察，世界多了一份持续不断的噪音")
                 .weight(120)
                 .cooldownSeconds(100)
@@ -610,11 +664,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_hopper_lead", "漏斗开始带节奏", TrollTier.ANNOYING)
-                .desc("漏斗运东西的速度变成了诡异的节拍，你的大脑被迫跟着数")
+        TrollEvents.reg(TrollEvent.of("build_hopper_lead", "漏斗带节奏", TrollTier.NIGHTMARE)
+                .desc("漏斗运东西的速度变成诡异节拍，你的大脑被迫跟着数")
                 .weight(115)
                 .cooldownSeconds(110)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 160, 0);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.8f, 1.9f);
                     ctx.msg("§7节奏提示：§8哒、哒、哒——你已经在数了§7。");
@@ -622,11 +678,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_fake_tnt_ore", "假 TNT 矿", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("build_fake_tnt_ore", "假 TNT 矿", TrollTier.BRUTAL)
                 .desc("你挖到的「TNT」其实是假的，但心跳是真的")
                 .weight(115)
                 .cooldownSeconds(130)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 1.1f);
                     ctx.particleAtPlayer(ctx.pick(TrollPools.BOOM_PARTICLES), 15);
                     ctx.msg("§c§l嘶———— §r§7……§8是假的。§7你刚才是不是缩了一下？");
@@ -638,12 +696,14 @@ public final class BuildEvents {
         // BRUTAL —— 抓狂，会骂人
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("build_piston_launcher", "活塞发射台", TrollTier.BRUTAL)
-                .desc("脚下升起一整排活塞，把你当炮弹朝着天上发出去")
+        TrollEvents.reg(TrollEvent.of("build_piston_launcher", "活塞发射台", TrollTier.NIGHTMARE)
+                .desc("脚下升起一整排活塞，把你当炮弹朝天上发出去")
                 .weight(55)
                 .cooldownSeconds(200)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.setBlock(0, -1, 0, TrollPools.TROLL_BLOCKS[8]);
                     ctx.launch(3.2);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.7f);
@@ -652,8 +712,8 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_slime_launchpad", "粘液块弹射器", TrollTier.BRUTAL)
-                .desc("脚底铺满粘液块，弹上去的瞬间你听见了自己的惨叫")
+        TrollEvents.reg(TrollEvent.of("build_slime_launchpad", "粘液弹射器", TrollTier.NIGHTMARE)
+                .desc("脚底铺满粘液块，弹上去的瞬间你听见自己的惨叫")
                 .weight(55)
                 .cooldownSeconds(190)
                 .when(ctx -> ctx.isOnGround())
@@ -666,7 +726,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_anvil_gift", "铁砧礼包", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_anvil_gift", "铁砧快递", TrollTier.NIGHTMARE)
                 .desc("头顶送来一份铁砧快递，签收方式是站着不动")
                 .weight(52)
                 .cooldownSeconds(210)
@@ -679,11 +739,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_gravel_burial", "沙砾活埋", TrollTier.BRUTAL)
-                .desc("周围与头顶同时灌沙砾，考古学家的快乐你也能拥有")
+        TrollEvents.reg(TrollEvent.of("build_gravel_burial", "沙砾活埋", TrollTier.NIGHTMARE)
+                .desc("周围与头顶同时灌注沙砾，考古学家的快乐你也能拥有")
                 .weight(52)
                 .cooldownSeconds(220)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.surroundWith(TrollPools.TROLL_BLOCKS[3]);
                     ctx.setBlock(0, 3, 0, TrollPools.TROLL_BLOCKS[3]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 1);
@@ -693,11 +755,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_obsidian_seal", "黑曜石密封装修", TrollTier.BRUTAL)
-                .desc("黑曜石把你原地密封，连一条缝都算设计缺陷")
+        TrollEvents.reg(TrollEvent.of("build_obsidian_seal", "黑曜石密封", TrollTier.NIGHTMARE)
+                .desc("你被原地密封，连一条缝都算设计缺陷")
                 .weight(50)
                 .cooldownSeconds(230)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.scatterFar(120);
                     ctx.cageWith(TrollPools.EVIL_BLOCKS[2]);
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 1.0f, 0.7f);
                     ctx.msg("§8装修完成：§7无窗、无门、无采光、无处可逃。");
@@ -705,11 +769,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_doorless_room", "房间忘了留门", TrollTier.BRUTAL)
-                .desc("你被安置进一间四壁齐全的样板房，设计师拒绝了加门需求")
+        TrollEvents.reg(TrollEvent.of("build_doorless_room", "没有门的房间", TrollTier.APOCALYPSE)
+                .desc("你被安置进四壁齐全的样板房，设计师拒绝了加门需求")
                 .weight(50)
                 .cooldownSeconds(220)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     ctx.cageWith(TrollPools.TROLL_BLOCKS[1]);
                     ctx.setBlock(0, -1, 0, TrollPools.TROLL_BLOCKS[16]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 160, 0);
@@ -718,12 +784,14 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_trapdoor_void", "活板门下面是空的", TrollTier.BRUTAL)
-                .desc("活板门打开，下面是你亲手挖的深坑，深度由你决定")
+        TrollEvents.reg(TrollEvent.of("build_trapdoor_void", "活板门下面是空的", TrollTier.APOCALYPSE)
+                .desc("活板门打开，下面是深坑，深度由你亲手决定")
                 .weight(50)
                 .cooldownSeconds(210)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.voidPit(1, 3);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.9f);
                     ctx.msg("§7活板门：§8楼下请。");
@@ -731,11 +799,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_scaffold_sky", "脚手架通天", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_scaffold_sky", "脚手架通天", TrollTier.APOCALYPSE)
                 .desc("脚手架一路搭到云上，再在你爬到一半时撤走")
                 .weight(48)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.voidPit(1, 10);
                     ctx.lift(60);
                     ctx.scatterBlocks(ctx.pick(TrollPools.TROLL_BLOCKS), 20);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.8f);
@@ -744,11 +814,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_ladder_fire", "梯子着火了", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_ladder_fire", "梯子着火", TrollTier.APOCALYPSE)
                 .desc("你正要爬的梯子被人泼了易燃物，火势非常配合")
                 .weight(48)
                 .cooldownSeconds(230)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.voidPit(1, 10);
                     ctx.setBlock(0, 0, 0, TrollPools.TROLL_BLOCKS[10]);
                     ctx.setFire(10);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.6f);
@@ -757,7 +829,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_rod_lightning", "避雷针反向工作", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_rod_lightning", "避雷针反向工作", TrollTier.APOCALYPSE)
                 .desc("你头上的避雷针开始吸引闪电，而不是躲避它")
                 .weight(46)
                 .cooldownSeconds(240)
@@ -770,11 +842,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_tnt_relay", "红石连锁 TNT", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_tnt_relay", "红石连锁 TNT", TrollTier.APOCALYPSE)
                 .desc("一条红石线连着七处 TNT，信号的走向由它自己决定")
                 .weight(46)
                 .cooldownSeconds(250)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     for (int i = 0; i < 7; i++) {
                         ctx.setBlock(ctx.ri(-4, 4), ctx.ri(0, 2), ctx.ri(-4, 4), TrollPools.TROLL_BLOCKS[16]);
                     }
@@ -786,11 +860,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_dispenser_volley", "发射器连发", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_dispenser_volley", "发射器连发", TrollTier.APOCALYPSE)
                 .desc("发射器把满满一箱箭全部朝你招呼，装填速度还很快")
                 .weight(48)
                 .cooldownSeconds(210)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     for (int i = 0; i < 3; i++) {
                         ctx.damage(2.5f);
                     }
@@ -800,12 +876,14 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_dropper_lava", "投掷器倒岩浆", TrollTier.BRUTAL)
-                .desc("投掷器朝你脚下投放了一份热饮，温度 1200℃")
+        TrollEvents.reg(TrollEvent.of("build_dropper_lava", "投掷器倒岩浆", TrollTier.APOCALYPSE)
+                .desc("投掷器朝你脚下投放了一份热饮，温度一千二百度")
                 .weight(45)
                 .cooldownSeconds(260)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.lavaPit(1);
                     ctx.setFire(8);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.7f);
@@ -814,11 +892,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_hopper_thief", "漏斗偷背包", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_hopper_thief", "漏斗偷背包", TrollTier.APOCALYPSE)
                 .desc("你身上的漏斗开始主动工作，吸走了几件它喜欢的东西")
                 .weight(50)
                 .cooldownSeconds(200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     for (int i = 0; i < 3; i++) {
                         ctx.takeRandomItem();
                     }
@@ -828,11 +908,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_comparator_alarm", "比较器触发警报", TrollTier.BRUTAL)
-                .desc("比较器检测到「有玩家过于安逸」，随即将警报等级拉到最高")
+        TrollEvents.reg(TrollEvent.of("build_comparator_alarm", "安逸警报", TrollTier.NIGHTMARE)
+                .desc("比较器检测到有玩家过于安逸，随即将警报等级拉到最高")
                 .weight(48)
                 .cooldownSeconds(230)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.glitch(GlitchIds.FLASHBANG, 20, 2);
                     for (int i = 0; i < 4; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 10);
@@ -842,11 +924,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_bed_bomb", "床变成了炸弹", TrollTier.BRUTAL)
-                .desc("你只是想睡个觉，床却决定用一声巨响送你入眠")
+        TrollEvents.reg(TrollEvent.of("build_bed_bomb", "床变成炸弹", TrollTier.APOCALYPSE)
+                .desc("你只是想睡个觉，床决定用一声巨响送你入眠")
                 .weight(48)
                 .cooldownSeconds(220)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.boomAtPlayer(2.6f);
                     ctx.setFire(6);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 1.0f);
@@ -855,11 +939,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_crafting_trap", "工作台卡住了你", TrollTier.BRUTAL)
-                .desc("工作台把你当场锁定，合成进度条永远停在 99%")
+        TrollEvents.reg(TrollEvent.of("build_crafting_trap", "工作台卡死", TrollTier.NIGHTMARE)
+                .desc("你被当场锁定，合成进度条永远停在百分之九十九")
                 .weight(46)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.freeze(80);
                     ctx.glitch(GlitchIds.CLOSE_SCREEN, 30, 1);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.8f);
@@ -868,11 +954,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_chest_mimic", "箱子咬人", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_chest_mimic", "箱子咬人", TrollTier.APOCALYPSE)
                 .desc("你伸手进箱子，箱子回敬了你一口，还顺走了点东西")
                 .weight(48)
                 .cooldownSeconds(210)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.voidPit(1, 10);
                     ctx.damage(4.0f);
                     ctx.takeRandomItem();
                     ctx.soundSelf(ctx.pick(TrollPools.HORROR), 1.0f, 0.8f);
@@ -881,11 +969,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_shulker_exile", "潜影盒把你装箱了", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_shulker_exile", "被装进潜影盒", TrollTier.APOCALYPSE)
                 .desc("潜影盒先把你收进去，再在很远的地方吐出来")
                 .weight(44)
                 .cooldownSeconds(260)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     ctx.glitch(GlitchIds.BLACKOUT, 40, 2);
                     ctx.scatterFar(200);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.6f);
@@ -894,11 +984,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_glass_cage", "玻璃展示柜", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_glass_cage", "玻璃展示柜", TrollTier.APOCALYPSE)
                 .desc("四面玻璃把你装起来供人观赏，问题是这里只有你一个观众")
                 .weight(46)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.cageWith(TrollPools.TROLL_BLOCKS[17]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 0);
                     ctx.glitch(GlitchIds.FOV_ZOOM, 60, 1);
@@ -907,11 +999,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_fence_cage", "栅栏围猎场", TrollTier.BRUTAL)
-                .desc("栅栏把你围起来，同时给你安排了几位热情的新邻居")
+        TrollEvents.reg(TrollEvent.of("build_fence_cage", "栅栏围猎场", TrollTier.NIGHTMARE)
+                .desc("栅栏把你围起来，同时安排了几位热情的新邻居")
                 .weight(46)
                 .cooldownSeconds(230)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     ctx.surroundWith(TrollPools.TROLL_BLOCKS[1]);
                     for (int i = 0; i < 4; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 6);
@@ -921,11 +1015,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_stairs_skyfall", "楼梯直通天国", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_stairs_skyfall", "楼梯直通天国", TrollTier.APOCALYPSE)
                 .desc("你面前出现一条通向云层的大楼梯，只是没有回程")
                 .weight(45)
                 .cooldownSeconds(250)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     ctx.lift(80);
                     ctx.spin(180.0f);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.9f);
@@ -934,12 +1030,14 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_slab_quake", "台阶地震", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_slab_quake", "台阶地震", TrollTier.NIGHTMARE)
                 .desc("脚下台阶开始震动，整片地板像被谁重新浇筑过")
                 .weight(46)
                 .cooldownSeconds(240)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.breakRandomTool();
                     ctx.placeFloor(TrollPools.TROLL_BLOCKS[1], 3);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 180, 1);
                     ctx.glitch(GlitchIds.SHAKY, 80, 2);
@@ -948,11 +1046,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_lantern_flood", "灯笼海", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_lantern_flood", "灯笼海", TrollTier.APOCALYPSE)
                 .desc("成片的灯笼把你埋了，亮度足够，呼吸空间不足")
                 .weight(44)
                 .cooldownSeconds(260)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.surroundWith(TrollPools.TROLL_BLOCKS[6]);
                     ctx.setBlock(0, 3, 0, TrollPools.TROLL_BLOCKS[6]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 0);
@@ -961,11 +1061,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_rail_catapult", "铁轨弹射弯道", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_rail_catapult", "铁轨弹射弯道", TrollTier.APOCALYPSE)
                 .desc("铁轨末端的弯道把你甩向了很有想法的方向")
                 .weight(45)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.fling(ctx.rd(-2.5, 2.5), 2.0, ctx.rd(-2.5, 2.5));
                     ctx.damage("flyintowall", 3.0f);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.7f);
@@ -974,7 +1076,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_minecart_derail", "矿车脱轨", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_minecart_derail", "矿车脱轨", TrollTier.NIGHTMARE)
                 .desc("矿车在最高速的时候选择自由，你选择跟它一起")
                 .weight(45)
                 .cooldownSeconds(250)
@@ -989,11 +1091,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_target_ricochet", "标靶方块回击", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("build_target_ricochet", "标靶回击", TrollTier.APOCALYPSE)
                 .desc("你射出的东西被标靶原路打了回来，力道还加了三成")
                 .weight(46)
                 .cooldownSeconds(220)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     ctx.damage(3.5f);
                     ctx.fling(-ctx.rd(0.5, 1.5), 0.6, -ctx.rd(0.5, 1.5));
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 1.2f);
@@ -1003,29 +1107,36 @@ public final class BuildEvents {
                 .build());
 
         // ================================================================
-        // NIGHTMARE —— 崩溃，会砸键盘
+        // NIGHTMARE / APOCALYPSE / OBLIVION —— 崩溃、地狱与绝望
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("build_piston_crusher", "活塞压路机", TrollTier.NIGHTMARE)
-                .desc("四面活塞同时开工，你被夹在中间体验压铸工艺")
+        TrollEvents.reg(TrollEvent.of("build_piston_crusher", "活塞压路机", TrollTier.OBLIVION)
+                .desc("违章建筑的处理方式是当场压平，你被算进了建筑面积")
                 .weight(32)
                 .cooldownSeconds(400)
                 .run(ctx -> {
-                    ctx.surroundWith(TrollPools.TROLL_BLOCKS[1]);
-                    ctx.setBlock(0, 2, 0, TrollPools.TROLL_BLOCKS[1]);
-                    ctx.damage(6.0f);
-                    ctx.freeze(60);
-                    ctx.glitch(GlitchIds.SHAKY, 100, 3);
-                    ctx.msg("§4压铸完成§7，成品形状：§8你§7。");
-                    ctx.addRage(24);
+                    ctx.title("§4§l违章建筑", "§7处理方式：当场压平");
+                    ctx.msg("§7四面活塞同时开工，把你也算进了建筑面积。");
+                    ctx.later(50, () -> {
+                        ctx.freeze(160);
+                        ctx.damage(3.0f);
+                        ctx.msg("§4审批意见：连人带房一起压平，省得二次上门。");
+                    });
+                    ctx.later(150, () -> {
+                        ctx.glitch(GlitchIds.SHAKY, 120, 3);
+                        ctx.obliterate();
+                        ctx.broadcast("§4违章建筑清除完毕。清单上多写了一个名字。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_anvil_rain", "铁砧暴雨", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("build_anvil_rain", "铁砧暴雨", TrollTier.APOCALYPSE)
                 .desc("天空开始下铁砧，密度足以让气象局辞职")
                 .weight(30)
                 .cooldownSeconds(420)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(600, 2);
                     ctx.meteorShower(8, 24.0);
                     ctx.damage("fall", 5.0f);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.5f);
@@ -1034,7 +1145,7 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_void_room", "虚空样板间", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("build_void_room", "虚空样板间", TrollTier.APOCALYPSE)
                 .desc("你被搬进一间没有地板的样板间，脚下就是虚空")
                 .weight(30)
                 .cooldownSeconds(450)
@@ -1048,12 +1159,14 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_lava_floor", "岩浆地板翻新", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("build_lava_floor", "岩浆地板翻新", TrollTier.APOCALYPSE)
                 .desc("地板翻新工程使用了大量岩浆，成本由你承担")
                 .weight(30)
                 .cooldownSeconds(450)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.lavaPit(2);
                     ctx.setFire(12);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.6f);
@@ -1062,11 +1175,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_bedrock_box", "基岩收纳盒", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("build_bedrock_box", "基岩收纳盒", TrollTier.APOCALYPSE)
                 .desc("基岩把你装进收纳盒，说明书上写着「永久保存」")
                 .weight(28)
                 .cooldownSeconds(480)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.cageWith(TrollPools.EVIL_BLOCKS[0]);
                     ctx.setHealth(6.0f);
                     ctx.setFire(15);
@@ -1076,18 +1191,23 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_tnt_carpet", "TNT 地毯", TrollTier.NIGHTMARE)
-                .desc("你脚下的地毯换成了 TNT，踩下去才收到通知")
+        TrollEvents.reg(TrollEvent.of("build_tnt_carpet", "TNT 地毯", TrollTier.OBLIVION)
+                .desc("新地毯很软，踩上去才收到通知，材质是 TNT，落款是物业")
                 .weight(30)
                 .cooldownSeconds(420)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
-                    ctx.placeFloor(TrollPools.TROLL_BLOCKS[16], 3);
-                    ctx.boomAtPlayer(3.2f);
-                    ctx.boomAtPlayer(2.0f);
-                    ctx.particle(ctx.pick(TrollPools.BOOM_PARTICLES), 140);
-                    ctx.title("§4§l地毯到货", "§7货号：TNT");
-                    ctx.addRage(28);
+                    ctx.msg("§a新铺的地毯看起来很软。§7踩上去才收到通知：材质是 TNT。");
+                    ctx.later(50, () -> {
+                        ctx.spawnTnt(ctx.x(), ctx.y(), ctx.z(), 20);
+                        ctx.glitch(GlitchIds.FLASHBANG, 30, 3);
+                        ctx.msg("§4通知的落款是物业，内容只有两个字：拆除。");
+                    });
+                    ctx.later(140, () -> {
+                        ctx.boomDestructive(ctx.x(), ctx.y(), ctx.z(), 5.0f);
+                        ctx.obliterate();
+                        ctx.broadcast("§4地毯、地板、承重墙，以及你，都完成了拆除。");
+                    });
                 })
                 .build());
 
@@ -1107,11 +1227,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_redstone_screech", "红石啸叫", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("build_redstone_screech", "红石啸叫", TrollTier.APOCALYPSE)
                 .desc("红石线路进入共振，啸叫声直冲后脑勺")
                 .weight(28)
                 .cooldownSeconds(420)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     ctx.randomHorrorSound();
                     ctx.glitch(GlitchIds.SENS_MAX, 60, 2);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 260, 1);
@@ -1120,26 +1242,34 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_lightning_grid", "避雷针阵列", TrollTier.NIGHTMARE)
-                .desc("你周围布满了避雷针，接下来发生的事完全符合物理规律")
+        TrollEvents.reg(TrollEvent.of("build_lightning_grid", "避雷针阵列", TrollTier.OBLIVION)
+                .desc("你周围布满避雷针，接下来的事完全符合物理规律，导体恰好是你")
                 .weight(28)
                 .cooldownSeconds(480)
                 .run(ctx -> {
-                    for (int i = 0; i < 4; i++) {
-                        ctx.lightningAtPlayer(ctx.player());
-                    }
-                    ctx.setFire(8);
-                    ctx.glitch(GlitchIds.FLASHBANG, 30, 3);
-                    ctx.msg("§4阵列启动§7，本次实验的对照组：§8你§7。");
-                    ctx.addRage(27);
+                    ctx.msg("§7你周围布满了避雷针。接下来的事完全符合物理规律。");
+                    ctx.later(60, () -> {
+                        ctx.lightning();
+                        ctx.damage("lightning", 3.0f);
+                        ctx.setFire(4);
+                        ctx.glitch(GlitchIds.FLASHBANG, 40, 3);
+                        ctx.msg("§4避雷针不避雷，它只是比你更会挑位置。");
+                    });
+                    ctx.later(150, () -> {
+                        ctx.lightningNear();
+                        ctx.obliterate();
+                        ctx.broadcast("§4验收结论：接地良好，导体合格，人形部分已烧毁。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_hopper_void", "漏斗通向虚空", TrollTier.NIGHTMARE)
-                .desc("你的漏斗被接进了虚空，物品一件件消失在看不见的地方")
+        TrollEvents.reg(TrollEvent.of("build_hopper_void", "漏斗通向虚空", TrollTier.APOCALYPSE)
+                .desc("你的漏斗被接进虚空，物品一件件消失在看不见的地方")
                 .weight(30)
                 .cooldownSeconds(420)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     if (!ctx.invEmpty()) {
                         ctx.takeRandomItem();
                         ctx.takeRandomItem();
@@ -1150,11 +1280,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_shulker_prison", "潜影盒监狱", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("build_shulker_prison", "潜影盒监狱", TrollTier.APOCALYPSE)
                 .desc("潜影盒把你收进去关了三十秒，出来时天都黑了")
                 .weight(28)
                 .cooldownSeconds(500)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.glitch(GlitchIds.HARD_BLACKOUT, 60, 3);
                     ctx.freeze(100);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 300, 1);
@@ -1167,25 +1299,32 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_glass_maze", "玻璃迷宫", TrollTier.NIGHTMARE)
-                .desc("四周升起玻璃墙，你能看见外面，但外面并不想看见你")
+        TrollEvents.reg(TrollEvent.of("build_glass_maze", "玻璃迷宫", TrollTier.OBLIVION)
+                .desc("你能看见外面，外面不想看见你；出口在你身后，门已经封了")
                 .weight(28)
                 .cooldownSeconds(480)
                 .run(ctx -> {
-                    ctx.surroundWith(TrollPools.TROLL_BLOCKS[17]);
-                    ctx.cageWith(TrollPools.TROLL_BLOCKS[17]);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 260, 1);
-                    ctx.glitch(GlitchIds.FOV_WILD, 100, 2);
-                    ctx.msg("§7迷宫出口：§8理论上存在§7。");
-                    ctx.addRage(24);
+                    ctx.title("§f§l玻璃迷宫", "§7你能看见外面，外面不想看见你");
+                    ctx.msg("§7四周升起玻璃墙。出口在你出生点后面，门已经封了。");
+                    ctx.later(60, () -> {
+                        ctx.cageWith(ctx.pick(TrollPools.EVIL_BLOCKS));
+                        ctx.glitch(GlitchIds.BLACKOUT, 100, 2);
+                        ctx.msg("§4迷宫的目的不是让你走出去，是让你看着自己走不出去。");
+                    });
+                    ctx.later(160, () -> {
+                        ctx.obliterate();
+                        ctx.broadcast("§4迷宫验收通过：观赏性满分，里面的展品没有异议。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_ladder_down", "梯子通向地底", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("build_ladder_down", "梯子通向地底", TrollTier.APOCALYPSE)
                 .desc("你顺着梯子往下爬，爬了很久才发现梯子没有底")
                 .weight(28)
                 .cooldownSeconds(480)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.teleport(ctx.x(), -60.0, ctx.z());
                     ctx.damage("outofworld", 3.0f);
                     ctx.glitch(GlitchIds.BLACKOUT, 60, 3);
@@ -1199,6 +1338,8 @@ public final class BuildEvents {
                 .weight(28)
                 .cooldownSeconds(500)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     ctx.cageWith(TrollPools.EVIL_BLOCKS[0]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 300, 1);
                     ctx.glitch(GlitchIds.FAKE_SAVING, 80, 2);
@@ -1208,11 +1349,13 @@ public final class BuildEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_scaffold_collapse", "高空脚手架崩塌", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("build_scaffold_collapse", "脚手架崩塌", TrollTier.APOCALYPSE)
                 .desc("你在八十格高的脚手架上，而固定螺栓刚刚集体离职")
                 .weight(28)
                 .cooldownSeconds(500)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     ctx.lift(80);
                     ctx.scatterBlocks(TrollPools.TROLL_BLOCKS[3], 24);
                     ctx.launch(-0.5);
@@ -1223,116 +1366,147 @@ public final class BuildEvents {
                 .build());
 
         // ================================================================
-        // APOCALYPSE —— 地狱，会退游戏
+        // OBLIVION —— 绝望：你的建筑被判违章，连同你一起拆除
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("build_permission_revoked", "建筑权限被回收", TrollTier.APOCALYPSE)
-                .desc("服务器通知你已在建筑白名单之外，随后你的作品开始逐块消失")
+        TrollEvents.reg(TrollEvent.of("build_permission_revoked", "建筑权限被回收", TrollTier.OBLIVION)
+                .desc("你的作品开始逐块消失，先拆承重墙，再拆地板，最后是你站的那一格")
                 .weight(24)
                 .cooldownSeconds(1200)
                 .run(ctx -> {
-                    ctx.glitch(GlitchIds.SCREEN_TEAR, 120, 3);
-                    ctx.fakeBroadcast("§4你已被移出建筑白名单，作品将逐块回收。");
-                    ctx.clearInventory();
-                    ctx.placeFloor(TrollPools.EVIL_BLOCKS[0], 3);
-                    ctx.setBlock(0, 3, 0, TrollPools.EVIL_BLOCKS[2]);
-                    ctx.msg("§4§l权限已回收§r§7，包括你脚下这块地。");
-                    ctx.addRage(42);
+                    ctx.fakeBroadcast("§e【建筑系统】你的建筑白名单权限已被回收。");
+                    ctx.msg("§7你的作品开始逐块消失。先拆的是承重墙。");
+                    ctx.later(60, () -> {
+                        ctx.stripAll();
+                        ctx.glitch(GlitchIds.WORLD_RELOAD, 120, 3);
+                        ctx.msg("§4然后是地板。最后是你站着的那一格。");
+                    });
+                    ctx.later(160, () -> {
+                        ctx.voidPit(3, 14);
+                        ctx.obliterate();
+                        ctx.broadcast("§4权限说明：你可以继续观看拆除过程，仅此而已。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_tnt_cathedral", "TNT 大教堂", TrollTier.APOCALYPSE)
-                .desc("一座由 TNT 砌成的教堂在你头顶落成，随即开始它的第一次弥撒")
+        TrollEvents.reg(TrollEvent.of("build_tnt_cathedral", "TNT 大教堂", TrollTier.OBLIVION)
+                .desc("一座 TNT 砌成的教堂在你头顶落成，随即开始它的第一次弥撒")
                 .weight(22)
                 .cooldownSeconds(1400)
                 .run(ctx -> {
-                    for (int i = 0; i < 12; i++) {
-                        ctx.setBlock(ctx.ri(-4, 4), ctx.ri(1, 5), ctx.ri(-4, 4), TrollPools.TROLL_BLOCKS[16]);
-                    }
-                    ctx.boomAtPlayer(4.5f);
-                    ctx.boomAtPlayer(3.0f);
-                    ctx.particle(ctx.pick(TrollPools.BOOM_PARTICLES), 180);
-                    ctx.glitch(GlitchIds.SHAKE_BURST, 80, 3);
-                    ctx.title("§4§l落成典礼", "§7礼成，人也差不多了");
-                    ctx.addRage(45);
+                    ctx.msg("§4一座由 TNT 砌成的教堂在你头顶落成，随即开始第一次弥撒。");
+                    ctx.later(60, () -> {
+                        ctx.meteorShower(8, 18.0);
+                        ctx.glitch(GlitchIds.SHAKY, 120, 3);
+                        ctx.damage(3.0f);
+                        ctx.msg("§4弥撒的流程只有一项：把结构拆回材料。");
+                    });
+                    ctx.later(160, () -> {
+                        ctx.boomDestructive(ctx.x(), ctx.y(), ctx.z(), 6.0f);
+                        ctx.obliterate();
+                        ctx.broadcast("§4教堂的竣工与拆除在同一天完成，监理方是你。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_bedrock_tomb", "基岩墓穴", TrollTier.APOCALYPSE)
-                .desc("基岩把你封进永久产权墓穴，通风设计得非常人性化（没有）")
+        TrollEvents.reg(TrollEvent.of("build_bedrock_tomb", "基岩墓穴", TrollTier.OBLIVION)
+                .desc("基岩把你封进永久产权墓穴，通风设计非常人性化，也就是没有通风")
                 .weight(22)
                 .cooldownSeconds(1500)
                 .run(ctx -> {
-                    ctx.cageWith(TrollPools.EVIL_BLOCKS[0]);
-                    ctx.setHealth(4.0f);
-                    ctx.setFire(20);
-                    ctx.starve();
-                    ctx.glitch(GlitchIds.HIDE_HUD, 200, 3);
-                    ctx.title("§4§l墓穴交付", "§8产权：永久");
-                    ctx.msg("§4没有窗，没有门，没有你。");
-                    ctx.addRage(50);
+                    ctx.title("§8§l永久产权", "§7通风设计非常人性化（没有）");
+                    ctx.msg("§8基岩把你封了进去，说明书上写着「永久保存」。");
+                    ctx.later(60, () -> {
+                        ctx.buryAlive();
+                        ctx.stripAll();
+                        ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 800, 2);
+                        ctx.msg("§4产权证上有一行小字：本产品不含出口。");
+                    });
+                    ctx.later(170, () -> {
+                        ctx.glitch(GlitchIds.HARD_BLACKOUT, 160, 3);
+                        ctx.obliterate();
+                        ctx.broadcast("§4墓穴验收完毕，住户已就位，无申诉通道。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_redstone_singularity", "红石奇点", TrollTier.APOCALYPSE)
-                .desc("你所有的红石同时满功率运行，世界在信号里开始抖动")
+        TrollEvents.reg(TrollEvent.of("build_redstone_singularity", "红石奇点", TrollTier.OBLIVION)
+                .desc("你所有的红石同时满功率运行，信号密度超过世界承受上限，也超过你的")
                 .weight(22)
                 .cooldownSeconds(1500)
                 .run(ctx -> {
-                    ctx.glitch(GlitchIds.FAKE_OOM, 100, 3);
-                    ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), 400, 2);
-                    for (int i = 0; i < 8; i++) {
-                        ctx.setBlock(ctx.ri(-5, 5), ctx.ri(1, 5), ctx.ri(-5, 5), TrollPools.TROLL_BLOCKS[16]);
-                    }
-                    ctx.thunderstorm(1200);
-                    ctx.timeOfDay(18000L);
-                    ctx.msg("§4所有信号同时到齐§7，§8包括最后一个。");
-                    ctx.addRage(48);
+                    ctx.msg("§4你所有的红石同时满功率运行，世界在信号里开始抖动。");
+                    ctx.later(60, () -> {
+                        ctx.glitch(GlitchIds.SCREEN_TEAR, 140, 3);
+                        ctx.freeze(160);
+                        ctx.damage(3.0f);
+                        ctx.msg("§4信号密度超过了世界的承受上限，也超过了你的。");
+                    });
+                    ctx.later(170, () -> {
+                        ctx.lightning();
+                        ctx.glitch(GlitchIds.HARD_BLACKOUT, 140, 3);
+                        ctx.obliterate();
+                        ctx.broadcast("§4红石奇点闭合时，整条线路和你一起归零。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_anvil_judgment", "铁砧审判", TrollTier.APOCALYPSE)
-                .desc("天空开了一场铁砧审判，你是唯一的被告，判决书正在下落")
+        TrollEvents.reg(TrollEvent.of("build_anvil_judgment", "铁砧审判", TrollTier.OBLIVION)
+                .desc("天空开庭，你是唯一被告，判决书正在下落，内容用落地的声音表达")
                 .weight(22)
                 .cooldownSeconds(1600)
                 .run(ctx -> {
-                    ctx.meteorShower(16, 30.0);
-                    ctx.spawnTnt(ctx.x(), ctx.y() + 20, ctx.z(), 40);
-                    ctx.glitch(GlitchIds.FAKE_CORRUPT, 120, 3);
-                    ctx.title("§4§l判决如下", "§7有罪，立即执行");
-                    ctx.addRage(50);
+                    ctx.title("§4§l铁砧审判", "§7你是唯一的被告，判决书正在下落");
+                    ctx.later(60, () -> {
+                        ctx.meteorShower(10, 18.0);
+                        ctx.glitch(GlitchIds.SHAKY, 120, 3);
+                        ctx.msg("§4判决内容不需要宣读，它用落地的声音表达。");
+                    });
+                    ctx.later(160, () -> {
+                        ctx.meteorShower(6, 14.0);
+                        ctx.obliterate();
+                        ctx.broadcast("§4审判结束。判决书已经和被告合并归档。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_lava_cathedral", "岩浆教堂", TrollTier.APOCALYPSE)
-                .desc("你脚下的地板被献祭给了岩浆，整座建筑开始向地心迁移")
+        TrollEvents.reg(TrollEvent.of("build_lava_cathedral", "岩浆教堂", TrollTier.OBLIVION)
+                .desc("地板被献祭给岩浆，整座建筑向地心迁移，你不在邀请名单但在迁移名单上")
                 .weight(22)
                 .cooldownSeconds(1600)
                 .run(ctx -> {
-                    ctx.lavaPit(3);
-                    ctx.placeFloor(TrollPools.TROLL_BLOCKS[10], 3);
-                    ctx.setFire(20);
-                    ctx.damage("lava", 6.0f);
-                    ctx.spawnHostileNear(ctx.pick(TrollPools.BOSS), 12);
-                    ctx.title("§4§l献祭完成", "§8地板：谢谢惠顾");
-                    ctx.addRage(52);
+                    ctx.msg("§4地板被献祭给了岩浆，整座建筑开始向地心迁移。");
+                    ctx.later(60, () -> {
+                        ctx.lavaPit(3);
+                        ctx.setFire(6);
+                        ctx.damage("lava", 3.0f);
+                        ctx.msg("§4你没有被邀请参加迁移，但你在名单上。");
+                    });
+                    ctx.later(160, () -> {
+                        ctx.meteorShower(4, 16.0);
+                        ctx.obliterate();
+                        ctx.broadcast("§4教堂的落成典礼与落成深度，同时刷新了纪录。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("build_blueprint_erase", "蓝图被一块橡皮擦过", TrollTier.APOCALYPSE)
-                .desc("有人拿橡皮擦从你的蓝图中间擦了过去，你的背包和作品一起没了")
+        TrollEvents.reg(TrollEvent.of("build_blueprint_erase", "蓝图被一块橡皮擦过", TrollTier.OBLIVION)
+                .desc("橡皮从蓝图正中擦过去，你的背包和作品一起没了，擦痕正好是你站的那格")
                 .weight(20)
                 .cooldownSeconds(1800)
                 .once()
                 .run(ctx -> {
-                    ctx.glitch(GlitchIds.FAKE_CRASH, 120, 3);
-                    ctx.fakeBroadcast("§4检测到建筑违规，正在回收全部资产。");
-                    ctx.fakeJoinLeave(ctx.pick(TrollPools.FAKE_NAMES), false);
-                    ctx.dropEverything();
-                    ctx.clearInventory();
-                    ctx.placeFloor(TrollPools.EVIL_BLOCKS[2], 3);
-                    ctx.msg("§8……图纸还能重画。§7背包和作品是真的没了。");
-                    ctx.addRage(55);
+                    ctx.msg("§7有人拿橡皮从你的蓝图中间擦了过去。你的背包和作品一起没了。");
+                    ctx.later(60, () -> {
+                        ctx.stripAll();
+                        ctx.glitch(GlitchIds.WORLD_RELOAD, 120, 3);
+                        ctx.msg("§4橡皮停在图纸中央，正好是你站着的那一格。");
+                    });
+                    ctx.later(170, () -> {
+                        ctx.voidPit(3, 12);
+                        ctx.obliterate();
+                        ctx.broadcast("§4图纸重新提交后，上面没有你的名字。");
+                    });
                 })
                 .build());
     }

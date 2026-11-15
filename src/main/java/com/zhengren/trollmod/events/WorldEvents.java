@@ -40,15 +40,17 @@ public final class WorldEvents {
         TrollEvents.category("世界与地形");
 
         // ================================================================
-        // PRANK —— 小整，笑一下就好
+        // 序章 —— 小小的失足：伤害不大，但地板已经不可信
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("world_floor_gone", "脚下一空", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("world_floor_gone", "脚下一空", TrollTier.BRUTAL)
                 .desc("脚下的方块当场辞职，你负责自由落体")
                 .weight(140)
                 .cooldownSeconds(40)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.breakUnder();
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 1.5f);
                     ctx.actionBar("§7地板：§8我不干了§7。");
@@ -56,7 +58,7 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_sudden_rain", "局部有雨", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("world_sudden_rain", "局部有雨", TrollTier.ANNOYING)
                 .desc("瞬间拉来一场雷暴，下雨范围恰好覆盖你一个人")
                 .weight(120)
                 .cooldownSeconds(90)
@@ -68,19 +70,21 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_midnight_snap", "太阳提前下班", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("world_midnight_snap", "太阳提前下班", TrollTier.BRUTAL)
                 .desc("白天瞬间切成午夜，怪物们集体开始上班")
                 .weight(110)
                 .cooldownSeconds(120)
                 .when(ctx -> ctx.worldTime() < 12000L)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     ctx.timeOfDay(18000L);
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 0.9f, 0.7f);
                     ctx.msg("§8太阳：§7今天先到这儿，§8晚安。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_bat_swarm", "良心发现", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("world_bat_swarm", "良心发现", TrollTier.ANNOYING)
                 .desc("往你头上撒一把会飞的东西，并且给它们统一起了名字")
                 .weight(120)
                 .cooldownSeconds(50)
@@ -98,7 +102,7 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_chicken_rain", "天降正义", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("world_chicken_rain", "天降正义", TrollTier.BRUTAL)
                 .desc("从十几格高空往下空投一群无辜的小动物")
                 .weight(110)
                 .cooldownSeconds(60)
@@ -116,7 +120,7 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_fake_bed_break", "床没了", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("world_fake_bed_break", "床没了", TrollTier.ANNOYING)
                 .desc("脚下一空外加一句假聊天，让你当场怀疑重生点还在不在")
                 .weight(120)
                 .cooldownSeconds(70)
@@ -129,15 +133,17 @@ public final class WorldEvents {
                 .build());
 
         // ================================================================
-        // ANNOYING —— 烦人，会皱眉
+        // 加压 —— 环境开始与你为敌：灼烧、封顶、持续消耗
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("world_slime_shoes", "弹性地板", TrollTier.ANNOYING)
-                .desc("把脚下换成弹性方块，再顺手把你弹上天")
+        TrollEvents.reg(TrollEvent.of("world_slime_shoes", "弹簧与岩浆", TrollTier.NIGHTMARE)
+                .desc("脚下被换成岩浆与弹簧的组合，弹起的高度刚好够你看清落点")
                 .weight(140)
                 .cooldownSeconds(60)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.setBlock(0, -1, 0, TrollPools.TROLL_BLOCKS[B_SLIME]);
                     ctx.launch(1.1);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.6f);
@@ -145,7 +151,7 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_ice_rink", "免费溜冰场", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("world_ice_rink", "免费溜冰场", TrollTier.BRUTAL)
                 .desc("脚底铺满冰，再附赠一个随机负面效果当配菜")
                 .weight(130)
                 .cooldownSeconds(75)
@@ -157,12 +163,14 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_cactus_step", "给你垫个仙人掌", TrollTier.ANNOYING)
-                .desc("脚底换成仙人掌，让你体会什么叫带刺的人生")
+        TrollEvents.reg(TrollEvent.of("world_cactus_step", "带刺的落脚点", TrollTier.NIGHTMARE)
+                .desc("脚下塞进仙人掌，再补一层凋零——你连站着都在被消耗")
                 .weight(120)
                 .cooldownSeconds(90)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("wither", 3.0f);
                     ctx.setBlock(0, -1, 0, TrollPools.TROLL_BLOCKS[B_CACTUS]);
                     ctx.damage("cactus", 2.0f);
                     ctx.msg("§7这是一块垫脚石，§c字面意思§7。");
@@ -181,11 +189,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_web_trap", "蛛网大礼包", TrollTier.ANNOYING)
-                .desc("往你身上糊满蜘蛛网，寸步难行还要吃个负面效果")
+        TrollEvents.reg(TrollEvent.of("world_web_trap", "裹尸布", TrollTier.NIGHTMARE)
+                .desc("蜘蛛网从四面八方合拢，饥饿被清空——你连挣扎的力气都要省着用")
                 .weight(130)
                 .cooldownSeconds(80)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     ctx.surroundWith(TrollPools.TROLL_BLOCKS[B_COBWEB]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 100, 1);
                     ctx.msg("§7恭喜获得 §f蜘蛛网§7 ×一堆，§8概不退货§7。");
@@ -193,11 +203,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_ceiling_plate", "天花板快递", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("world_ceiling_plate", "天花板快递", TrollTier.BRUTAL)
                 .desc("头顶三格处加盖一整块地板，你的天空被回收了")
                 .weight(120)
                 .cooldownSeconds(100)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     for (int dx = -1; dx <= 1; dx++) {
                         for (int dz = -1; dz <= 1; dz++) {
                             ctx.setBlock(dx, 3, dz, ctx.pick(TrollPools.TROLL_BLOCKS));
@@ -208,12 +220,14 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_pit_fall", "随机挖矿事故", TrollTier.ANNOYING)
-                .desc("在你脚边连开几个洞，位置全凭缘分")
+        TrollEvents.reg(TrollEvent.of("world_pit_fall", "地基被抽走", TrollTier.NIGHTMARE)
+                .desc("身边的地面被连续凿穿，工具同时报废——掉下去之前，先从里面烂掉")
                 .weight(125)
                 .cooldownSeconds(80)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.breakRandomTool();
                     ctx.breakAt(ctx.pos());
                     for (int i = 0; i < 3; i++) {
                         ctx.breakAt(ctx.randomNearbyPos(2));
@@ -223,11 +237,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_scatter_trip", "随机旅游券", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("world_scatter_trip", "随机旅游券", TrollTier.BRUTAL)
                 .desc("把你随机丢到几十格外，行李留在原地自生自灭")
                 .weight(120)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     ctx.scatter(60);
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 1.0f, 1.2f);
                     ctx.msg("§7传送成功，目的地：§8我也不知道§7。");
@@ -246,11 +262,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_water_rise", "涨水了", TrollTier.ANNOYING)
-                .desc("在脚边灌水，把干燥的你改造成落汤鸡")
+        TrollEvents.reg(TrollEvent.of("world_water_rise", "沉没", TrollTier.NIGHTMARE)
+                .desc("脚下灌满水，背包同时被抽走两格——你连一根救援绳都没有")
                 .weight(110)
                 .cooldownSeconds(100)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     ctx.placeFloor(TrollPools.EVIL_BLOCKS[E_WATER], 1);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.9f);
                     ctx.msg("§9水位上涨§7，这条街现在归海管。");
@@ -258,14 +276,16 @@ public final class WorldEvents {
                 .build());
 
         // ================================================================
-        // BRUTAL —— 抓狂，会骂人
+        // 封锁 —— 空间收窄：被活埋、被抛送、被围起
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("world_sky_drop", "高空卸货", TrollTier.BRUTAL)
-                .desc("把你抬到一百二十格高空，然后全权交给重力")
+        TrollEvents.reg(TrollEvent.of("world_sky_drop", "一百二十格的判决", TrollTier.NIGHTMARE)
+                .desc("抬到一百二十格高空，饥饿清零——你只能看着地面慢慢变大")
                 .weight(55)
                 .cooldownSeconds(200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     ctx.lift(120);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.8f);
                     ctx.title("§c§l自由落体", "§7落地姿势请自理");
@@ -273,11 +293,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_obsidian_cage", "黑曜石套房", TrollTier.BRUTAL)
-                .desc("用黑曜石把你原地打包，还贴心地加了天花板")
+        TrollEvents.reg(TrollEvent.of("world_obsidian_cage", "无门的房间", TrollTier.NIGHTMARE)
+                .desc("黑曜石从三面合拢，天花板落下的那一刻你才明白：这间房没有出口")
                 .weight(50)
                 .cooldownSeconds(220)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.cageWith(TrollPools.EVIL_BLOCKS[E_OBSIDIAN]);
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 1.0f, 0.7f);
                     ctx.msg("§8新房已交付：§7三面黑曜石，一堵天花板，§c没有门§7。");
@@ -285,11 +307,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_buried_alive", "活埋体验卡", TrollTier.BRUTAL)
-                .desc("用沙砾把周围和头顶填死，让你体验考古学家的快乐")
+        TrollEvents.reg(TrollEvent.of("world_buried_alive", "考古编号", TrollTier.NIGHTMARE)
+                .desc("先抛到一百二十格外，再用沙砾把你砌进土里——你成了别人的发掘对象")
                 .weight(52)
                 .cooldownSeconds(230)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.scatterFar(120);
                     ctx.surroundWith(TrollPools.TROLL_BLOCKS[B_GRAVEL]);
                     ctx.setBlock(0, 3, 0, TrollPools.TROLL_BLOCKS[B_GRAVEL]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 0);
@@ -299,11 +323,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_fire_bath", "免费桑拿", TrollTier.BRUTAL)
-                .desc("先抬到高空再点火，落地之前你会有很多时间思考人生")
+        TrollEvents.reg(TrollEvent.of("world_fire_bath", "燃烧的上升", TrollTier.APOCALYPSE)
+                .desc("抬到高处点火，火焰会陪你走完整个下坠过程")
                 .weight(48)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(600, 2);
                     ctx.lift(35);
                     ctx.launch(0.6);
                     ctx.setFire(12);
@@ -313,11 +339,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_gravel_avalanche", "头顶塌方", TrollTier.BRUTAL)
-                .desc("在头顶摆满会掉下来的方块，然后撒手不管")
+        TrollEvents.reg(TrollEvent.of("world_gravel_avalanche", "头顶的重量", TrollTier.APOCALYPSE)
+                .desc("半空塞满会坠落的方块，你站在最中间——抬头是唯一会后悔的动作")
                 .weight(50)
                 .cooldownSeconds(220)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(600, 2);
                     for (int dx = -2; dx <= 2; dx++) {
                         for (int dz = -2; dz <= 2; dz++) {
                             if (ctx.chance(0.7)) {
@@ -331,11 +359,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_tnt_scatter", "到处都是 TNT", TrollTier.BRUTAL)
-                .desc("周围一圈塞满 TNT，然后只引爆其中一个，让你自己找")
+        TrollEvents.reg(TrollEvent.of("world_tnt_scatter", "引信在你脚下", TrollTier.NIGHTMARE)
+                .desc("四周埋满 TNT，只点一个；剩下那些会在你心里一直滴答下去")
                 .weight(45)
                 .cooldownSeconds(260)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.scatterFar(120);
                     for (int i = 0; i < 7; i++) {
                         ctx.setBlock(ctx.ri(-3, 3), 0, ctx.ri(-3, 3), TrollPools.TROLL_BLOCKS[B_TNT]);
                     }
@@ -347,11 +377,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_lightning_near_miss", "雷差点劈到你", TrollTier.BRUTAL)
-                .desc("在离你两步远的地方劈一道闪电，主要目的是吓人")
+        TrollEvents.reg(TrollEvent.of("world_lightning_near_miss", "第一道是警告", TrollTier.APOCALYPSE)
+                .desc("闪电落在两步之外，同时把你活埋——下一道不会偏")
                 .weight(46)
                 .cooldownSeconds(200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.lightningNear();
                     ctx.soundSelf(ctx.pick(TrollPools.HORROR), 1.0f, 1.0f);
                     ctx.title(ctx.pick(TrollPools.PANIC_TITLES), "§7差 §c两格§7。");
@@ -360,14 +392,16 @@ public final class WorldEvents {
                 .build());
 
         // ================================================================
-        // NIGHTMARE —— 崩溃，会砸键盘
+        // 处刑 —— 活埋、高空与持续伤害，损失开始不可逆
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("world_void_edge", "虚空边缘一日游", TrollTier.NIGHTMARE)
-                .desc("把你直接扔到世界底部附近，脚下什么都没有")
+        TrollEvents.reg(TrollEvent.of("world_void_edge", "世界底部", TrollTier.APOCALYPSE)
+                .desc("直接扔到世界底部，经验清零；脚下没有底，抬头也没有归路")
                 .weight(32)
                 .cooldownSeconds(420)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     ctx.teleport(ctx.x(), -56.0, ctx.z());
                     ctx.damage("outofworld", 2.0f);
                     ctx.glitch(GlitchIds.BLACKOUT, 40);
@@ -376,56 +410,83 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_lightning_crown", "天罚", TrollTier.NIGHTMARE)
-                .desc("闪电精准砸在你头顶，附带火焰、耳鸣和满屏白光")
+        TrollEvents.reg(TrollEvent.of("world_lightning_crown", "点名", TrollTier.OBLIVION)
+                .desc("先广播别人被选中，让你松一口气，再让那道雷落在你头顶。死亡不会结束它——引擎已经关掉了怜悯。")
                 .weight(30)
                 .cooldownSeconds(360)
                 .run(ctx -> {
-                    ctx.lightning();
-                    ctx.setFire(6);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 1);
-                    ctx.glitch(GlitchIds.FLASHBANG, 20, 2);
-                    ctx.msg("§4§l天罚§r§7：你已进入雷神的本周工作列表。");
-                    ctx.addRage(20);
+                    ctx.fakeBroadcast("§e[天候系统] 本次雷击目标已选定：§f"
+                            + ctx.pick(TrollPools.FAKE_NAMES) + "§e。其余玩家安全。");
+                    ctx.ok("§a你不在名单上。");
+                    ctx.later(60, () -> {
+                        ctx.warn("§4名单更新了。");
+                        ctx.voidPit(2, 16);
+                        ctx.stripAll();
+                        ctx.obliterate();
+                        ctx.meteorShower(4, 16.0);
+                        ctx.lightning();
+                        ctx.setFire(6);
+                        ctx.glitch(GlitchIds.FLASHBANG, 20, 2);
+                        ctx.title("§4§l点名", "§7你现在在名单上了");
+                        ctx.msg("§0雷声里，有人在念你的名字。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_web_choke", "被按在原地", TrollTier.NIGHTMARE)
-                .desc("全身被蜘蛛网糊死，头顶再压一层会掉下来的东西")
+        TrollEvents.reg(TrollEvent.of("world_web_choke", "标本", TrollTier.OBLIVION)
+                .desc("先用一句『我来救你』让你抬头，再让蛛网从四面八方合拢——等你反应过来，已经没有人需要救了。")
                 .weight(30)
                 .cooldownSeconds(400)
                 .run(ctx -> {
-                    ctx.surroundWith(TrollPools.TROLL_BLOCKS[B_COBWEB]);
-                    ctx.setBlock(0, 2, 0, TrollPools.TROLL_BLOCKS[B_GRAVEL]);
-                    ctx.setBlock(0, 3, 0, TrollPools.TROLL_BLOCKS[B_SPONGE]);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 240, 1);
-                    ctx.msg("§7你现在是一件标本§8，请保持安静§7。");
-                    ctx.addRage(20);
+                    ctx.fakeChat("救援队", "别动，我这就把你挖出来！");
+                    ctx.ok("§a救援队正在接近……");
+                    ctx.later(70, () -> {
+                        ctx.fakeChat("救援队", "……等等，你背后那个是什么");
+                        ctx.effectRandom(1200, 3);
+                        ctx.surroundWith(TrollPools.TROLL_BLOCKS[B_COBWEB]);
+                        ctx.setBlock(0, 2, 0, TrollPools.TROLL_BLOCKS[B_GRAVEL]);
+                        ctx.setBlock(0, 3, 0, TrollPools.TROLL_BLOCKS[B_SPONGE]);
+                        ctx.spawnHostileBehind(ctx.pick(TrollPools.HOSTILE));
+                        ctx.voidPit(2, 16);
+                        ctx.stripAll();
+                        ctx.obliterate();
+                        ctx.msg("§8救援队没有再说第二句话。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_storm_siege", "雷暴围城", TrollTier.NIGHTMARE)
-                .desc("停电、雷暴、黑夜、负面效果加怪物围殴，一条龙服务")
+        TrollEvents.reg(TrollEvent.of("world_storm_siege", "停电", TrollTier.OBLIVION)
+                .desc("先掐掉你的视野，再让雷暴与脚步声一起靠近——你只能靠听觉确认自己被围得有多紧。")
                 .weight(28)
                 .cooldownSeconds(480)
                 .run(ctx -> {
-                    ctx.thunderstorm(1200);
+                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 120, 3);
+                    ctx.thunderstorm(2400);
                     ctx.timeOfDay(18000L);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 300, 0);
-                    ctx.glitch(GlitchIds.SHAKY, 120, 2);
-                    for (int i = 0; i < 5; i++) {
-                        ctx.spawnHostileBehind(ctx.pick(TrollPools.HOSTILE));
-                    }
-                    ctx.title(ctx.pick(TrollPools.PANIC_TITLES), "§7它们都知道你在哪。");
-                    ctx.addRage(25);
+                    ctx.effectRandom(1200, 3);
+                    ctx.fakeJoinLeave(ctx.pick(TrollPools.FAKE_NAMES), true);
+                    ctx.msg("§7有人进来了。你听不清是谁。");
+                    ctx.later(80, () -> {
+                        ctx.glitch(GlitchIds.SHAKY, 120, 2);
+                        for (int i = 0; i < 6; i++) {
+                            ctx.giveMobCustomName(ctx.spawnHostileBehind(ctx.pick(TrollPools.HOSTILE)),
+                                    "§8邻居");
+                        }
+                        ctx.voidPit(2, 16);
+                        ctx.buryAlive();
+                        ctx.meteorShower(4, 16.0);
+                        ctx.title("§0§l它们都进来了", "§7而你还没找到门");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_time_screw", "时间精神分裂", TrollTier.NIGHTMARE)
-                .desc("把时间在正午和午夜之间来回抽三下，顺便让你头晕")
+        TrollEvents.reg(TrollEvent.of("world_time_screw", "昼夜错乱", TrollTier.NIGHTMARE)
+                .desc("正午与午夜被反复撕扯，饥饿清零、视野扭曲——你分不清哪些记忆是真的")
                 .weight(30)
                 .cooldownSeconds(360)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     ctx.timeOfDay(6000L);
                     ctx.timeOfDay(18000L);
                     ctx.timeOfDay(6000L);
@@ -437,11 +498,13 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_terrain_flatten", "地形改造工程", TrollTier.NIGHTMARE)
-                .desc("把你周围一大片地皮直接抹平，施工队拒绝签字")
+        TrollEvents.reg(TrollEvent.of("world_terrain_flatten", "抹平", TrollTier.APOCALYPSE)
+                .desc("方圆数格被铲成空白，地皮、退路与你的心态一起被推平")
                 .weight(26)
                 .cooldownSeconds(600)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.voidPit(1, 10);
                     ctx.placeFloor(TrollPools.TROLL_BLOCKS[B_COBBLE], 6);
                     ctx.surroundWith(TrollPools.TROLL_BLOCKS[B_DIRT]);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.5f);
@@ -452,11 +515,11 @@ public final class WorldEvents {
                 .build());
 
         // ================================================================
-        // APOCALYPSE —— 地狱，会退游戏
+        // 绝望 —— 世界本身动手，死亡不再是终点
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("world_bedrock_coffin", "基岩棺材", TrollTier.APOCALYPSE)
-                .desc("用基岩把你钉在盒子里，通风口设计得非常人性化（没有）")
+        TrollEvents.reg(TrollEvent.of("world_bedrock_coffin", "永久产权", TrollTier.APOCALYPSE)
+                .desc("基岩四面合盖、头顶封死，氧气与血量同时被抽走——不会有人来敲这扇门")
                 .weight(24)
                 .cooldownSeconds(900)
                 .run(ctx -> {
@@ -473,58 +536,78 @@ public final class WorldEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_void_exile", "流放虚空", TrollTier.APOCALYPSE)
-                .desc("抬到世界顶端再一脚踹下去，中途还告诉你存档坏了")
+        TrollEvents.reg(TrollEvent.of("world_void_exile", "假传送门", TrollTier.OBLIVION)
+                .desc("告诉你回家的门开了，等你走进去才发现那只是一个洞口。存档提示是假的，脚下的虚空是真的。")
                 .weight(22)
                 .cooldownSeconds(1200)
                 .run(ctx -> {
-                    ctx.glitch(GlitchIds.FAKE_CORRUPT, 100, 2);
-                    ctx.teleport(ctx.x(), 260.0, ctx.z());
-                    ctx.launch(-2.5);
-                    ctx.thunderstorm(600);
-                    ctx.msg("§4§l存档已损坏§r§4，正在把你移出这个世界。");
-                    ctx.addRage(40);
+                    ctx.fakeBroadcast("§b[传送门] 出口已生成，请在 5 秒内进入。");
+                    ctx.ok("§a传送门就在你脚下。");
+                    ctx.later(100, () -> {
+                        ctx.glitch(GlitchIds.FAKE_CORRUPT, 100, 2);
+                        ctx.msg("§4存档读取失败。");
+                        ctx.stripAll();
+                        ctx.voidPit(2, 24);
+                        ctx.teleport(ctx.x(), 260.0, ctx.z());
+                        ctx.launch(-2.5);
+                        ctx.thunderstorm(600);
+                        ctx.meteorShower(4, 16.0);
+                        ctx.obliterate();
+                        ctx.msg("§8门是真的。只是通向的那一头，什么都没有。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_collapse_combo", "世界终章", TrollTier.APOCALYPSE)
-                .desc("雷暴加午夜加岩浆加怪物潮加 TNT 烟花，一次性全套端上来")
+        TrollEvents.reg(TrollEvent.of("world_collapse_combo", "终章", TrollTier.OBLIVION)
+                .desc("先为你保存世界，再亲手删掉它。雷暴、岩浆与怪物潮只是背景音，真正被清空的是你留下的痕迹。")
                 .weight(20)
                 .cooldownSeconds(1500)
                 .run(ctx -> {
-                    ctx.thunderstorm(2400);
-                    ctx.timeOfDay(18000L);
-                    ctx.surroundWith(TrollPools.TROLL_BLOCKS[B_MAGMA]);
-                    for (int i = 0; i < 6; i++) {
-                        ctx.setBlock(ctx.ri(-4, 4), ctx.ri(2, 5), ctx.ri(-4, 4),
-                                TrollPools.TROLL_BLOCKS[B_TNT]);
-                    }
-                    for (int i = 0; i < 7; i++) {
-                        ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 8);
-                    }
-                    ctx.particle(ctx.pick(TrollPools.BOOM_PARTICLES), 120);
-                    ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.7f);
-                    ctx.boomAtPlayer(3.0f);
-                    ctx.glitch(GlitchIds.SHAKE_BURST, 60, 3);
-                    ctx.title("§4§l世界终章", "§8接下来发生的事与你无关");
-                    ctx.addRage(45);
+                    ctx.fakeSaveNotice();
+                    ctx.ok("§a世界已保存。");
+                    ctx.later(60, () -> {
+                        ctx.timeOfDay(18000L);
+                        ctx.thunderstorm(2400);
+                        ctx.glitch(GlitchIds.SHAKE_BURST, 60, 3);
+                        ctx.surroundWith(TrollPools.TROLL_BLOCKS[B_MAGMA]);
+                        for (int i = 0; i < 6; i++) {
+                            ctx.setBlock(ctx.ri(-4, 4), ctx.ri(2, 5), ctx.ri(-4, 4),
+                                    TrollPools.TROLL_BLOCKS[B_TNT]);
+                        }
+                        for (int i = 0; i < 8; i++) {
+                            ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 8);
+                        }
+                        ctx.voidPit(2, 20);
+                        ctx.stripAll();
+                        ctx.particle(ctx.pick(TrollPools.BOOM_PARTICLES), 120);
+                        ctx.boomAtPlayer(3.0f);
+                        ctx.obliterate();
+                        ctx.title("§0§l终章", "§8接下来发生的事，不再需要你参与");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("world_save_corrupt_tease", "存档已删除（骗你的）", TrollTier.APOCALYPSE)
-                .desc("假崩溃加假装清空世界，整局只来一次，来一次记一辈子")
+        TrollEvents.reg(TrollEvent.of("world_save_corrupt_tease", "存档已删除", TrollTier.OBLIVION)
+                .desc("它会当着你的面显示崩溃、清空世界、再还你一件纪念品。整局只来一次，但你会记很久——死亡也追不上它。")
                 .weight(20)
                 .cooldownSeconds(1800)
                 .once()
                 .run(ctx -> {
+                    ctx.fakeSaveNotice();
                     ctx.glitch(GlitchIds.FAKE_CRASH, 120, 3);
                     ctx.fakeBroadcast("§4你的存档已被删除。感谢游玩。");
                     ctx.fakeJoinLeave(ctx.pick(TrollPools.FAKE_NAMES), false);
-                    ctx.clearInventory();
-                    ctx.placeFloor(TrollPools.TROLL_BLOCKS[B_OBSIDIAN], 3);
-                    ctx.soundSelf(ctx.pick(TrollPools.HORROR), 1.0f, 0.6f);
-                    ctx.msg("§8……开玩笑的。§7不过背包是真的没了。");
-                    ctx.addRage(50);
+                    ctx.later(120, () -> {
+                        ctx.placeFloor(TrollPools.TROLL_BLOCKS[B_OBSIDIAN], 3);
+                        ctx.buryAlive();
+                        ctx.voidPit(2, 16);
+                        ctx.effectRandom(1200, 3);
+                        ctx.stripAll();
+                        ctx.obliterate();
+                        ctx.soundSelf(ctx.pick(TrollPools.HORROR), 1.0f, 0.6f);
+                        ctx.msg("§8……开玩笑的。§7不过背包是真的没了。");
+                        ctx.msg("§0§o（引擎已关闭怜悯：这一次，重生点也不会替你保留什么。）");
+                    });
                 })
                 .build());
     }

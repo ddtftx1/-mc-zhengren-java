@@ -67,7 +67,8 @@ public final class TrollCommand {
                     int[] t = TrollRegistry.countPerTier();
                     feedback(ctx.getSource(), "§6事件总数：§f" + TrollRegistry.size()
                             + " §7| §a小整 " + t[1] + " §e烦人 " + t[2] + " §6抓狂 " + t[3]
-                            + " §c崩溃 " + t[4] + " §4地狱 " + t[5]);
+                            + " §c崩溃 " + t[4] + " §4地狱 " + t[5]
+                            + " §0绝望 " + (t.length > 6 ? t[6] : 0));
                     return 1;
                 }))
                 .then(CommandManager.literal("stats").executes(ctx -> {
@@ -102,12 +103,40 @@ public final class TrollCommand {
                     return 1;
                 }))
                 .then(CommandManager.literal("mode")
-                        .then(CommandManager.argument("level", IntegerArgumentType.integer(1, 5))
+                        .executes(ctx -> {
+                            feedback(ctx.getSource(), "§6当前最高残酷等级："
+                                    + TrollTier.byLevel(cfg().maxTier).colored()
+                                    + " §7(1-6，6=绝望)");
+                            return 1;
+                        })
+                        .then(CommandManager.argument("level", IntegerArgumentType.integer(1, 6))
                                 .executes(ctx -> {
                                     TrollConfig c = cfg();
                                     c.maxTier = IntegerArgumentType.getInteger(ctx, "level");
                                     c.save();
                                     feedback(ctx.getSource(), "§6最高残酷等级：" + TrollTier.byLevel(c.maxTier).colored());
+                                    return 1;
+                                })))
+                .then(CommandManager.literal("brutality")
+                        .executes(ctx -> {
+                            feedback(ctx.getSource(), "§6当前残酷度：§f" + cfg().brutality
+                                    + " §7(×" + cfg().brutalityScale() + " 伤害/时长/爆炸)");
+                            return 1;
+                        })
+                        .then(CommandManager.argument("level", IntegerArgumentType.integer(1, 5))
+                                .executes(ctx -> {
+                                    TrollConfig c = cfg();
+                                    c.brutality = IntegerArgumentType.getInteger(ctx, "level");
+                                    c.save();
+                                    String comment = switch (c.brutality) {
+                                        case 1 -> "§a还留了一丝人性。";
+                                        case 2 -> "§e原始强度。";
+                                        case 3 -> "§6开始不好受了。";
+                                        case 4 -> "§c建议别在硬核存档里开。";
+                                        default -> "§4§l不留全尸。";
+                                    };
+                                    feedback(ctx.getSource(), "§6残酷度：" + c.brutality
+                                            + " §7(伤害/时长/爆炸 ×" + c.brutalityScale() + ") " + comment);
                                     return 1;
                                 })))
                 // 合并入口：等价于 /mindbreak intensity <1-3>
@@ -184,12 +213,13 @@ public final class TrollCommand {
     private static int help(ServerCommandSource src) {
         feedback(src, "§8===== §c整人大师 §8=====");
         feedback(src, "§7/zr on §f| §7off §f| §7count §f| §7stats §f| §7rage");
-        feedback(src, "§7/zr mode <1-5> §f| §7interval <秒> <秒> §f| §7damage <true|false>");
+        feedback(src, "§7/zr mode <1-6> §f| §7brutality <1-5> §f| §7interval <秒> <秒> §f| §7damage <true|false>");
         feedback(src, "§7/zr intensity <1-3> §f| §7gift §f| §7chaos [秒] §f| §7calm §f| §7list [页] §f| §7info <id>");
         feedback(src, "§7/zr fire <id> [玩家] §f| §7random [玩家]");
         feedback(src, "§8已合并精神污染：§7/zr list 可看到全部事件 §8(§7/mindbreak§8、§7/mb§8 亦可用)");
         feedback(src, "§7当前：" + (cfg().enabled ? "§a开启" : "§c关闭")
                 + " §7最高等级：" + TrollTier.byLevel(cfg().maxTier).colored()
+                + " §7残酷度：§f" + cfg().brutality + "§7(×" + cfg().brutalityScale() + ")"
                 + " §7间隔：" + cfg().minIntervalSeconds + "-" + cfg().maxIntervalSeconds + "s");
         return 1;
     }

@@ -35,7 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 
 /**
- * 「精神污染」事件注册入口（冻结接口，实现由 events-porter 完成）。
+ * 「精神污染」事件注册入口（v3.0.0 残酷化·内容层）。
  *
  * <p>契约：把 mindbreak 原有的 43 个整活事件全部转换成整人大师的
  * {@link com.zhengren.trollmod.core.TrollEvent}，注册进
@@ -48,6 +48,10 @@ import net.minecraft.world.Heightmap;
  * 外加 1 个桥接事件 {@code relic_gift}（赠送整人大师的五件神器之一）。
  * 所有事件都用 {@code ctx.*} 统一 API 实现；延时动作用 {@code ctx.later(...)}
  * （统一延时调度器），不再自建 tick 循环、随机引擎或第二套事件列表。</p>
+ *
+ * <p>v3.0.0 内容层：口吻仍然是 mindbreak 原有的阴阳怪气——它从不骂你，只是非常客气地
+ * 提醒你有多不值钱——但后果已经按残酷度对齐：还东西要收利息，报丧之后要说「开玩笑的」，
+ * 假好友上线只是为了问你怎么越玩越菜。</p>
  */
 public final class MindbreakEvents {
 
@@ -62,43 +66,52 @@ public final class MindbreakEvents {
 
         // ==================== 嘴替类 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("chat_spam", "嘴替上身", TrollTier.ANNOYING)
-                .desc("随机一句阴阳怪气只发给你，精神污染的入门款")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("chat_spam", "嘴替上身", TrollTier.BRUTAL)
+                .desc("随机一句阴阳怪气只发给你；它随后会补一句「撤回」，而聊天栏没有撤回功能")
                 .weight(20)
                 .cooldownSeconds(30)
                 .run(ctx -> {
+                    ctx.exhaust(12.0f);
                     MindbreakUtil.msg(ctx, Msgs.pick(ctx.random(), Msgs.AMBIENT));
+                    ctx.later(60, () -> MindbreakUtil.msg(ctx, "（撤回）——撤回失败。本服务器不支持撤回，也不打算支持。"));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_achievement", "假成就", TrollTier.ANNOYING)
-                .desc("融合整人大师独有 fakeAchievement：成就弹窗 + 升级音效 + 全服广播你『精神状态稳定』")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_achievement", "假成就", TrollTier.BRUTAL)
+                .desc("成就弹窗 + 全服广播你「精神状态稳定」，顺便抽走一件东西当作奖品的运费")
                 .weight(8)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    ctx.effectRandom(240, 1);
+                    ctx.takeRandomItems(1);
                     ctx.fakeAchievement("精神状态稳定", "在崩溃边缘保持微笑");
                     MindbreakUtil.broadcast(ctx, "🏆 " + ctx.playerName() + " 获得了成就：精神状态稳定！");
                     ctx.sound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0F, 1.6F);
+                    MindbreakUtil.msg(ctx, "奖品的运费从你的背包里扣了。这就是它唯一的实体部分。");
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_death", "假死亡", TrollTier.BRUTAL)
-                .desc("融合整人大师独有 title/fakeDeathScreen：先全服报丧，3 秒后再宣布是玩笑")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_death", "假死亡", TrollTier.NIGHTMARE)
+                .desc("融合 title/fakeDeathScreen：先全服报丧，3 秒后宣布是玩笑——玩笑是真的，东西没了也是真的")
                 .weight(4)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    ctx.takeRandomItems(2);
                     String name = ctx.playerName();
                     MindbreakUtil.broadcast(ctx, "☠ " + name + " 死了！");
                     ctx.fakeDeathScreen("§7……开个玩笑。");
                     ctx.later(60, () -> MindbreakUtil.broadcast(ctx, "……开个玩笑，" + name + " 还活着。惊不惊喜？"));
+                    ctx.later(120, () -> MindbreakUtil.msg(ctx,
+                            "不过刚才报丧的时候，我们把你的遗物提前收好了。两件，不还了。"));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("system_glitch", "系统故障", TrollTier.ANNOYING)
-                .desc("融合整人大师独有 glitch + title：画面抖动 + 假系统标题，40 秒后宣布你的价值为 0")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("system_glitch", "系统故障", TrollTier.BRUTAL)
+                .desc("画面抖动 + 假系统标题，40 秒后宣布你的价值为 0；它甚至懒得把计算过程藏起来")
                 .weight(6)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    ctx.damage("magic", 1.5f);
                     MindbreakUtil.broadcast(ctx, "系统正在重新计算你的价值……计算结果：0。");
                     ctx.glitch(GlitchIds.SHAKY, 60, 2);
                     ctx.title("§c系统错误", "§7正在重新计算你的价值……", 5, 40, 10);
@@ -107,34 +120,44 @@ public final class MindbreakEvents {
                 .build());
 
         TrollEvents.reg(CATEGORY, TrollEvent.of("villager_gossip", "村民八卦", TrollTier.ANNOYING)
-                .desc("全服播报村民正在背后议论你，配一声鄙夷的『呵』")
+                .desc("全服播报村民正在背后议论你，配一声鄙夷的「呵」；它们说的那件事你确实干过")
                 .weight(6)
                 .cooldownSeconds(60)
                 .run(ctx -> {
                     MindbreakUtil.broadcast(ctx, "村民们在背后议论你：『就是他，上次把村子的床全拆了。』");
                     ctx.sound(SoundEvents.ENTITY_VILLAGER_NO, 1.0F, 0.9F);
+                    ctx.later(80, () -> MindbreakUtil.msg(ctx, "补充：它们还说『床的事他以为没人知道』。"));
                 })
                 .build());
 
         // ==================== 背包类 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("inventory_shuffle", "背包大洗牌", TrollTier.BRUTAL)
-                .desc("主背包 36 格全部随机重排，找东西？祝你好运")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("inventory_shuffle", "背包大洗牌", TrollTier.APOCALYPSE)
+                .desc("主背包 36 格全部清空重排，找东西祝你好运；它还会「帮你恢复原状」，然后洗第二次")
                 .weight(10)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    ctx.clearInventory();
                     MindbreakUtil.shuffleMain(ctx.inv(), ctx.random());
                     ctx.sound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 0.5F);
                     MindbreakUtil.msg(ctx, "你的背包被一阵妖风重新整理了。找东西？祝你好运。");
+                    ctx.later(200, () -> {
+                        MindbreakUtil.msg(ctx, "检测到你的不便，正在按原顺序恢复……");
+                    });
+                    ctx.later(340, () -> {
+                        MindbreakUtil.shuffleMain(ctx.inv(), ctx.random());
+                        MindbreakUtil.msg(ctx, "恢复完成。恢复成了一个新的随机顺序。不用谢。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("item_steal", "顺手牵羊", TrollTier.BRUTAL)
-                .desc("偷走你一件东西，10~20 秒后再还回来，还要说声谢谢")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("item_steal", "顺手牵羊", TrollTier.NIGHTMARE)
+                .desc("偷走你一件东西，说好 10~20 秒后归还——归还时它会收两件「保管费」")
                 .weight(7)
                 .cooldownSeconds(150)
                 .when(ctx -> !MindbreakUtil.filledSlots(ctx.inv()).isEmpty())
                 .run(ctx -> {
+                    ctx.starve();
                     PlayerInventory inventory = ctx.inv();
                     List<Integer> filled = MindbreakUtil.filledSlots(inventory);
                     if (filled.isEmpty()) {
@@ -150,17 +173,20 @@ public final class MindbreakEvents {
                     MindbreakUtil.msg(ctx, "一个看不见的贼偷走了你的 " + name + "！");
                     ctx.later(200 + ctx.ri(200), () -> {
                         ctx.give(stolen);
-                        MindbreakUtil.msg(ctx, "那个贼把 " + name + " 还回来了，还说了句『谢谢』。");
+                        int interest = ctx.takeRandomItems(2);
+                        MindbreakUtil.msg(ctx, "那个贼把 " + name + " 还回来了，还说了句『谢谢』。"
+                                + "保管费 " + interest + " 件，已经从你背包里扣了。");
                     });
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("inventory_curse", "物品诅咒", TrollTier.ANNOYING)
-                .desc("随机给你一件东西改名『被诅咒的xx』，深紫色那种")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("inventory_curse", "物品诅咒", TrollTier.NIGHTMARE)
+                .desc("随机给你一件东西改名「被诅咒的xx」，深紫色那种；它顺便在你身上留了点东西")
                 .weight(5)
                 .cooldownSeconds(90)
                 .when(ctx -> !MindbreakUtil.filledSlots(ctx.inv()).isEmpty())
                 .run(ctx -> {
+                    ctx.effectRandom(400, 2);
                     PlayerInventory inventory = ctx.inv();
                     List<Integer> filled = MindbreakUtil.filledSlots(inventory);
                     if (filled.isEmpty()) {
@@ -175,14 +201,17 @@ public final class MindbreakEvents {
                     stack.setCustomName(net.minecraft.text.Text.literal("被诅咒的" + oldName)
                             .formatted(Formatting.DARK_PURPLE));
                     MindbreakUtil.msg(ctx, "你的 " + oldName + " 被诅咒了，它现在叫『被诅咒的" + oldName + "』。");
+                    ctx.later(120, () -> MindbreakUtil.msg(ctx,
+                            "诅咒的附带条款：它会记得你，比你自己记得更久。"));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("hotbar_swap", "手不听话", TrollTier.ANNOYING)
-                .desc("把当前手持格和另一个快捷栏格子对调，你的手自己做的")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("hotbar_swap", "手不听话", TrollTier.BRUTAL)
+                .desc("把当前手持格和另一个快捷栏格子对调，你的手自己做的，而且它不打算解释")
                 .weight(6)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    ctx.exhaust(12.0f);
                     PlayerInventory inventory = ctx.inv();
                     int selected = inventory.selectedSlot;
                     int other = ctx.ri(9);
@@ -197,22 +226,24 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("drop_item", "手滑", TrollTier.ANNOYING)
-                .desc("把主手物品直接丢出去，手说它不想拿这个")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("drop_item", "手滑", TrollTier.BRUTAL)
+                .desc("把主手物品直接丢出去，手说它不想拿这个；它不想拿的东西会越来越多")
                 .weight(4)
                 .cooldownSeconds(60)
                 .when(ctx -> !ctx.held().isEmpty())
                 .run(ctx -> {
                     ctx.dropHeld();
                     MindbreakUtil.msg(ctx, "你的手突然松开了。它说它不想拿这个。");
+                    ctx.later(80, () -> MindbreakUtil.msg(ctx, "它还补充了一句：以后也不想。"));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("gift", "神秘礼物", TrollTier.PRANK)
-                .desc("神秘人塞给你七种垃圾之一，名字都很讲究")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("gift", "神秘礼物", TrollTier.BRUTAL)
+                .desc("神秘人塞给你七种垃圾之一，名字都很讲究；他会在你收下之后再要回去当纪念")
                 .weight(9)
                 .cooldownSeconds(45)
                 .run(ctx -> {
+                    ctx.effectRandom(240, 1);
                     ItemStack gift = switch (ctx.ri(7)) {
                         case 0 -> MindbreakUtil.named(Items.ROTTEN_FLESH, "神秘礼物（已过期）", Formatting.DARK_GREEN);
                         case 1 -> MindbreakUtil.named(Items.POISONOUS_POTATO, "限量版土豆", Formatting.GREEN);
@@ -222,37 +253,49 @@ public final class MindbreakEvents {
                         case 5 -> MindbreakUtil.named(Items.BONE, "某人的遗物", Formatting.WHITE);
                         default -> MindbreakUtil.named(Items.PUFFERFISH, "河豚（友情提示：别吃）", Formatting.YELLOW);
                     };
+                    String giftName = gift.getName().getString();
                     ctx.give(gift);
                     MindbreakUtil.msg(ctx, "一个神秘人往你手里塞了样东西，然后消失了。");
+                    ctx.later(140, () -> {
+                        ctx.takeRandomItem();
+                        MindbreakUtil.msg(ctx, "那个神秘人又回来了。他说 " + giftName + " 只是借你拿一下。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_diamond", "假钻石", TrollTier.PRANK)
-                .desc("恭喜挖到钻石！请千万不要细看")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_diamond", "假钻石", TrollTier.BRUTAL)
+                .desc("恭喜挖到钻石！请千万不要细看；为了让你相信，它还会在你身上点一把小火")
                 .weight(8)
                 .cooldownSeconds(45)
                 .run(ctx -> {
+                    ctx.setFire(3);
                     ctx.give(MindbreakUtil.named(Items.DIRT, "钻石（大概）", Formatting.GRAY));
                     MindbreakUtil.msg(ctx, "恭喜你挖到了钻石！请千万不要细看。");
+                    ctx.later(100, () -> MindbreakUtil.msg(ctx, "细看过了吗？没关系，反正你已经拿着了。"));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("xp_blessing", "经验祝福", TrollTier.PRANK)
-                .desc("塞给你 1~30 点经验，知识并不会增加")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("xp_blessing", "经验祝福", TrollTier.BRUTAL)
+                .desc("塞给你 1~30 点经验，知识并不会增加；十五秒后经验税上门，收走全部等级")
                 .weight(6)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    ctx.effectRandom(240, 1);
                     int xp = 1 + ctx.ri(30);
                     ctx.addExperience(xp);
                     ctx.sound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
                     MindbreakUtil.msg(ctx, "你获得了 " + xp + " 点经验，但知识并没有增加。");
+                    ctx.later(300, () -> {
+                        ctx.setExperience(0);
+                        MindbreakUtil.msg(ctx, "经验税已扣缴。税率：100%。用途：不告诉你。");
+                    });
                 })
                 .build());
 
         // ==================== 身体类 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("hunger_drain", "物理空虚", TrollTier.ANNOYING)
-                .desc("突然消耗 6 点饱食度，你什么都没干")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("hunger_drain", "物理空虚", TrollTier.BRUTAL)
+                .desc("突然消耗 6 点饱食度，你什么都没干——这就是它要的效果，你什么都干不了")
                 .weight(8)
                 .cooldownSeconds(45)
                 .run(ctx -> {
@@ -262,7 +305,7 @@ public final class MindbreakEvents {
                 .build());
 
         TrollEvents.reg(CATEGORY, TrollEvent.of("force_feed", "凭空饱腹", TrollTier.PRANK)
-                .desc("饥饿值直接拉满，建议不要细想吃了什么")
+                .desc("饥饿值直接拉满，建议不要细想吃了什么——这是本分类里唯一还讲道理的事件")
                 .weight(4)
                 .cooldownSeconds(60)
                 .run(ctx -> {
@@ -272,8 +315,8 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("levitation", "你飘了", TrollTier.ANNOYING)
-                .desc("3 秒飘浮。字面意思")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("levitation", "你飘了", TrollTier.BRUTAL)
+                .desc("3 秒飘浮，字面意思；落点它不管，反正你也不管")
                 .weight(8)
                 .cooldownSeconds(60)
                 .run(ctx -> {
@@ -283,7 +326,7 @@ public final class MindbreakEvents {
                 .build());
 
         TrollEvents.reg(CATEGORY, TrollEvent.of("effect_roulette", "药水轮盘", TrollTier.ANNOYING)
-                .desc("从加速/缓慢/跳跃/发光/反胃里随机抽一个，10 秒体验卡")
+                .desc("从加速/缓慢/跳跃/发光/反胃里随机抽一个，10 秒体验卡，中奖率由它决定")
                 .weight(7)
                 .cooldownSeconds(90)
                 .run(ctx -> {
@@ -299,23 +342,25 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("self_hurt", "自我伤害", TrollTier.BRUTAL)
-                .desc("用魔法伤害打你 1.5 颗心：你被自己的存在伤害了")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("self_hurt", "自我伤害", TrollTier.NIGHTMARE)
+                .desc("用魔法伤害打你：你被自己的存在伤害了，同时还要上交两件东西当医药费")
                 .weight(5)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    ctx.takeRandomItems(2);
                     ctx.damage("magic", 3.0F);
                     ctx.sound(SoundEvents.ENTITY_PLAYER_HURT, 1.0F, 1.0F);
-                    MindbreakUtil.msg(ctx, "你被自己的存在伤害了。");
+                    MindbreakUtil.msg(ctx, "你被自己的存在伤害了。医药费已从背包里扣。");
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("mob_buff", "怪物兴奋剂", TrollTier.BRUTAL)
-                .desc("周围 16 格内所有生物获得速度 II + 力量，原因不明")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("mob_buff", "怪物兴奋剂", TrollTier.NIGHTMARE)
+                .desc("周围 16 格内所有生物获得速度 II + 力量，原因不明；你的东西也少了两件")
                 .weight(6)
                 .cooldownSeconds(90)
                 .when(ctx -> !MindbreakUtil.nearbyMobs(ctx.player()).isEmpty())
                 .run(ctx -> {
+                    ctx.takeRandomItems(2);
                     List<LivingEntity> mobs = MindbreakUtil.nearbyMobs(ctx.player());
                     if (mobs.isEmpty()) {
                         return;
@@ -324,17 +369,19 @@ public final class MindbreakEvents {
                         mob.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 300, 1));
                         mob.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 300, 0));
                     }
-                    MindbreakUtil.msg(ctx, "附近的生物突然都变得很兴奋，原因不明。");
+                    MindbreakUtil.msg(ctx, "附近的生物突然都变得很兴奋，原因不明。"
+                            + "顺便，它们好像拿走了你两件东西。");
                 })
                 .build());
 
         // ==================== 位移类 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("small_teleport", "空间卡顿", TrollTier.ANNOYING)
-                .desc("横坐标各偏移 16 格以内，直接扔到地表")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("small_teleport", "空间卡顿", TrollTier.BRUTAL)
+                .desc("横坐标各偏移 16 格以内，直接扔到地表；所谓「卡顿」是它的说法，不是你的")
                 .weight(8)
                 .cooldownSeconds(45)
                 .run(ctx -> {
+                    ctx.effectRandom(240, 1);
                     ServerWorld world = ctx.world();
                     double tx = ctx.x() + MindbreakUtil.offset(ctx, 16.0);
                     double tz = ctx.z() + MindbreakUtil.offset(ctx, 16.0);
@@ -345,25 +392,27 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("spin", "方向感没收", TrollTier.ANNOYING)
-                .desc("视角被强制旋转 90°~270°，附带末影人传送音")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("spin", "方向感没收", TrollTier.NIGHTMARE)
+                .desc("视角被强制旋转 90°~270° 并抽走两件东西，方向感与补偿金一起被没收")
                 .weight(5)
                 .cooldownSeconds(45)
                 .run(ctx -> {
+                    ctx.takeRandomItems(2);
                     float yaw = ctx.player().getYaw() + 90.0F + ctx.random().nextFloat() * 180.0F;
                     MindbreakUtil.teleportRot(ctx, ctx.x(), ctx.y(), ctx.z(), yaw, ctx.player().getPitch());
                     ctx.sound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.5F);
-                    MindbreakUtil.msg(ctx, "你的方向感被系统没收了。");
+                    MindbreakUtil.msg(ctx, "你的方向感被系统没收了。这是没收清单上的第三项。");
                 })
                 .build());
 
         // ==================== 生物类 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("chicken_invasion", "鸡你太美", TrollTier.ANNOYING)
-                .desc("召唤 5 只顶着『鸡你太美N』名字的鸡，永久驻留")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("chicken_invasion", "鸡你太美", TrollTier.NIGHTMARE)
+                .desc("召唤 5 只顶着「鸡你太美N」名字的鸡，永久驻留；它们比你更清楚这里谁说了算")
                 .weight(7)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    ctx.effectRandom(400, 2);
                     for (int i = 0; i < 5; i++) {
                         ChickenEntity chicken = ctx.spawn(EntityType.CHICKEN,
                                 ctx.x() + MindbreakUtil.offset(ctx, 4.0),
@@ -376,14 +425,17 @@ public final class MindbreakEvents {
                         chicken.setPersistent();
                     }
                     MindbreakUtil.broadcast(ctx, "有人在 " + ctx.playerName() + " 附近召唤了鸡群，原因不明。");
+                    ctx.later(200, () -> MindbreakUtil.broadcast(ctx,
+                            "鸡群已由工作人员疏散。（工作人员没来，鸡没走。）"));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("pig_parade", "猪队友方阵", TrollTier.ANNOYING)
-                .desc("3 只『猪队友N号』出现在你身边，它们不打算帮忙")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("pig_parade", "猪队友方阵", TrollTier.BRUTAL)
+                .desc("3 只「猪队友N号」出现在你身边，它们不打算帮忙，顺便叼走了你一件东西")
                 .weight(5)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    ctx.takeRandomItems(1);
                     for (int i = 0; i < 3; i++) {
                         PigEntity pig = ctx.spawn(EntityType.PIG,
                                 ctx.x() + MindbreakUtil.offset(ctx, 5.0),
@@ -399,14 +451,16 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("mob_taunt", "怪物嘲讽", TrollTier.ANNOYING)
-                .desc("随机挑一只附近生物，用它的口吻在全服嘲笑你")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("mob_taunt", "怪物嘲讽", TrollTier.NIGHTMARE)
+                .desc("随机挑一只附近生物，用它的口吻在全服嘲笑你；如果附近没有生物，它就自己来")
                 .weight(9)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    ctx.effectRandom(400, 2);
                     List<LivingEntity> mobs = MindbreakUtil.nearbyMobs(ctx.player());
                     if (mobs.isEmpty()) {
-                        MindbreakUtil.msg(ctx, "你觉得好像有人在背后说你坏话，但周围一个生物都没有。");
+                        MindbreakUtil.broadcast(ctx, "【空气】对 " + ctx.playerName()
+                                + " 说：" + Msgs.pick(ctx.random(), Msgs.TAUNTS));
                         return;
                     }
                     LivingEntity mob = ctx.pick(mobs);
@@ -416,21 +470,23 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("creeper_apology", "苦力怕道歉", TrollTier.PRANK)
-                .desc("点火音响起，然后苦力怕说它走错了")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("creeper_apology", "苦力怕道歉", TrollTier.ANNOYING)
+                .desc("点火音响起，然后苦力怕说它走错了；它没有走错，它只是还没决定什么时候回来")
                 .weight(5)
                 .cooldownSeconds(45)
                 .run(ctx -> {
                     ctx.sound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 1.0F);
                     MindbreakUtil.msg(ctx, "苦力怕：对不起，走错了。");
+                    ctx.later(100, () -> MindbreakUtil.msg(ctx, "苦力怕：不过我记住你站的位置了。"));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("enderman_visitor", "社恐末影人", TrollTier.ANNOYING)
-                .desc("刷一只关闭 AI 的『末影人（社恐）』，它不想说话也不想动")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("enderman_visitor", "社恐末影人", TrollTier.NIGHTMARE)
+                .desc("刷一只关闭 AI 的「末影人（社恐）」，它不想说话也不想动——但你开始饿了")
                 .weight(4)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    ctx.starve();
                     EndermanEntity enderman = ctx.spawn(EntityType.ENDERMAN,
                             ctx.x() + MindbreakUtil.offset(ctx, 12.0),
                             ctx.y() + 1.0,
@@ -442,31 +498,46 @@ public final class MindbreakEvents {
                     enderman.setAiDisabled(true);
                     enderman.setPersistent();
                     ctx.sound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0F, 0.8F);
-                    MindbreakUtil.msg(ctx, "一只社恐末影人出现在附近。它不想说话，也不想动。");
+                    MindbreakUtil.msg(ctx, "一只社恐末影人出现在附近。它不想说话，也不想动。"
+                            + "你也不想动，但你饿了。");
                 })
                 .build());
 
         // ==================== 环境类 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("tnt_stalker", "TNT 尾随", TrollTier.NIGHTMARE)
-                .desc("在你身后 4 格刷一个引信 4 秒的 TNT，建议跑")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("tnt_stalker", "TNT 尾随", TrollTier.OBLIVION)
+                .desc("背后的 TNT 引信会「意外熄灭」，它恭喜你拆弹成功——然后点着第二枚，引信更短")
                 .weight(4)
                 .cooldownSeconds(150)
                 .run(ctx -> {
+                    ctx.stripAll();
+                    ctx.meteorShower(4, 16.0);
+                    ctx.buryAlive();
+                    ctx.effectRandom(1200, 3);
                     double angle = ctx.random().nextDouble() * Math.PI * 2.0;
                     double tx = ctx.x() + Math.cos(angle) * 4.0;
                     double tz = ctx.z() + Math.sin(angle) * 4.0;
                     ctx.spawnTnt(tx, ctx.y() + 1.0, tz, 80);
                     ctx.sound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 1.0F);
                     MindbreakUtil.msg(ctx, "你背后……好像有什么东西。建议跑。");
+                    ctx.later(70, () -> {
+                        ctx.ok("引信意外熄灭。恭喜你，拆弹成功。");
+                        ctx.playLevelUp();
+                    });
+                    ctx.later(110, () -> {
+                        MindbreakUtil.msg(ctx, "第二枚已经点着了。这一枚没有引信。");
+                        ctx.spawnTnt(ctx.x(), ctx.y() + 1.0, ctx.z(), 20);
+                        ctx.obliterate();
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("diamond_rain", "钻石雨", TrollTier.PRANK)
-                .desc("头顶掉落 5 件『钻石』，其中大约一半是真的")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("diamond_rain", "钻石雨", TrollTier.BRUTAL)
+                .desc("头顶掉落 5 件「钻石」，其中大约一半是真的；另一半是土，而且是你自己捡的")
                 .weight(5)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    ctx.setFire(3);
                     for (int i = 0; i < 5; i++) {
                         ItemStack stack = ctx.random().nextBoolean()
                                 ? new ItemStack(Items.DIAMOND)
@@ -484,32 +555,35 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("weather_chaos", "天气抽奖", TrollTier.BRUTAL)
-                .desc("随机切换成雷暴或普通降雨，具体下什么由服务器决定")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("weather_chaos", "天气抽奖", TrollTier.NIGHTMARE)
+                .desc("随机切成雷暴或普通降雨，并被扔到百格外；具体下什么由服务器决定，淋的是你")
                 .weight(4)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    ctx.scatterFar(120);
                     boolean thunder = ctx.random().nextBoolean();
                     ctx.setRaining(true, thunder, thunder ? 6000 : 12000);
                     MindbreakUtil.broadcast(ctx, "天气预报：今天有 100% 的概率下点什么，具体下什么由服务器决定。");
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("time_chaos", "时间裂开", TrollTier.ANNOYING)
-                .desc("把世界时间随机拨到一天中的任意时刻")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("time_chaos", "时间裂开", TrollTier.NIGHTMARE)
+                .desc("把世界时间随机拨到一天中的任意时刻，你身上同时多了一道凋零伤口")
                 .weight(4)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    ctx.damage("wither", 3.0f);
                     ctx.timeOfDay(ctx.random().nextInt(24000));
                     MindbreakUtil.broadcast(ctx, "时间表示：它裂开了。");
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("spooky_sound", "不该听的声音", TrollTier.ANNOYING)
-                .desc("从 6 种恐怖音效里随机贴脸播放一个")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("spooky_sound", "不该听的声音", TrollTier.BRUTAL)
+                .desc("从 6 种恐怖音效里随机贴脸播放一个，同时随机拿走你一件东西——那声音是来收货的")
                 .weight(8)
                 .cooldownSeconds(45)
                 .run(ctx -> {
+                    ctx.takeRandomItems(1);
                     switch (ctx.ri(6)) {
                         case 0 -> ctx.sound(SoundEvents.ENTITY_GHAST_SCREAM, 1.0F, 0.7F);
                         case 1 -> ctx.sound(SoundEvents.ENTITY_WITHER_SPAWN, 0.8F, 0.6F);
@@ -518,25 +592,31 @@ public final class MindbreakEvents {
                         case 4 -> ctx.sound(SoundEvents.BLOCK_ANVIL_LAND, 1.0F, 0.6F);
                         default -> ctx.sound(SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 0.8F, 1.0F);
                     }
-                    MindbreakUtil.msg(ctx, "你听到了不该听到的声音。");
+                    MindbreakUtil.msg(ctx, "你听到了不该听到的声音。它拿走了不该拿走的东西。");
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("lightning_tease", "差一点", TrollTier.ANNOYING)
-                .desc("一声雷响，然后只有一句『差一点』")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("lightning_tease", "差一点", TrollTier.NIGHTMARE)
+                .desc("一声雷响，然后只有一句「差一点」；八秒后它会回来把「一点」补上")
                 .weight(4)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    ctx.effectRandom(400, 2);
                     ctx.sound(SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0F, 1.2F);
                     MindbreakUtil.msg(ctx, "差一点。");
+                    ctx.later(160, () -> {
+                        ctx.lightningNear();
+                        MindbreakUtil.msg(ctx, "补上了。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("shadow_follow", "影子跟随", TrollTier.ANNOYING)
-                .desc("末影人凝视音 + 24 个传送门粒子，别回头，真的")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("shadow_follow", "影子跟随", TrollTier.NIGHTMARE)
+                .desc("末影人凝视音 + 24 个传送门粒子，别回头，真的；回头你就会发现它一直在数你眨眼")
                 .weight(4)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    ctx.effectRandom(400, 2);
                     ctx.sound(SoundEvents.ENTITY_ENDERMAN_STARE, 0.8F, 0.7F);
                     ctx.particle(ParticleTypes.PORTAL, 24);
                     MindbreakUtil.msg(ctx, "你总觉得有什么东西跟着你……别回头，真的。");
@@ -545,11 +625,14 @@ public final class MindbreakEvents {
 
         // ==================== 丧心病狂类 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("total_chaos", "总混沌", TrollTier.APOCALYPSE)
-                .desc("融合整人大师独有 meteorShower + glitch，并直接调用统一调度器再触发两个随机事件")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("total_chaos", "总混沌", TrollTier.OBLIVION)
+                .desc("陨石 + 假崩溃 + 直接调用统一调度器再触发两个随机事件；它还会连报三次「结束了」")
                 .weight(2)
                 .cooldownSeconds(300)
                 .run(ctx -> {
+                    ctx.buryAlive();
+                    ctx.effectRandom(1200, 3);
+                    ctx.voidPit(2, 16);
                     MindbreakUtil.broadcast(ctx, "【系统】检测到你过于快乐，已为你安排一点挫折。");
                     ctx.meteorShower(6, 12.0);
                     ctx.glitch(GlitchIds.FAKE_CRASH, 80, 2);
@@ -560,14 +643,21 @@ public final class MindbreakEvents {
                             TrollScheduler.fire(ctx.server(), ctx.player(), ctx.cfg(), ctx.state, extra);
                         }
                     }
+                    ctx.later(140, () -> MindbreakUtil.broadcast(ctx, "……结束了。"));
+                    ctx.later(260, () -> MindbreakUtil.broadcast(ctx, "真的结束了。"));
+                    ctx.later(400, () -> {
+                        MindbreakUtil.broadcast(ctx, "开玩笑的。第三批已经在路上了。");
+                        ctx.obliterate();
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("chat_takeover", "聊天接管", TrollTier.BRUTAL)
-                .desc("用你的名字在 0/1.5/3 秒后各发一句『我没说话』，最后承认是本人")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("chat_takeover", "聊天接管", TrollTier.NIGHTMARE)
+                .desc("用你的名字在 0/1.5/3 秒后各发一句「我没说话」，最后承认是本人——你确实说了")
                 .weight(3)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    ctx.starve();
                     String name = ctx.playerName();
                     ctx.later(0, () -> MindbreakUtil.broadcast(ctx, "<" + name + "> 我没说话。"));
                     ctx.later(30, () -> MindbreakUtil.broadcast(ctx, "<" + name + "> 我真的没说话。"));
@@ -577,11 +667,12 @@ public final class MindbreakEvents {
 
         // ==================== 新增：更不做人的 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("neck_crack", "脖子自己转", TrollTier.ANNOYING)
-                .desc("俯仰角随机甩到 -90°~90°，偏航再偏 30°，配骨骼错位音效")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("neck_crack", "脖子自己转", TrollTier.BRUTAL)
+                .desc("俯仰角随机甩到 -90°~90°，偏航再偏 30°，配骨骼错位音效——它很满意这个角度")
                 .weight(6)
                 .cooldownSeconds(45)
                 .run(ctx -> {
+                    ctx.damage("magic", 1.5f);
                     float pitch = -90.0F + ctx.random().nextFloat() * 180.0F;
                     float yaw = (float) (ctx.player().getYaw() + MindbreakUtil.offset(ctx, 30.0));
                     MindbreakUtil.teleportRot(ctx, ctx.x(), ctx.y(), ctx.z(), yaw, pitch);
@@ -590,22 +681,28 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("anvil_prank", "小心头顶", TrollTier.BRUTAL)
-                .desc("融合整人大师独有 spawnFallingBlock：头顶 6 格掉铁砧，且不破坏地形")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("anvil_prank", "小心头顶", TrollTier.NIGHTMARE)
+                .desc("头顶 6 格掉铁砧且不破坏地形；它会先提醒你「小心头顶」，然后在你抬头时再掉一块")
                 .weight(4)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    ctx.starve();
                     ctx.spawnFallingBlock(Blocks.ANVIL);
                     ctx.sound(SoundEvents.BLOCK_ANVIL_LAND, 1.0F, 0.8F);
                     MindbreakUtil.msg(ctx, "小心头顶。");
+                    ctx.later(120, () -> {
+                        ctx.spawnFallingBlock(Blocks.ANVIL);
+                        MindbreakUtil.msg(ctx, "现在可以抬头了。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_ore", "假矿脉", TrollTier.ANNOYING)
-                .desc("把附近 4 块石头/深板岩/圆石变成钻石矿，3 秒后悄悄还原")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_ore", "假矿脉", TrollTier.BRUTAL)
+                .desc("把附近 4 块石头变成钻石矿，3 秒后悄悄还原；你会记得那三秒，它也知道你会记得")
                 .weight(6)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    ctx.effectRandom(240, 1);
                     ServerWorld world = ctx.world();
                     Map<BlockPos, BlockState> replaced = new LinkedHashMap<>();
                     BlockPos center = ctx.pos();
@@ -630,51 +727,57 @@ public final class MindbreakEvents {
                         for (Map.Entry<BlockPos, BlockState> entry : replaced.entrySet()) {
                             world.setBlockState(entry.getKey(), entry.getValue());
                         }
+                        MindbreakUtil.msg(ctx, "已经还原了。你可以继续相信刚才什么都没发生。");
                     });
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("ice_floor", "脚下结冰", TrollTier.ANNOYING)
-                .desc("把脚下的方块换成冰，滑倒纯属你自己的问题")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("ice_floor", "脚下结冰", TrollTier.NIGHTMARE)
+                .desc("把脚下的方块换成冰并把你扔到百格外，滑倒纯属你自己的问题")
                 .weight(5)
                 .cooldownSeconds(60)
                 .when(ctx -> !ctx.world().getBlockState(ctx.pos().down()).isAir())
                 .run(ctx -> {
+                    ctx.scatterFar(120);
                     ctx.setBlockAt(ctx.pos().down(), Blocks.ICE);
                     ctx.sound(SoundEvents.BLOCK_GLASS_PLACE, 1.0F, 1.6F);
                     MindbreakUtil.msg(ctx, "你脚下的地面突然变得很滑。这和你没关系，别多想。");
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_player_chat", "假玩家发言", TrollTier.ANNOYING)
-                .desc("Notch、Herobrine、村民老王或一只鸡，替你说点刺激的")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_player_chat", "假玩家发言", TrollTier.NIGHTMARE)
+                .desc("Notch、Herobrine、村民老王或一只鸡，替你说点刺激的；你同时饿得说不出话")
                 .weight(6)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    ctx.starve();
                     String[] names = {"Notch", "Herobrine", "Steve", "Alex", "村民老王", "一只鸡"};
                     MindbreakUtil.broadcast(ctx, "<" + ctx.pick(names) + "> "
                             + Msgs.pick(ctx.random(), Msgs.FAKE_CHAT));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_friend_join", "假好友上线", TrollTier.PRANK)
-                .desc("随机一个假好友加入游戏，5 秒后再退出")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("fake_friend_join", "假好友上线", TrollTier.BRUTAL)
+                .desc("随机一个假好友加入游戏，5 秒后退出；他唯一的一句话是问你为什么越玩越菜")
                 .weight(4)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    ctx.effectRandom(240, 1);
                     String[] names = {"Steve", "Alex", "Herobrine", "Notch"};
                     String name = ctx.pick(names);
                     MindbreakUtil.broadcast(ctx, name + " 加入了游戏");
+                    ctx.later(40, () -> MindbreakUtil.broadcast(ctx, "<" + name + "> 你还在玩这个号？"));
                     ctx.later(100, () -> MindbreakUtil.broadcast(ctx, name + " 退出了游戏"));
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("swap_players", "位置互换", TrollTier.BRUTAL)
-                .desc("和另一名同世界玩家交换位置，没有原因，也不需要原因")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("swap_players", "位置互换", TrollTier.NIGHTMARE)
+                .desc("和另一名同世界玩家交换位置，脚下还会铺一层岩浆，没有原因，也不需要原因")
                 .weight(4)
                 .cooldownSeconds(120)
                 .when(ctx -> ctx.hasOthers())
                 .run(ctx -> {
+                    ctx.lavaPit(1);
                     ServerPlayerEntity other = ctx.other();
                     if (other == null || other.getServerWorld() != ctx.world()) {
                         MindbreakUtil.broadcast(ctx, "两位玩家的位置本该被交换，但他们不在同一个世界。算了。");
@@ -685,8 +788,8 @@ public final class MindbreakEvents {
                 })
                 .build());
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("totem_tease", "图腾不想上班", TrollTier.PRANK)
-                .desc("翻遍你 41 个格子找不死图腾，然后告诉你它今天请假了")
+        TrollEvents.reg(CATEGORY, TrollEvent.of("totem_tease", "图腾不想上班", TrollTier.ANNOYING)
+                .desc("翻遍你 41 个格子找不死图腾，然后告诉你它今天请假了；下一次它还会请假")
                 .weight(5)
                 .cooldownSeconds(90)
                 .run(ctx -> {
@@ -708,12 +811,13 @@ public final class MindbreakEvents {
 
         // ==================== 桥接事件：整人大师神器 ====================
 
-        TrollEvents.reg(CATEGORY, TrollEvent.of("relic_gift", "神器馈赠", TrollTier.PRANK)
+        TrollEvents.reg(CATEGORY, TrollEvent.of("relic_gift", "神器馈赠", TrollTier.BRUTAL)
                 .desc("桥接事件：融合整人大师物品系统，随机赠送五件神器之一（ABSURD_STICK / CURSE_BOOK / "
-                        + "CHAOS_PEARL / REGRET_CAKE / MYSTERY_MEAT）")
+                        + "CHAOS_PEARL / REGRET_CAKE / MYSTERY_MEAT）；它们每一件都有脾气")
                 .weight(6)
                 .cooldownSeconds(300)
                 .run(ctx -> {
+                    ctx.exhaust(12.0f);
                     Item[] relics = {
                             ModItems.ABSURD_STICK,
                             ModItems.CURSE_BOOK,
@@ -726,6 +830,8 @@ public final class MindbreakEvents {
                     ctx.sound(SoundEvents.ENTITY_PLAYER_LEVELUP, 0.8F, 1.2F);
                     ctx.particle(ParticleTypes.END_ROD, 30);
                     MindbreakUtil.msg(ctx, "你捡到了一件不属于这个世界的神器：" + relic.getName().getString());
+                    ctx.later(160, () -> MindbreakUtil.msg(ctx,
+                            "温馨提示：不属于这个世界的东西，通常也不属于你。"));
                 })
                 .build());
     }

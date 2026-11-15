@@ -28,7 +28,7 @@ public final class BeastEvents {
         // PRANK —— 笑一下就过去
         // ============================================================
 
-        TrollEvents.reg(TrollEvent.of("beast_animal_parade", "动物大迁徙", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_animal_parade", "动物大迁徙", TrollTier.BRUTAL)
                 .desc("一口气刷 12~20 只农场动物从玩家身边路过")
                 .weight(150)
                 .cooldownSeconds(50)
@@ -44,7 +44,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_chicken_cavalry", "鸡骑兵连", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_chicken_cavalry", "鸡骑兵连", TrollTier.BRUTAL)
                 .desc("强制骑上鸡，并刷几只自称骑兵的僵尸当部下")
                 .weight(130)
                 .cooldownSeconds(60)
@@ -59,7 +59,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_tiny_swarm", "小东西入侵", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_tiny_swarm", "小东西入侵", TrollTier.BRUTAL)
                 .desc("刷 8~14 只极小极烦的生物（蝙蝠/蠹虫/蝌蚪那一挂）糊在脸上")
                 .weight(140)
                 .cooldownSeconds(45)
@@ -74,7 +74,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_bat_storm", "蝙蝠风暴", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_bat_storm", "蝙蝠风暴", TrollTier.BRUTAL)
                 .desc("头顶刷 10~16 只蝙蝠，形成一场小型生物风暴")
                 .weight(130)
                 .cooldownSeconds(50)
@@ -89,7 +89,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_pet_visit", "等人认领的生物", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_pet_visit", "等人认领的生物", TrollTier.BRUTAL)
                 .desc("刷三只被编号的烦人生物围着玩家坐下")
                 .weight(120)
                 .cooldownSeconds(55)
@@ -103,7 +103,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_animal_rain", "动物降水", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_animal_rain", "动物降水", TrollTier.ANNOYING)
                 .desc("从 8~14 格高空下 6~10 只动物")
                 .weight(125)
                 .cooldownSeconds(60)
@@ -119,7 +119,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_cow_stampede", "牛群冲刺", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_cow_stampede", "牛群冲刺", TrollTier.BRUTAL)
                 .desc("刷十只被编号的动物冲过来，并把玩家顶飞一下")
                 .weight(110)
                 .cooldownSeconds(60)
@@ -134,7 +134,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_cat_supervisors", "喵星监工组", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_cat_supervisors", "喵星监工组", TrollTier.BRUTAL)
                 .desc("刷三只被任命为监工的动物，盯着玩家干活")
                 .weight(115)
                 .cooldownSeconds(55)
@@ -150,7 +150,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_slime_mount", "黏液代步", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("beast_slime_mount", "黏液代步", TrollTier.ANNOYING)
                 .desc("强制把玩家骑到一只史莱姆背上")
                 .weight(110)
                 .cooldownSeconds(70)
@@ -165,7 +165,7 @@ public final class BeastEvents {
         // ANNOYING —— 皱眉级别
         // ============================================================
 
-        TrollEvents.reg(TrollEvent.of("beast_monster_choir", "军团合唱", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("beast_monster_choir", "军团合唱", TrollTier.BRUTAL)
                 .desc("四只怪被编成声部，同时以不同音高开嗓")
                 .weight(120)
                 .cooldownSeconds(60)
@@ -181,12 +181,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_silent_watchers", "沉默的观众席", TrollTier.ANNOYING)
-                .desc("把 6 只怪精确摆成一圈围观玩家，只起名不动手")
+        TrollEvents.reg(TrollEvent.of("beast_silent_watchers", "沉默的观众席", TrollTier.NIGHTMARE)
+                .desc("她们不说话，只是站成一圈看着你。沉默比动手更像判决")
                 .weight(110)
                 .cooldownSeconds(70)
                 .when(ctx -> ctx.nearbyMobCount(20) < 12)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     int n = 6;
                     for (int i = 0; i < n; i++) {
                         double a = Math.PI * 2.0 * i / n;
@@ -198,7 +200,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_unseen_stalkers", "看不见的追踪者", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("beast_unseen_stalkers", "看不见的追踪者", TrollTier.BRUTAL)
                 .desc("黑暗 + 三只名字被打码的怪贴上来")
                 .weight(110)
                 .cooldownSeconds(90)
@@ -213,8 +215,8 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_item_thief", "顺手牵羊的那位", TrollTier.ANNOYING)
-                .desc("刷一只自称小偷的怪，并真的从背包里拿走一件东西")
+        TrollEvents.reg(TrollEvent.of("beast_item_thief", "顺手牵羊的那位", TrollTier.NIGHTMARE)
+                .desc("它们贴着你的后背站好，等你转身。它们知道你会转")
                 .weight(120)
                 .cooldownSeconds(90)
                 .run(ctx -> {
@@ -228,7 +230,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_door_blockers", "门口被堵死了", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("beast_door_blockers", "门口被堵死了", TrollTier.BRUTAL)
                 .desc("贴身刷 6 只怪，宣称要把门口排成两排")
                 .weight(100)
                 .cooldownSeconds(90)
@@ -241,7 +243,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_name_roster", "军团名册", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("beast_name_roster", "军团名册", TrollTier.BRUTAL)
                 .desc("刷三只怪并赋予与玩家住所有关的细思极恐名字")
                 .weight(100)
                 .cooldownSeconds(80)
@@ -277,7 +279,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_slime_party", "黏液派对", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("beast_slime_party", "黏液派对", TrollTier.BRUTAL)
                 .desc("刷 5~8 只史莱姆，让地板变得有弹性")
                 .weight(105)
                 .cooldownSeconds(70)
@@ -291,7 +293,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_bee_airforce", "蜜蜂空军", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("beast_bee_airforce", "蜜蜂空军", TrollTier.BRUTAL)
                 .desc("刷 8~12 只蜜蜂组成空军编队")
                 .weight(110)
                 .cooldownSeconds(60)
@@ -306,7 +308,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_armor_theft", "装备「借」走了", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("beast_armor_theft", "装备「借」走了", TrollTier.BRUTAL)
                 .desc("打乱装备槽并丢出手持物，刷一只宣称穿走装备的怪")
                 .weight(95)
                 .cooldownSeconds(150)
@@ -320,7 +322,7 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_silverfish_walls", "墙里有虫", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("beast_silverfish_walls", "墙里有虫", TrollTier.BRUTAL)
                 .desc("在背后刷 4~7 只蠹虫，模拟墙体被掏空的声音")
                 .weight(105)
                 .cooldownSeconds(80)
@@ -338,12 +340,14 @@ public final class BeastEvents {
         // BRUTAL —— 开始骂人
         // ============================================================
 
-        TrollEvents.reg(TrollEvent.of("beast_horde_siege", "怪潮围城", TrollTier.BRUTAL)
-                .desc("一次性刷 7~11 只锁定玩家的敌对生物并上标题")
+        TrollEvents.reg(TrollEvent.of("beast_horde_siege", "怪潮围城", TrollTier.NIGHTMARE)
+                .desc("它们从四面合拢，把「家」这个字从你脑子里一点一点挤出去")
                 .weight(70)
                 .cooldownSeconds(200)
                 .when(ctx -> ctx.nearbyMobCount(24) < 18)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("wither", 3.0f);
                     int n = ctx.ri(7, 11);
                     for (int i = 0; i < n; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 8);
@@ -353,12 +357,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_skyfall_legion", "空降军团", TrollTier.BRUTAL)
-                .desc("从 8~12 格高空空投 4~6 只怪到玩家脸上")
+        TrollEvents.reg(TrollEvent.of("beast_skyfall_legion", "空降军团", TrollTier.NIGHTMARE)
+                .desc("它们不是掉下来的，是被放下来的，落点围着你排成一个圆")
                 .weight(65)
                 .cooldownSeconds(210)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("wither", 3.0f);
                     int n = ctx.ri(4, 6);
                     for (int i = 0; i < n; i++) {
                         ctx.spawnAny(ctx.pick(TrollPools.HOSTILE),
@@ -369,12 +375,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_pit_transport", "传送到怪堆中心", TrollTier.BRUTAL)
-                .desc("先把玩家随机传送到 25 格外，再在落点刷 8 只怪")
+        TrollEvents.reg(TrollEvent.of("beast_pit_transport", "传送到怪堆中心", TrollTier.APOCALYPSE)
+                .desc("它把你送到了一个陌生的地方，那里已经站满了等你的人")
                 .weight(55)
                 .cooldownSeconds(240)
                 .when(ctx -> ctx.health() > 10.0f)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     ctx.scatter(25);
                     for (int i = 0; i < 8; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 4);
@@ -384,12 +392,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_legion_formation", "军团编队", TrollTier.BRUTAL)
-                .desc("把 15 只怪排成三排五列的方阵，并逐一点名")
+        TrollEvents.reg(TrollEvent.of("beast_legion_formation", "军团编队", TrollTier.APOCALYPSE)
+                .desc("方阵排开，逐一点名。被点到的那个人，就是你")
                 .weight(60)
                 .cooldownSeconds(220)
                 .when(ctx -> ctx.nearbyMobCount(20) < 14)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     String[] ranks = {"§c第一排", "§c第二排", "§4第三排"};
                     for (int r = 0; r < ranks.length; r++) {
                         for (int i = -2; i <= 2; i++) {
@@ -402,12 +412,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_creeper_totem", "苦力怕叠罗汉", TrollTier.BRUTAL)
-                .desc("在玩家面前把三只苦力怕垒成三层，并同时起爆引信声")
+        TrollEvents.reg(TrollEvent.of("beast_creeper_totem", "叠罗汉", TrollTier.NIGHTMARE)
+                .desc("三只苦力怕垒成品字形，引信同步，而你刚好站在正下方")
                 .weight(60)
                 .cooldownSeconds(200)
                 .when(ctx -> ctx.nearbyMobCount(16) < 12)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     for (int i = 0; i < 3; i++) {
                         var e = ctx.spawnAny(EntityType.CREEPER, ctx.x(), ctx.y() + i, ctx.z() + 3);
                         ctx.giveMobCustomName(e, "§a叠罗汉第 " + (i + 1) + " 层");
@@ -418,8 +430,8 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_spider_jockey", "骷髅骑蜘蛛（坐骑走丢了）", TrollTier.BRUTAL)
-                .desc("在同一坐标叠刷蜘蛛与骷髅，模拟骑兵组合")
+        TrollEvents.reg(TrollEvent.of("beast_spider_jockey", "骷髅骑蜘蛛", TrollTier.NIGHTMARE)
+                .desc("它们被拼在一起从来不是为了骑乘，是为了让你分不清该先打哪一个")
                 .weight(60)
                 .cooldownSeconds(220)
                 .run(ctx -> {
@@ -436,12 +448,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_phantom_dive", "幻翼俯冲", TrollTier.BRUTAL)
-                .desc("在头顶刷 3~5 只幻翼并播放俯冲音效")
+        TrollEvents.reg(TrollEvent.of("beast_phantom_dive", "幻翼俯冲", TrollTier.NIGHTMARE)
+                .desc("它们不睡觉，是因为你在下面。每一次俯冲，都只为确认你还在")
                 .weight(60)
                 .cooldownSeconds(200)
                 .when(ctx -> !ctx.isInWater())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     int n = ctx.ri(3, 5);
                     for (int i = 0; i < n; i++) {
                         ctx.spawnAny(EntityType.PHANTOM,
@@ -452,11 +466,13 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_proj_barrage", "投射物覆盖射击", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("beast_proj_barrage", "投射物覆盖射击", TrollTier.APOCALYPSE)
                 .desc("刷一队远程怪，再从头顶丢 10 个投射物")
                 .weight(55)
                 .cooldownSeconds(200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     int n = ctx.ri(3, 5);
                     for (int i = 0; i < n; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 9);
@@ -490,12 +506,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_spawner_effect", "刷怪笼效应", TrollTier.BRUTAL)
-                .desc("一次刷 8~12 只怪，模拟刷怪笼密集出货")
+        TrollEvents.reg(TrollEvent.of("beast_spawner_effect", "刷怪笼效应", TrollTier.NIGHTMARE)
+                .desc("出货声每两秒一次。等你反应过来，那节奏是在数你，不是数怪")
                 .weight(55)
                 .cooldownSeconds(240)
                 .when(ctx -> ctx.nearbyMobCount(24) < 20)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     int n = ctx.ri(8, 12);
                     for (int i = 0; i < n; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 10);
@@ -505,12 +523,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_nether_legion", "下界军团", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("beast_nether_legion", "下界军团", TrollTier.APOCALYPSE)
                 .desc("刷一队敌对生物并把玩家点着三秒")
                 .weight(60)
                 .cooldownSeconds(220)
                 .when(ctx -> !ctx.isInWater() && !ctx.isInLava())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     int n = ctx.ri(5, 8);
                     for (int i = 0; i < n; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 8);
@@ -521,11 +541,13 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_raid_squad", "劫掠小队路过", TrollTier.BRUTAL)
-                .desc("刷 5~7 只怪并给它们统一挂上「劫掠队」的名号")
+        TrollEvents.reg(TrollEvent.of("beast_raid_squad", "劫掠小队路过", TrollTier.APOCALYPSE)
+                .desc("他们不是来抢东西的。他们只是需要一个理由，站在你面前，看着你")
                 .weight(58)
                 .cooldownSeconds(220)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     int n = ctx.ri(5, 7);
                     for (int i = 0; i < n; i++) {
                         var e = ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 9);
@@ -535,11 +557,13 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_mount_roulette", "坐骑盲盒（危险版）", TrollTier.BRUTAL)
-                .desc("随机强制骑上一只坐骑池生物并甩出去，抽到 TNT 请自求多福")
+        TrollEvents.reg(TrollEvent.of("beast_mount_roulette", "坐骑盲盒", TrollTier.APOCALYPSE)
+                .desc("坐骑由它挑。它挑的标准只有一个：哪一种能让你死得最不像意外")
                 .weight(45)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.mount(ctx.pick(TrollPools.RIDEABLE));
                     ctx.fling(ctx.rd(-1.2, 1.2), 0.6, ctx.rd(-1.2, 1.2));
                     ctx.msg("§7盲盒已开。抽到什么全看命，模组不负责售后。");
@@ -550,12 +574,14 @@ public final class BeastEvents {
         // NIGHTMARE —— 想砸键盘
         // ============================================================
 
-        TrollEvents.reg(TrollEvent.of("beast_elite_squad", "精英小队", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("beast_elite_squad", "精英小队", TrollTier.APOCALYPSE)
                 .desc("从精英池连刷三只 BOSS 级生物并编号")
                 .weight(25)
                 .cooldownSeconds(400)
                 .when(ctx -> ctx.nearbyMobCount(32) < 12)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     for (int i = 0; i < 3; i++) {
                         var e = ctx.spawnHostileNear(ctx.pick(TrollPools.BOSS), 12);
                         ctx.giveMobCustomName(e, "§4§l精英队员 " + (i + 1) + " 号");
@@ -566,11 +592,13 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_ravager_walk", "劫掠兽散步", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("beast_ravager_walk", "劫掠兽散步", TrollTier.APOCALYPSE)
                 .desc("刷两只劫掠兽并起名成正在散步的邻居")
                 .weight(30)
                 .cooldownSeconds(420)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     for (int i = 0; i < 2; i++) {
                         var e = ctx.spawnHostileNear(EntityType.RAVAGER, 10);
                         ctx.giveMobCustomName(e, "§4散步中的劫掠兽");
@@ -580,18 +608,27 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_warden_patrol", "监守者在巡逻", TrollTier.NIGHTMARE)
-                .desc("在 12 格内刷监守者、黑暗与咆哮")
+        TrollEvents.reg(TrollEvent.of("beast_warden_patrol", "监守者在巡逻", TrollTier.OBLIVION)
+                .desc("它不是在找你。它只是沿着你的脚印，一遍一遍地巡逻，直到你不得不动")
                 .weight(25)
                 .cooldownSeconds(480)
                 .when(ctx -> ctx.nearbyMobCount(40) < 12)
                 .run(ctx -> {
-                    var e = ctx.spawnAny(EntityType.WARDEN,
-                            ctx.x() + ctx.ri(-12, 12), ctx.y(), ctx.z() + ctx.ri(-12, 12));
-                    ctx.giveMobCustomName(e, "§1§l巡逻中的");
-                    ctx.sound(SoundEvents.ENTITY_WARDEN_ROAR, 1.0f, 0.8f);
-                    ctx.effect(StatusEffects.DARKNESS, 200, 0);
-                    ctx.msg("§8它只是在巡逻。你只是刚好站在那里，而已。");
+                    ctx.sound(SoundEvents.ENTITY_WARDEN_ROAR, 1.0f, 0.7f);
+                    ctx.effect(StatusEffects.DARKNESS, 200, 1);
+                    ctx.msg("§8它没有追你。§7它在你的房子外面，走了一圈，又走了一圈。");
+                    ctx.later(80, () -> {
+                        var e = ctx.spawnAny(EntityType.WARDEN,
+                                ctx.x() + ctx.ri(-14, 14), ctx.y(), ctx.z() + ctx.ri(-14, 14));
+                        ctx.giveMobCustomName(e, "§1§l巡逻中的");
+                        ctx.warn("§1它这次停在你门口了。§8（它认得你的脚步声。）");
+                    });
+                    ctx.later(160, () -> {
+                        ctx.effectRandom(1200, 3);
+                        ctx.buryAlive();
+                        ctx.obliterate();
+                    });
+                    ctx.addRage(9.0);
                 })
                 .build());
 
@@ -601,6 +638,8 @@ public final class BeastEvents {
                 .cooldownSeconds(360)
                 .when(ctx -> ctx.nearbyMobCount(24) < 12)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     int n = ctx.ri(4, 6);
                     for (int i = 0; i < n; i++) {
                         ctx.spawnHostileNear(EntityType.ENDERMAN, 9);
@@ -610,12 +649,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_blaze_firestorm", "烈焰人火刑", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("beast_blaze_firestorm", "烈焰人火刑", TrollTier.APOCALYPSE)
                 .desc("刷三只烈焰人、四个投射物并点燃玩家五秒")
                 .weight(30)
                 .cooldownSeconds(380)
                 .when(ctx -> !ctx.isInWater() && !ctx.isInLava())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     for (int i = 0; i < 3; i++) {
                         ctx.spawnHostileNear(EntityType.BLAZE, 8);
                     }
@@ -629,11 +670,13 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_ghast_flotilla", "恶魂舰队", TrollTier.NIGHTMARE)
-                .desc("在头顶 12~18 格刷两只恶魂当旗舰")
+        TrollEvents.reg(TrollEvent.of("beast_ghast_flotilla", "恶魂舰队", TrollTier.APOCALYPSE)
+                .desc("两艘会哭的船在你头顶巡航。它们的礼炮，是用来确认你坐标的")
                 .weight(28)
                 .cooldownSeconds(400)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     for (int i = 0; i < 2; i++) {
                         var e = ctx.spawnAny(EntityType.GHAST,
                                 ctx.x() + ctx.ri(-8, 8), ctx.y() + ctx.ri(12, 18), ctx.z() + ctx.ri(-8, 8));
@@ -644,12 +687,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_shell_encircle", "贝壳包围圈", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("beast_shell_encircle", "贝壳包围圈", TrollTier.APOCALYPSE)
                 .desc("贴身刷 6 只怪并给玩家挂上减速")
                 .weight(30)
                 .cooldownSeconds(360)
                 .when(ctx -> ctx.nearbyMobCount(20) < 14)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.voidPit(1, 10);
                     for (int i = 0; i < 6; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 5);
                     }
@@ -658,12 +703,14 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_creeper_guard", "苦力怕仪仗队", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("beast_creeper_guard", "苦力怕仪仗队", TrollTier.APOCALYPSE)
                 .desc("把 6 只苦力怕排成一圈并同时播放引信声")
                 .weight(32)
                 .cooldownSeconds(360)
                 .when(ctx -> ctx.nearbyMobCount(20) < 12)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.voidPit(1, 10);
                     int n = 6;
                     for (int i = 0; i < n; i++) {
                         double a = Math.PI * 2.0 * i / n;
@@ -675,18 +722,27 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_giant_awakening", "远处站起来的影子", TrollTier.NIGHTMARE)
-                .desc("在 14 格外刷一只精英池生物并起名为「巨大的那个」")
+        TrollEvents.reg(TrollEvent.of("beast_giant_awakening", "远处站起来的影子", TrollTier.OBLIVION)
+                .desc("远处有个东西站起来了。它不需要跑——它只要走，而你已经没有路了")
                 .weight(25)
                 .cooldownSeconds(500)
                 .when(ctx -> ctx.nearbyMobCount(40) < 10)
                 .run(ctx -> {
-                    var e = ctx.spawnAny(ctx.pick(TrollPools.BOSS),
-                            ctx.x() + ctx.ri(-14, 14), ctx.y(), ctx.z() + ctx.ri(-14, 14));
-                    ctx.giveMobCustomName(e, "§4§l巨大的那个");
-                    ctx.effect(StatusEffects.DARKNESS, 120, 0);
-                    ctx.sound(ctx.pick(TrollPools.HORROR), 0.8f, 0.6f);
-                    ctx.msg("§8远处有个东西站了起来。它不需要跑——它只要走。");
+                    ctx.later(70, () -> {
+                        var e = ctx.spawnAny(ctx.pick(TrollPools.BOSS),
+                                ctx.x() + ctx.ri(-14, 14), ctx.y(), ctx.z() + ctx.ri(-14, 14));
+                        ctx.giveMobCustomName(e, "§4§l巨大的那个");
+                        ctx.sound(ctx.pick(TrollPools.HORROR), 0.8f, 0.5f);
+                        ctx.title("§4§l它站起来了", "§7从现在开始，别回头看");
+                    });
+                    ctx.later(150, () -> {
+                        ctx.effect(StatusEffects.DARKNESS, 160, 0);
+                        ctx.voidPit(2, 8);
+                        ctx.meteorShower(4, 16.0);
+                        ctx.stripAll();
+                        ctx.obliterate();
+                    });
+                    ctx.addRage(9.0);
                 })
                 .build());
 
@@ -694,8 +750,8 @@ public final class BeastEvents {
         // APOCALYPSE —— 直接退出游戏
         // ============================================================
 
-        TrollEvents.reg(TrollEvent.of("beast_legion_apocalypse", "军团末日", TrollTier.APOCALYPSE)
-                .desc("10~14 只怪 + 3 只精英指挥官 + 雷暴 + 全服黑暗（每局一次）")
+        TrollEvents.reg(TrollEvent.of("beast_legion_apocalypse", "军团末日", TrollTier.OBLIVION)
+                .desc("它不再隐藏了。整支军团同时出现，并且开始一个一个喊出你们的名字（每局一次）")
                 .weight(20)
                 .cooldownSeconds(900)
                 .once()
@@ -710,38 +766,51 @@ public final class BeastEvents {
                         ctx.giveMobCustomName(e, "§4§l军团指挥官");
                     }
                     ctx.thunderstorm(800);
-                    ctx.lightningNear();
                     ctx.effectAll(StatusEffects.DARKNESS, 200, 0);
-                    ctx.title("§4§l军 团", "§7这次连投降按钮都是假的");
+                    ctx.titleToAll("§4§l军 团", "§7投降按钮已经拆掉了");
                     ctx.sendToAll("§8[§c服务器§8] §c" + ctx.playerName() + " §c的末日已排期，请勿迟到。");
-                    ctx.addRage(5);
+                    ctx.later(100, () -> {
+                        ctx.lightningNear();
+                        ctx.title("§4§l点名", "§c" + ctx.playerName() + "§7，出列。");
+                        ctx.obliterate();
+                    });
+                    ctx.addRage(8);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_wither_twin", "凋灵与它的朋友", TrollTier.APOCALYPSE)
-                .desc("刷一只凋灵加一只精英池生物，并给玩家挂凋零（每局一次）")
+        TrollEvents.reg(TrollEvent.of("beast_wither_twin", "凋灵与它的朋友", TrollTier.OBLIVION)
+                .desc("主犯先到，从犯随后。它们说好一起等你把这场劫难走完（每局一次）")
                 .weight(22)
                 .cooldownSeconds(900)
                 .once()
                 .when(ctx -> ctx.health() > 10.0f)
                 .run(ctx -> {
-                    var w = ctx.spawnAny(EntityType.WITHER,
-                            ctx.x() + ctx.ri(-10, 10), ctx.y() + 7, ctx.z() + ctx.ri(-10, 10));
-                    ctx.giveMobCustomName(w, "§8§l主犯");
-                    var mate = ctx.spawnHostileNear(ctx.pick(TrollPools.BOSS), 14);
-                    ctx.giveMobCustomName(mate, "§4§l从犯");
-                    ctx.sound(SoundEvents.ENTITY_WITHER_SPAWN, 1.0f, 0.7f);
-                    ctx.effect(StatusEffects.WITHER, 120, 0);
-                    ctx.title("§0§l凋 零", "§7你惹到的不止一个");
+                    ctx.later(70, () -> {
+                        var w = ctx.spawnAny(EntityType.WITHER,
+                                ctx.x() + ctx.ri(-10, 10), ctx.y() + 7, ctx.z() + ctx.ri(-10, 10));
+                        ctx.giveMobCustomName(w, "§8§l主犯");
+                        ctx.sound(SoundEvents.ENTITY_WITHER_SPAWN, 1.0f, 0.7f);
+                        ctx.effect(StatusEffects.WITHER, 120, 0);
+                        ctx.title("§0§l凋 零", "§7你惹到的不止一个");
+                    });
+                    ctx.later(150, () -> {
+                        var mate = ctx.spawnHostileNear(ctx.pick(TrollPools.BOSS), 14);
+                        ctx.giveMobCustomName(mate, "§4§l从犯");
+                        ctx.stripAll();
+                        ctx.obliterate();
+                    });
+                    ctx.addRage(9);
                 })
                 .build());
 
         TrollEvents.reg(TrollEvent.of("beast_tnt_stampede", "爆炸军团冲锋", TrollTier.APOCALYPSE)
-                .desc("头顶 14~22 格刷 6 枚 TNT，同时贴身刷 4 只怪")
+                .desc("六枚引信同时点燃，四只怪负责确保你留在原地，把整场看完")
                 .weight(22)
                 .cooldownSeconds(700)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     for (int i = 0; i < 6; i++) {
                         ctx.spawnAny(EntityType.TNT,
                                 ctx.x() + ctx.ri(-5, 5), ctx.y() + ctx.ri(14, 22), ctx.z() + ctx.ri(-5, 5));
@@ -755,8 +824,8 @@ public final class BeastEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_endless_night", "无尽长夜", TrollTier.APOCALYPSE)
-                .desc("把时间拨到深夜、拉雷暴、刷幻翼群与怪群、硬黑屏（每局一次）")
+        TrollEvents.reg(TrollEvent.of("beast_endless_night", "无尽长夜", TrollTier.OBLIVION)
+                .desc("太阳不会再升起。你和它们都清楚这一点，所以它们并不着急（每局一次）")
                 .weight(20)
                 .cooldownSeconds(900)
                 .once()
@@ -773,13 +842,20 @@ public final class BeastEvents {
                     for (int i = 0; i < 5; i++) {
                         ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 9);
                     }
-                    ctx.title("§0§l长 夜", "§7太阳请了病假，而且不打算补班");
-                    ctx.warn("今夜不会天亮。天亮的是你的显示器。");
+                    ctx.title("§0§l长 夜", "§7天空没有一点要亮的意思");
+                    ctx.msg("§8（你已经不记得太阳是什么时候落下去的了。）");
+                    ctx.later(200, () -> {
+                        ctx.timeOfDay(18000L);
+                        ctx.buryAlive();
+                        ctx.obliterate();
+                        ctx.msg("§4天亮了。§8（亮的是你的复活点。）");
+                    });
+                    ctx.addRage(8);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("beast_player_hunt", "全员追杀", TrollTier.APOCALYPSE)
-                .desc("把玩家抬到 14 格高空，与 10 只怪 + 2 只精英猎手一起空投")
+        TrollEvents.reg(TrollEvent.of("beast_player_hunt", "全员追杀", TrollTier.OBLIVION)
+                .desc("他们不急着杀你。他们想先看看你能跑多久——答案是：跑不了多久")
                 .weight(20)
                 .cooldownSeconds(750)
                 .when(ctx -> ctx.health() > 12.0f && ctx.isOnGround())
@@ -796,7 +872,16 @@ public final class BeastEvents {
                     }
                     ctx.fling(0.0, -0.6, 0.0);
                     ctx.sound(ctx.pick(TrollPools.ULTRA), 1.0f, 0.9f);
-                    ctx.warn("你被连人带尊严空投进了猎场。祝你好运——真心的。");
+                    ctx.later(90, () -> {
+                        ctx.effectRandom(600, 2);
+                        ctx.takeRandomItems(3);
+                        ctx.warn("§c第一轮结束。§7它们捡走了你掉的东西，很有耐心。");
+                    });
+                    ctx.later(180, () -> {
+                        ctx.warn("§4狩猎结束。§8（真正的猎人从不急着收网。）");
+                        ctx.obliterate();
+                    });
+                    ctx.addRage(8);
                 })
                 .build());
     }

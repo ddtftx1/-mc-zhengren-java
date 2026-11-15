@@ -106,7 +106,7 @@ public final class SocialEvents {
         // PRANK（小整）
         // ===============================================================
 
-        TrollEvents.reg(TrollEvent.of("social_fake_op_announce", "假 OP 通知", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_fake_op_announce", "假 OP 通知", TrollTier.ANNOYING)
                 .desc("伪造一条「你被设为管理员」的全服公告，再配上升级音效")
                 .weight(170)
                 .cooldownSeconds(120)
@@ -117,11 +117,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_friend_join_dm", "好友上线了", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_friend_join_dm", "好友上线了", TrollTier.BRUTAL)
                 .desc("伪造好友上线提示，再补一条对方发来的私聊")
                 .weight(165)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     var fake = ctx.pick(TrollPools.FAKE_NAMES);
                     ctx.fakeJoinLeave("§b" + fake, true);
                     ctx.fakeChat(fake, "§f我来啦，你在哪儿？你家还是老地方吧？");
@@ -129,7 +131,7 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_team_invite", "假组队邀请", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_team_invite", "假组队邀请", TrollTier.ANNOYING)
                 .desc("伪造一条组队邀请，队名一个比一个难听")
                 .weight(160)
                 .cooldownSeconds(100)
@@ -139,7 +141,7 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_fake_dm_admin", "假管理员私聊", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_fake_dm_admin", "假管理员私聊", TrollTier.ANNOYING)
                 .desc("伪装成管理员发来一条私聊，内容全是阴阳怪气")
                 .weight(160)
                 .cooldownSeconds(100)
@@ -150,7 +152,7 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_fake_apology", "假道歉", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_fake_apology", "假道歉", TrollTier.ANNOYING)
                 .desc("伪造一条玩家的道歉私聊，越看越气")
                 .weight(150)
                 .cooldownSeconds(120)
@@ -160,11 +162,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_trade_request", "假交易请求", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_trade_request", "假交易请求", TrollTier.BRUTAL)
                 .desc("伪造一条交易请求，条件离谱到让人想报警")
                 .weight(150)
                 .cooldownSeconds(110)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     var o = ctx.other();
                     ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "§6" + ctx.pick(TRADE_LINES));
                     if (o != null) {
@@ -173,7 +177,7 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_report_notice", "假举报通知", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_report_notice", "假举报通知", TrollTier.ANNOYING)
                 .desc("伪造一条「有人举报了你」的系统通知，理由特别欠揍")
                 .weight(150)
                 .cooldownSeconds(150)
@@ -184,43 +188,51 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_bed_occupied", "有人睡了你的床", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_bed_occupied", "有人睡了你的床", TrollTier.BRUTAL)
                 .desc("伪造一条「有人在你的床上睡觉」的提示，逼你立刻往家跑")
                 .weight(145)
                 .cooldownSeconds(150)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.fakeBroadcast(ctx.format("§e[提示] 玩家 %p 的床当前被 §b"
                             + ctx.pick(TrollPools.FAKE_NAMES) + " §e占用中。"));
                     ctx.msg("§7（家还是你的。床也是。睡意没了。）");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_house_claimed", "你的房子被认领了", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_house_claimed", "你的房子被认领了", TrollTier.BRUTAL)
                 .desc("伪造一条「领地认领成功」的公告，房主写的却是别人的名字")
                 .weight(145)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.fakeBroadcast("§e[领地] 建筑认领成功，所有者：§b"
                             + ctx.pick(TrollPools.FAKE_NAMES));
                     ctx.warn("你的房子现在是别人的了。行李请自行搬走。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_party_kick", "你被踢出队伍", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_party_kick", "你被踢出队伍", TrollTier.BRUTAL)
                 .desc("伪造一条「你已被移出队伍」的提示，理由让人无法反驳")
                 .weight(145)
                 .cooldownSeconds(150)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.fakeBroadcast(ctx.pick(PARTY_KICK_LINES));
                     ctx.msg("§7（你本来就没在队伍里。但你还是被踢了。）");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_swap_lie", "有人跟你换了位置", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_swap_lie", "有人跟你换了位置", TrollTier.BRUTAL)
                 .desc("谎称有人和你互换了位置，同时真的把你挪了一下（单人兜底版）")
                 .weight(130)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     var o = ctx.other();
                     if (o != null) {
                         ctx.sendToAll(ctx.format("§d[提示] %p 的位置刚刚被「整理」了一下。"));
@@ -233,11 +245,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_gift_lie", "假礼物", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("social_gift_lie", "假礼物", TrollTier.BRUTAL)
                 .desc("谎称有人给你送了礼物，然后你真的收到一堆垃圾（单人兜底版）")
                 .weight(140)
                 .cooldownSeconds(150)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     var o = ctx.other();
                     ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "给你寄了点东西，签收一下。");
                     ctx.giveRandomJunk();
@@ -252,32 +266,38 @@ public final class SocialEvents {
         // ANNOYING（烦人）
         // ===============================================================
 
-        TrollEvents.reg(TrollEvent.of("social_operator_speech", "假管理员训话", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_operator_speech", "假管理员训话", TrollTier.BRUTAL)
                 .desc("让假管理员在全服频道上发表一段训话，字字诛心")
                 .weight(140)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.fakeBroadcast("§c[管理员] §f" + ctx.pick(TrollPools.FAKE_OPERATOR_LINES));
                     ctx.titleToAll("§c§l管理员广播", "§7请全体玩家反思自己");
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.8f);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_mute_notice", "你被禁言了", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_mute_notice", "你被禁言了", TrollTier.BRUTAL)
                 .desc("伪造一条禁言通知，让你下一秒怀疑自己发的消息到底出没出去")
                 .weight(135)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.fakeBroadcast(ctx.format("§c[聊天] 玩家 %p 已被禁言 5 分钟，原因：说话太多。"));
                     ctx.msg("§7（你并没有被禁言。但你现在不敢打字了，对吧？）");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_pvp_declared", "假 PVP 开启", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_pvp_declared", "假 PVP 开启", TrollTier.BRUTAL)
                 .desc("全服弹出 PVP 开启标题并配上公告，让所有人开始互相提防")
                 .weight(135)
                 .cooldownSeconds(300)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.titleToAll("§4§lPVP 已开启", "§7从此刻起，没有人是安全的");
                     ctx.sendToAll("§c" + ctx.pick(PVP_LINES));
                     ctx.soundToAll(ctx.pick(TrollPools.IMPACT), 1.0f, 0.9f);
@@ -285,11 +305,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_vote_kick", "假投票踢人", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_vote_kick", "假投票踢人", TrollTier.BRUTAL)
                 .desc("伪造一场针对你的投票，票数还会实时上涨，让你眼睁睁看着自己被投出去")
                 .weight(130)
                 .cooldownSeconds(300)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.fakeBroadcast(ctx.format("§e[投票] 正在表决是否踢出玩家 %p ……"));
                     int a = ctx.ri(2, 4);
                     int b = ctx.ri(5, 9);
@@ -299,11 +321,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_dm_flood", "私聊轰炸", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_dm_flood", "私聊轰炸", TrollTier.BRUTAL)
                 .desc("让一堆假玩家轮流给你发私聊，顺手也给服务器里其他人各塞几条")
                 .weight(130)
                 .cooldownSeconds(300)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     for (int i = 0; i < ctx.ri(5, 9); i++) {
                         ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES),
                                 "§7[私聊] §f→ 你：" + ctx.pick(FAKE_DM_LINES));
@@ -319,11 +343,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_ban_warning", "假封禁警告", TrollTier.ANNOYING)
-                .desc("伪造一条封禁警告，理由是随机抽的，但气势一定要足")
+        TrollEvents.reg(TrollEvent.of("social_ban_warning", "假封禁警告", TrollTier.NIGHTMARE)
+                .desc("它把你的名字写进封禁候补名单，理由是从别人的聊天记录里摘出来的")
                 .weight(125)
                 .cooldownSeconds(360)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     ctx.fakeBroadcast(ctx.format("§c[警告] 玩家 %p 因「" + ctx.pick(TrollPools.FAKE_EXCUSES)
                             + "」被列入封禁候补名单。"));
                     ctx.warn("请立刻表现出悔意。虽然并不会有用。");
@@ -331,12 +357,14 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_all_same_name", "全员被同名", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_all_same_name", "全员被同名", TrollTier.BRUTAL)
                 .desc("宣布全服物品已被统一改名，并真的给你的随机一件物品换个羞辱名字")
                 .when(ctx -> !ctx.invEmpty())
                 .weight(120)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     String cursed = ctx.pick(TrollPools.CURSED_NAMES);
                     ctx.renameRandomItem(cursed);
                     ctx.sendToAll("§e[服务器] 全服物品命名规范已更新，统一前缀：「"
@@ -345,22 +373,26 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_server_full_notice", "假人数已满", TrollTier.ANNOYING)
-                .desc("伪造「服务器人数已满，新玩家无法加入」的公告，全服一起懵")
+        TrollEvents.reg(TrollEvent.of("social_server_full_notice", "假人数已满", TrollTier.NIGHTMARE)
+                .desc("它宣布服务器满了。从此刻起，外面的朋友一个都进不来")
                 .weight(125)
                 .cooldownSeconds(300)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.breakRandomTool();
                     ctx.titleToAll("§c§l服务器已满", "§7新玩家正在门口排队");
                     ctx.sendToAll("§c[服务器] 在线人数已达上限，请勿再邀请好友。");
                     ctx.msg("§7（其实还有一个空位。就是留给整你的那个。）");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_gift_junk_real", "真的给你塞垃圾", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_gift_junk_real", "真的给你塞垃圾", TrollTier.BRUTAL)
                 .desc("当着你的面把一堆垃圾塞进另一个玩家的背包；单人时改成给自己寄垃圾")
                 .weight(120)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     var o = ctx.other();
                     var item = ctx.pick(TrollPools.JUNK);
                     ctx.sound(ctx.pick(TrollPools.FUNNY), 1.0f, 1.1f);
@@ -375,34 +407,40 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_inventory_steal_claim", "假偷窃通知", TrollTier.ANNOYING)
-                .desc("谎称有人翻过你的背包，然后把你的快捷栏打乱作为「证据」")
+        TrollEvents.reg(TrollEvent.of("social_inventory_steal_claim", "假偷窃通知", TrollTier.NIGHTMARE)
+                .desc("有人说他翻过你的背包，并且把你亲手摆好的东西又摆了一遍")
                 .when(ctx -> !ctx.invEmpty())
                 .weight(120)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "你背包我翻过了，东西还行，就是有点寒酸。");
                     ctx.scrambleHotbar();
                     ctx.warn("快捷栏被动过了。请自行整理，别问是谁。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_friend_request", "假好友申请", TrollTier.ANNOYING)
-                .desc("伪造一条好友申请，附赠一句自动回复的嘲讽")
+        TrollEvents.reg(TrollEvent.of("social_friend_request", "假好友申请", TrollTier.NIGHTMARE)
+                .desc("它替你收到一条好友申请，又替你点了拒绝，还很贴心地附上了理由")
                 .weight(130)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     ctx.fakeChat("§7[好友] §b" + ctx.pick(TrollPools.FAKE_NAMES), "§f请求添加你为好友。");
                     ctx.fakeChat("§7[好友] §b" + ctx.pick(TrollPools.FAKE_NAMES), "§f请求已自动拒绝。");
                     ctx.msg(ctx.pick(SOCIAL_TAUNTS));
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_coords_share", "假队友坐标", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_coords_share", "假队友坐标", TrollTier.BRUTAL)
                 .desc("伪造队友发来的「满地钻石」坐标，全都是假的，去了只有空气")
                 .weight(125)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     var o = ctx.other();
                     var line = ctx.pick(COORDS_LINES);
                     ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "§f" + line);
@@ -417,11 +455,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_whisper_loop", "私聊循环", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("social_whisper_loop", "私聊循环", TrollTier.BRUTAL)
                 .desc("给你和服务器里其他人互相投递假私聊，制造一场所有人都在聊天的幻觉")
                 .weight(120)
                 .cooldownSeconds(300)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     for (int i = 0; i < ctx.ri(4, 7); i++) {
                         ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES),
                                 "§8[悄悄话] §8» §7" + ctx.pick(SOCIAL_TAUNTS));
@@ -441,12 +481,14 @@ public final class SocialEvents {
         // BRUTAL（抓狂）
         // ===============================================================
 
-        TrollEvents.reg(TrollEvent.of("social_swap_places", "位置对调", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_swap_places", "位置对调", TrollTier.NIGHTMARE)
                 .desc("真的和另一名玩家互换位置，两人同时在空中凌乱（纯多人事件）")
                 .when(ctx -> ctx.hasOthers())
                 .weight(80)
                 .cooldownSeconds(420)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     var o = ctx.other();
                     if (o != null) {
                         ctx.swapWith(o);
@@ -462,12 +504,14 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_pull_everyone", "全体集合", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_pull_everyone", "全体集合", TrollTier.NIGHTMARE)
                 .desc("把半径内的所有人强行拉到你身边开「线下会议」（纯多人事件）")
                 .when(ctx -> ctx.hasOthers())
                 .weight(75)
                 .cooldownSeconds(420)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     var o = ctx.other();
                     ctx.pullPlayersToMe(256.0);
                     ctx.soundToAll(ctx.pick(TrollPools.FUNNY), 1.2f, 0.75f);
@@ -481,11 +525,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_betrayal_teleport", "假背叛", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_betrayal_teleport", "假背叛", TrollTier.APOCALYPSE)
                 .desc("谎称队友把你传送走了，实际上是你把对方拉到了自己脸上")
                 .weight(80)
                 .cooldownSeconds(420)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     var o = ctx.other();
                     if (o != null) {
                         ctx.teleportOtherToMe(o);
@@ -519,11 +565,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_all_damage", "全员掉血", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_all_damage", "全员掉血", TrollTier.APOCALYPSE)
                 .desc("给全服每个人来一下「不明来源」的伤害，连你自己也跑不掉")
                 .weight(75)
                 .cooldownSeconds(480)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     for (var p : ctx.allPlayers()) {
                         if (p == ctx.player()) {
                             continue;
@@ -553,11 +601,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_fake_ban_ui", "假封禁界面", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_fake_ban_ui", "假封禁界面", TrollTier.NIGHTMARE)
                 .desc("弹出带申诉码的假永久封禁界面，全服一起看你的「罪状」")
                 .weight(70)
                 .cooldownSeconds(900)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.fakeBroadcast(ctx.format("§c[封禁] 玩家 %p 已被永久封禁，理由："
                             + ctx.pick(TrollPools.FAKE_EXCUSES)));
                     ctx.title("§4§l你已被封禁", "§7申诉码：NOPE-0000-YOU");
@@ -567,11 +617,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_give_tnt", "礼尚往来", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_give_tnt", "礼尚往来", TrollTier.APOCALYPSE)
                 .desc("把一叠危险品塞给另一名玩家，再祝他「使用愉快」")
                 .weight(70)
                 .cooldownSeconds(600)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(600, 2);
                     var o = ctx.other();
                     var item = ctx.pick(TrollPools.DANGEROUS);
                     if (o != null) {
@@ -587,11 +639,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_scatter_other", "把队友送走", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_scatter_other", "把队友送走", TrollTier.APOCALYPSE)
                 .desc("把另一名玩家随机传送到远处，然后假装是「服务器波动」")
                 .weight(70)
                 .cooldownSeconds(540)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     var o = ctx.other();
                     if (o != null) {
                         ctx.scatterOther(o, 250);
@@ -606,11 +660,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_death_match", "假死亡竞赛", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_death_match", "假死亡竞赛", TrollTier.APOCALYPSE)
                 .desc("宣布死亡竞赛开始，全服弹标题、全员掉血，气氛直接拉满")
                 .weight(65)
                 .cooldownSeconds(720)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     ctx.titleToAll("§4§l死亡竞赛", "§7活着的人才有资格继续被整");
                     ctx.sendToAll("§c[赛事] 死亡竞赛已开始，请各位互相伤害，不要客气。");
                     for (var p : ctx.allPlayers()) {
@@ -624,7 +680,7 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_tag_team_punish", "全员连坐", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("social_tag_team_punish", "全员连坐", TrollTier.NIGHTMARE)
                 .desc("宣布「队友犯的错由你承担」，然后把全服拖下水一起掉血")
                 .weight(65)
                 .cooldownSeconds(720)
@@ -647,30 +703,41 @@ public final class SocialEvents {
         // NIGHTMARE（崩溃）
         // ===============================================================
 
-        TrollEvents.reg(TrollEvent.of("social_all_to_me", "全员到我这里来", TrollTier.NIGHTMARE)
-                .desc("把所有人拉到你身边，然后当着他们的面劈下一道雷（纯多人事件）")
+        TrollEvents.reg(TrollEvent.of("social_all_to_me", "全员到我这里来", TrollTier.OBLIVION)
+                .desc("队友说他们马上就到，让你撑住。他们确实来了——只是不是来救你的")
                 .when(ctx -> ctx.hasOthers())
                 .weight(50)
                 .cooldownSeconds(900)
                 .run(ctx -> {
                     var o = ctx.other();
-                    ctx.pullPlayersToMe(512.0);
-                    ctx.titleToAll("§4§l天罚", "§7所有人已被集中处理");
-                    ctx.soundToAll(ctx.pick(TrollPools.ULTRA), 1.2f, 0.8f);
-                    if (o != null) {
-                        ctx.lightningAtPlayer(o);
-                        ctx.sendToAll("§4[天罚] 目标已集中，执行落雷。请各位保持队形。");
-                        ctx.msgToOther(o, "§4你被选中了。原因是：你离得最近。");
-                    } else {
+                    ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "撑住！我们马上到，别下线！");
+                    ctx.title("§c§l支援在路上", "§7所有人正在赶来");
+                    ctx.later(70, () -> {
+                        ctx.pullPlayersToMe(512.0);
+                        ctx.titleToAll("§4§l天罚", "§7所有人已被集中处理");
+                        ctx.soundToAll(ctx.pick(TrollPools.ULTRA), 1.2f, 0.8f);
+                        if (o != null) {
+                            ctx.msgToOther(o, "§4你被选中了。原因是：你离得最近。");
+                        }
+                    });
+                    ctx.later(150, () -> {
+                        for (int i = 0; i < 5; i++) {
+                            ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 5);
+                        }
                         ctx.lightningNear();
-                        ctx.fakeBroadcast("§4[天罚] 目标不足，天罚改为劈你。");
-                    }
-                    ctx.addRage(10);
+                        ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), 300, 1);
+                        ctx.sendToAll("§4[天罚] 支援已抵达。§7请各位保持队形，不要回头。");
+                    });
+                    ctx.later(230, () -> {
+                        ctx.obliterate();
+                        ctx.stripAll();
+                    });
+                    ctx.addRage(12);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_permanent_ban", "永久封禁倒计时", TrollTier.NIGHTMARE)
-                .desc("全服播报你的永久封禁倒计时，最后一秒弹出假封禁界面")
+        TrollEvents.reg(TrollEvent.of("social_permanent_ban", "永久封禁倒计时", TrollTier.APOCALYPSE)
+                .desc("全服播报你的永久封禁倒计时。中途有人说要替你去说情，然后再也没回来")
                 .weight(45)
                 .cooldownSeconds(1200)
                 .run(ctx -> {
@@ -679,29 +746,52 @@ public final class SocialEvents {
                     ctx.fakeBroadcast("§c[封禁] 3 …… 2 …… 1 ……（开玩笑的，但你的心跳是真的）");
                     ctx.glitch(GlitchIds.FAKE_BAN, 120, 3);
                     ctx.soundToAll(ctx.pick(TrollPools.ULTRA), 1.0f, 0.7f);
+                    var name = ctx.pick(TrollPools.FAKE_NAMES);
+                    ctx.fakeChat(name, "别慌，我去找管理员说情，你等我。");
+                    ctx.later(120, () -> {
+                        ctx.fakeChat(name, "……他不肯见我。祝你好运。");
+                        ctx.fakeJoinLeave(name, false);
+                        ctx.msg("§8（他说的是真的吗？§7你怎么确定刚才那个「他」是真的？）");
+                    });
+                    ctx.later(240, () -> ctx.effectRandom(300, 2));
                     ctx.addRage(11);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_all_cursed", "全员被诅咒", TrollTier.NIGHTMARE)
-                .desc("给全服每个人套一个随机负面效果，并宣布这是「团队建设活动」")
+        TrollEvents.reg(TrollEvent.of("social_all_cursed", "全员被诅咒", TrollTier.OBLIVION)
+                .desc("它把你们的痛苦编成一场团队建设，还要求你们在心里感谢彼此")
                 .weight(45)
                 .cooldownSeconds(900)
                 .run(ctx -> {
-                    ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), ctx.ri(200, 400), 1);
-                    ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), ctx.ri(120, 280), 0);
                     ctx.sendToAll("§5[团队建设] 全员已获得随机祝福（本模组对「祝福」的定义比较宽泛）。");
                     ctx.titleToAll("§5§l全员被诅咒", "§7让我们痛苦地团结在一起");
                     ctx.soundToAll(ctx.pick(TrollPools.HORROR), 1.0f, 0.75f);
-                    ctx.addRage(10);
+                    ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), ctx.ri(200, 400), 1);
+                    ctx.later(100, () -> {
+                        ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), ctx.ri(200, 400), 1);
+                        ctx.sendToAll("§5[团队建设] 第二轮开始了。请在心里感谢你的队友。");
+                    });
+                    ctx.later(200, () -> {
+                        ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), 300, 2);
+                        for (var p : ctx.allPlayers()) {
+                            if (p != ctx.player()) {
+                                ctx.damageOther(p, 2.0f);
+                            }
+                        }
+                        ctx.buryAlive();
+                        ctx.obliterate();
+                    });
+                    ctx.addRage(11);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_world_reload", "假世界重载", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("social_world_reload", "假世界重载", TrollTier.APOCALYPSE)
                 .desc("全服弹出「正在重新加载世界数据」的卡死进度，配合假公告制造恐慌")
                 .weight(45)
                 .cooldownSeconds(1200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.sendToAll("§e[服务器] 正在重新加载世界数据，请勿关闭游戏。");
                     ctx.titleToAll("§e§l重新加载中", "§799% …… 99% …… 99%");
                     ctx.glitch(GlitchIds.WORLD_RELOAD, 140, 3);
@@ -712,10 +802,12 @@ public final class SocialEvents {
                 .build());
 
         TrollEvents.reg(TrollEvent.of("social_betrayal_gift_tnt", "背叛的礼物", TrollTier.NIGHTMARE)
-                .desc("以「礼物」的名义把 TNT 塞给另一名玩家，并附上一句真诚的祝福")
+                .desc("他给你寄了一份礼物，还特意提醒你：拆的时候记得站起来")
                 .weight(45)
                 .cooldownSeconds(900)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.scatterFar(120);
                     var o = ctx.other();
                     if (o != null) {
                         ctx.giveOther(o, ctx.pick(TrollPools.DANGEROUS), 8);
@@ -731,11 +823,13 @@ public final class SocialEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_curse_all_names", "全员被改名羞辱", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("social_curse_all_names", "全员被改名羞辱", TrollTier.APOCALYPSE)
                 .desc("宣布全服物品统一改名，顺手给全服上个随机负面效果，再当众羞辱你一句")
                 .weight(40)
                 .cooldownSeconds(1200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     if (!ctx.invEmpty()) {
                         ctx.renameRandomItem(ctx.pick(TrollPools.CURSED_NAMES));
                     }
@@ -751,8 +845,8 @@ public final class SocialEvents {
         // APOCALYPSE（地狱）
         // ===============================================================
 
-        TrollEvents.reg(TrollEvent.of("social_server_lockdown", "全服封锁", TrollTier.APOCALYPSE)
-                .desc("宣布全服封锁并把所有人按在假封禁界面里，音效拉满，整局只来一次")
+        TrollEvents.reg(TrollEvent.of("social_server_lockdown", "全服封锁", TrollTier.OBLIVION)
+                .desc("它宣布全服封锁，所有人原地待命——包括那些本来可以来救你的人（每局一次）")
                 .weight(25)
                 .cooldownSeconds(1800)
                 .once()
@@ -761,68 +855,86 @@ public final class SocialEvents {
                     ctx.titleToAll("§4§l全服封锁", "§7没有例外，包括你");
                     ctx.soundToAll(ctx.pick(TrollPools.ULTRA), 2.0f, 0.6f);
                     ctx.glitch(GlitchIds.FAKE_BAN, 160, 3);
-                    ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), 200, 1);
                     ctx.effectAll(StatusEffects.SLOWNESS, 200, 1);
+                    ctx.later(100, () -> {
+                        ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "门锁了，出不去了。谁去跟管理员说一声？");
+                        ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "别看我，我的号也没了。");
+                    });
+                    ctx.later(200, () -> {
+                        ctx.fakeBroadcast("§4[服务器] 封锁结束。§7违规者已处理：§f" + ctx.playerName());
+                        ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), 200, 2);
+                        ctx.stripAll();
+                        ctx.buryAlive();
+                        ctx.obliterate();
+                    });
                     ctx.addRage(15);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_purge", "全员大清洗", TrollTier.APOCALYPSE)
-                .desc("把所有人拉到一点、全员掉血、全员上负面效果，然后公告「这是一次例行维护」（纯多人事件）")
+        TrollEvents.reg(TrollEvent.of("social_purge", "全员大清洗", TrollTier.OBLIVION)
+                .desc("它说这是例行维护。维护内容是把所有人拖到同一个点，然后逐一处理（纯多人事件）")
                 .when(ctx -> ctx.hasOthers())
                 .weight(22)
                 .cooldownSeconds(1800)
                 .run(ctx -> {
-                    var o = ctx.other();
                     ctx.pullPlayersToMe(1024.0);
+                    ctx.sendToAll("§4[服务器] 例行维护即将开始，请各位到指定地点集合。");
                     ctx.titleToAll("§4§l大清洗", "§7所有人都是目标，包括你");
                     ctx.soundToAll(ctx.pick(TrollPools.ULTRA), 2.0f, 0.6f);
-                    ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), ctx.ri(200, 400), 1);
-                    for (var p : ctx.allPlayers()) {
-                        if (p == ctx.player()) {
-                            continue;
+                    ctx.later(90, () -> {
+                        for (var p : ctx.allPlayers()) {
+                            if (p != ctx.player()) {
+                                ctx.damageOther(p, 6.0f);
+                            }
                         }
-                        ctx.damageOther(p, 6.0f);
-                    }
-                    if (o != null) {
+                        ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), ctx.ri(200, 400), 1);
+                        ctx.sendToAll("§4[服务器] 维护进度 50%。感谢配合。");
+                    });
+                    ctx.later(190, () -> {
                         ctx.sendToAll("§4[服务器] 例行维护已完成，请各位检查自己的血量。");
-                    } else {
-                        ctx.sendToAll("§4[服务器] 例行维护已完成（参与者只有你）。");
-                        ctx.damage(4.0f);
-                    }
-                    ctx.soundSelf(ctx.pick(TrollPools.ULTRA), 2.0f, 0.7f);
+                        ctx.buryAlive();
+                        ctx.obliterate();
+                        ctx.stripAll();
+                    });
                     ctx.addRage(18);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_last_one_left", "只剩你一个人", TrollTier.APOCALYPSE)
-                .desc("逐个广播所有玩家下线，营造「全服只剩你」的绝境；单人时假报一个幽灵玩家")
+        TrollEvents.reg(TrollEvent.of("social_last_one_left", "只剩你一个人", TrollTier.OBLIVION)
+                .desc("所有人一个个下线，服务器把在线名单念给你听，最后只剩一个名字")
                 .weight(25)
                 .cooldownSeconds(1800)
                 .run(ctx -> {
                     int n = 0;
                     for (var p : ctx.allPlayers()) {
-                        if (p == ctx.player()) {
-                            continue;
+                        if (p != ctx.player()) {
+                            n++;
+                            ctx.fakeJoinLeave(ctx.pick(TrollPools.FAKE_NAMES), false);
                         }
-                        n++;
-                        ctx.fakeJoinLeave(ctx.pick(TrollPools.FAKE_NAMES), false);
                     }
                     if (n == 0) {
                         ctx.fakeJoinLeave(ctx.pick(TrollPools.FAKE_NAMES), true);
-                        ctx.fakeJoinLeave(ctx.pick(TrollPools.FAKE_NAMES), false);
-                        ctx.msg("§8刚才好像有个人进来了，又走了。也可能只是你想象出来的。");
+                        ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "我在。别怕。");
+                        ctx.later(120, () -> {
+                            ctx.fakeJoinLeave(ctx.pick(TrollPools.FAKE_NAMES), false);
+                            ctx.msg("§8他走了。§7他甚至没等你回答。");
+                        });
                     } else {
-                        ctx.msg("§8他们其实都还在，只是没人愿意理你。");
+                        ctx.msg("§8他们都还在。§7只是没有人再回你的消息。");
                     }
                     ctx.title("§8§l只剩你了", "§7现在没人能听见你说话");
                     ctx.soundToAll(ctx.pick(TrollPools.AMBIENT_CREEPY), 0.9f, 0.8f);
+                    ctx.later(220, () -> {
+                        ctx.buryAlive();
+                        ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), 300, 2);
+                        ctx.obliterate();
+                    });
                     ctx.addRage(14);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("social_apocalypse_party", "社交末日派对", TrollTier.APOCALYPSE)
-                .desc("互换位置 + 全员集合 + 全服封禁界面 + 全服痛苦，一场社交意义上的世界末日")
+        TrollEvents.reg(TrollEvent.of("social_apocalypse_party", "社交末日派对", TrollTier.OBLIVION)
+                .desc("它请来了所有人。派对的流程是：先抱在一起，再一起消失")
                 .weight(20)
                 .cooldownSeconds(2400)
                 .run(ctx -> {
@@ -837,16 +949,21 @@ public final class SocialEvents {
                         ctx.scatterFar(120);
                         ctx.fakeBroadcast("§4[末日] 派对人数不足，已改为单人专场。");
                     }
-                    ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), ctx.ri(240, 480), 1);
-                    ctx.glitch(GlitchIds.FAKE_BAN, 120, 3);
-                    for (var p : ctx.allPlayers()) {
-                        if (p == ctx.player()) {
-                            continue;
+                    ctx.later(100, () -> {
+                        ctx.effectAll(ctx.pick(TrollPools.BAD_EFFECTS), ctx.ri(240, 480), 1);
+                        ctx.glitch(GlitchIds.FAKE_BAN, 120, 3);
+                        for (var p : ctx.allPlayers()) {
+                            if (p != ctx.player()) {
+                                ctx.damageOther(p, 3.0f);
+                            }
                         }
-                        ctx.damageOther(p, 3.0f);
-                    }
-                    ctx.damage(3.0f);
-                    ctx.sendToAll("§4[服务器] 派对已开始。请尽情享受剩下的时间。");
+                        ctx.sendToAll("§4[服务器] 派对进入第二环节：请互相道别。");
+                    });
+                    ctx.later(210, () -> {
+                        ctx.damage(3.0f);
+                        ctx.sendToAll("§4[服务器] 派对已开始。请尽情享受剩下的时间。");
+                        ctx.obliterate();
+                    });
                     ctx.addRage(20);
                 })
                 .build());

@@ -29,7 +29,7 @@ public final class MovementEvents {
         // PRANK —— 小整：脚还没出事，脑子先出事
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("move_sprint_critique", "冲刺被点评", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_sprint_critique", "冲刺被点评", TrollTier.ANNOYING)
                 .desc("你的跑步姿势被一位看不见的教练当场点评")
                 .weight(130)
                 .cooldownSeconds(60)
@@ -40,7 +40,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_jump_voiceover", "跳跃自带配音", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_jump_voiceover", "跳跃自带配音", TrollTier.ANNOYING)
                 .desc("每次起跳都配一声很有精神的音效，来源不明")
                 .weight(120)
                 .cooldownSeconds(80)
@@ -50,18 +50,20 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_sneak_squeak", "潜行的吱吱声", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_sneak_squeak", "潜行的吱吱声", TrollTier.BRUTAL)
                 .desc("潜行时脚下发出清脆的吱吱声，隐蔽性归零")
                 .weight(120)
                 .cooldownSeconds(70)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.9f, 1.9f);
                     ctx.msg("§7你潜行得很认真，声音也很大。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_walk_rewind", "走路倒带", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_walk_rewind", "走路倒带", TrollTier.ANNOYING)
                 .desc("系统提示你的移动轨迹正在被回放，并要求你确认")
                 .weight(110)
                 .cooldownSeconds(120)
@@ -72,7 +74,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_boat_horn", "船载喇叭", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_boat_horn", "船载喇叭", TrollTier.ANNOYING)
                 .desc("你的船开始鸣笛，虽然它只是一条木船")
                 .weight(110)
                 .cooldownSeconds(120)
@@ -83,7 +85,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_minecart_ticket", "矿车检票", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_minecart_ticket", "矿车检票", TrollTier.ANNOYING)
                 .desc("矿车要求你出示车票，态度非常官方")
                 .weight(110)
                 .cooldownSeconds(140)
@@ -104,19 +106,21 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_elytra_boarding", "鞘翅登机广播", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_elytra_boarding", "鞘翅登机广播", TrollTier.BRUTAL)
                 .desc("起飞前播报一段标准登机通知")
                 .weight(100)
                 .cooldownSeconds(180)
                 .when(ctx -> !ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.msg("§b[登机广播]§7 请系好鞘翅，收起你的恐惧。");
                     ctx.actionBar("§7预计到达：§e看你怎么飞§7。");
                     ctx.soundSelf(ctx.pick(TrollPools.AMBIENT_CREEPY), 0.7f, 1.2f);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_pearl_refund", "珍珠退款提示", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_pearl_refund", "珍珠退款提示", TrollTier.ANNOYING)
                 .desc("末影珍珠表示本次传送不予退款，附赠一句客服话术")
                 .weight(100)
                 .cooldownSeconds(150)
@@ -126,27 +130,31 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_wrong_way_sign", "方向指示", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_wrong_way_sign", "方向指示", TrollTier.BRUTAL)
                 .desc("系统贴心地提醒你，你正在往反方向走")
                 .weight(120)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.actionBar("§e⚠ 检测到方向不一致：您似乎更想回出生点。");
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.8f, 1.4f);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_speed_odometer", "速度播报", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_speed_odometer", "速度播报", TrollTier.BRUTAL)
                 .desc("你的移动速度被实时播报，单位很离谱")
                 .weight(100)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.actionBar("§7当前速度：§e" + ctx.ri(3, 9) + " 格/秒§7（换算成蜗牛：§a"
                             + ctx.ri(20, 60) + " 只§7）");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_bunny_hop_praise", "连跳被表扬", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_bunny_hop_praise", "连跳被表扬", TrollTier.ANNOYING)
                 .desc("系统为你连续跳跃颁发了一张电子奖状")
                 .weight(100)
                 .cooldownSeconds(150)
@@ -156,7 +164,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_footstep_echo", "脚步回声", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_footstep_echo", "脚步回声", TrollTier.ANNOYING)
                 .desc("你的脚步声多了一层回声，且比你慢半拍")
                 .weight(110)
                 .cooldownSeconds(90)
@@ -167,48 +175,56 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_swim_style_score", "泳姿评分", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_swim_style_score", "泳姿评分", TrollTier.BRUTAL)
                 .desc("游泳被裁判打分，分数不太理想")
                 .weight(100)
                 .cooldownSeconds(140)
                 .when(ctx -> ctx.isInWater())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.actionBar("§b泳姿评分：§e" + ctx.rd(3.0, 9.5) + "§7 / 10（水花太大）");
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.8f, 1.2f);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_stair_counter", "台阶计数器", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_stair_counter", "台阶计数器", TrollTier.BRUTAL)
                 .desc("你走过的每一步都被记成了台阶数，数字还在涨")
                 .weight(90)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.sys("步数统计：§e" + ctx.ri(1000, 9999)
                             + "§7。其中 §c" + ctx.ri(900, 9900) + "§7 步属于原地打转。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_door_butler", "门童问好", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_door_butler", "门童问好", TrollTier.BRUTAL)
                 .desc("每扇门经过时都会有一位门童向你问好")
                 .weight(100)
                 .cooldownSeconds(130)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "欢迎光临，里边请，别踩门槛。");
                     ctx.soundSelf(ctx.pick(TrollPools.AMBIENT_CREEPY), 0.6f, 1.4f);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_coord_readout", "坐标播报", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_coord_readout", "坐标播报", TrollTier.BRUTAL)
                 .desc("你的精确坐标被广播了出来，还带了一点误差")
                 .weight(100)
                 .cooldownSeconds(160)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.sys("当前位置：§e" + (int) ctx.x() + "§7, §e" + (int) ctx.y()
                             + "§7, §e" + (int) ctx.z() + "§7（误差 ±" + ctx.ri(1, 40) + " 格）");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_taxi_hail", "叫一辆车", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("move_taxi_hail", "叫一辆车", TrollTier.BRUTAL)
                 .desc("天上给你派来一辆坐骑，司机不说话")
                 .weight(90)
                 .cooldownSeconds(200)
@@ -225,18 +241,20 @@ public final class MovementEvents {
         // ANNOYING —— 烦人：方向、阻尼、速度，样样跟你作对
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("move_slight_drift", "坐标轻微漂移", TrollTier.ANNOYING)
-                .desc("你站的地方悄悄往旁边挪了半格，证据不足")
+        TrollEvents.reg(TrollEvent.of("move_slight_drift", "坐标轻微漂移", TrollTier.NIGHTMARE)
+                .desc("你站的地方悄悄挪了半格。没有证据，但你的脚下知道。")
                 .weight(140)
                 .cooldownSeconds(70)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.teleport(ctx.x() + ctx.rd(-2.0, 2.0), ctx.y(), ctx.z() + ctx.rd(-2.0, 2.0));
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 0.6f, 1.2f);
                     ctx.actionBar("§7你的站位被系统温柔地调整了一下。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_sprint_slow", "冲刺变慢", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_sprint_slow", "冲刺变慢", TrollTier.BRUTAL)
                 .desc("按住冲刺键，速度却像在趟泥")
                 .weight(130)
                 .cooldownSeconds(90)
@@ -257,7 +275,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_sneak_slip", "潜行打滑", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_sneak_slip", "潜行打滑", TrollTier.BRUTAL)
                 .desc("潜行时脚下一滑，你往前滑出去一小段")
                 .weight(120)
                 .cooldownSeconds(100)
@@ -269,60 +287,70 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_foot_sticky", "脚底发黏", TrollTier.ANNOYING)
-                .desc("地面像涂了糖浆，起步特别费劲")
+        TrollEvents.reg(TrollEvent.of("move_foot_sticky", "脚底发黏", TrollTier.NIGHTMARE)
+                .desc("地面像涂了糖浆，每一步都要先把脚拔出来。")
                 .weight(120)
                 .cooldownSeconds(110)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 160, 1);
                     ctx.msg("§7地面对你的鞋底表示：§8「再聊会儿。」");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_ladder_hesitate", "爬梯子犹豫", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_ladder_hesitate", "爬梯子犹豫", TrollTier.BRUTAL)
                 .desc("梯子今天不太想让你上去，先顿两秒")
                 .weight(110)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.freeze(30);
                     ctx.actionBar("§7梯子：§8「等等，我先想想。」");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_boat_spin", "船原地打转", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_boat_spin", "船原地打转", TrollTier.BRUTAL)
                 .desc("船桨自己开始划圆，你分不清船头和船尾")
                 .weight(120)
                 .cooldownSeconds(110)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.spin(ctx.rf(120f, 320f));
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 0.8f, 1.1f);
                     ctx.msg("§7船：§8「转圈也是航行的一种。」");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_minecart_shake", "矿车颠簸", TrollTier.ANNOYING)
-                .desc("铁轨突然变得坑坑洼洼，矿车开始摇晃")
+        TrollEvents.reg(TrollEvent.of("move_minecart_shake", "矿车颠簸", TrollTier.NIGHTMARE)
+                .desc("铁轨突然变得坑洼，矿车开始不受控地摇晃。")
                 .weight(110)
                 .cooldownSeconds(110)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.spin(ctx.rf(-30f, 30f));
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 0.9f, 0.9f);
                     ctx.actionBar("§7矿车：§8「这段路，我修过的。」");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_horse_stubborn", "马不听使唤", TrollTier.ANNOYING)
-                .desc("坐骑决定今天自己选路线")
+        TrollEvents.reg(TrollEvent.of("move_horse_stubborn", "马不听使唤", TrollTier.NIGHTMARE)
+                .desc("坐骑决定今天自己选路线，而它选的方向不是你想要的。")
                 .weight(120)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     ctx.setRotation(ctx.rf(-180f, 180f), ctx.rf(-20f, 20f));
                     ctx.msg("§7你的坐骑：§8「往这边，那边风景不好。」");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_elytra_drag", "鞘翅阻力", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_elytra_drag", "鞘翅阻力", TrollTier.BRUTAL)
                 .desc("空中阻力突然翻倍，滑翔变成了漂移")
                 .weight(110)
                 .cooldownSeconds(120)
@@ -333,38 +361,44 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_pearl_misfire", "珍珠偏一点", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_pearl_misfire", "珍珠偏一点", TrollTier.BRUTAL)
                 .desc("末影珍珠落地位置比预期偏了一小段")
                 .weight(120)
                 .cooldownSeconds(100)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setFire(3);
                     ctx.teleport(ctx.x() + ctx.rd(-3.0, 3.0), ctx.y(), ctx.z() + ctx.rd(-3.0, 3.0));
                     ctx.sys("传送误差：§e" + ctx.ri(1, 5) + "§7 格。属正常磨损。");
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 0.8f, 1.5f);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_direction_flip", "左右互换", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_direction_flip", "左右互换", TrollTier.BRUTAL)
                 .desc("左右方向悄悄对调，你的手比脑子先迷路")
                 .weight(110)
                 .cooldownSeconds(140)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.glitch(GlitchIds.INVERT_MOUSE, 80);
                     ctx.msg("§7控制设置：§8「左和右，本来也没那么重要。」");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_speed_mismatch", "速度不同步", TrollTier.ANNOYING)
-                .desc("画面和脚步错开半拍，走起来像在看延迟直播")
+        TrollEvents.reg(TrollEvent.of("move_speed_mismatch", "速度不同步", TrollTier.NIGHTMARE)
+                .desc("画面和脚步错开半拍。你的身体总比你的意图晚到一步。")
                 .weight(110)
                 .cooldownSeconds(130)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.breakRandomTool();
                     ctx.glitch(GlitchIds.SHAKY, 70);
                     ctx.actionBar("§7延迟：§e" + ctx.ri(60, 400) + " ms§7（体感）");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_ice_slip", "冰上打滑", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_ice_slip", "冰上打滑", TrollTier.BRUTAL)
                 .desc("脚下瞬间铺满冰，你开始表演花样滑行")
                 .weight(120)
                 .cooldownSeconds(100)
@@ -376,7 +410,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_swim_upstream", "逆流而上", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_swim_upstream", "逆流而上", TrollTier.BRUTAL)
                 .desc("水里的流向被改成了正对你的方向")
                 .weight(110)
                 .cooldownSeconds(120)
@@ -387,7 +421,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_water_push", "水里有人推你", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_water_push", "水里有人推你", TrollTier.BRUTAL)
                 .desc("水下传来一股持续的推力，来源是个谜")
                 .weight(110)
                 .cooldownSeconds(120)
@@ -399,7 +433,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_fall_slow", "下落变慢", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_fall_slow", "下落变慢", TrollTier.BRUTAL)
                 .desc("摔下去的过程被拉长，让恐惧有个完整的酝酿期")
                 .weight(110)
                 .cooldownSeconds(120)
@@ -411,7 +445,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_landing_stumble", "落地踉跄", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_landing_stumble", "落地踉跄", TrollTier.BRUTAL)
                 .desc("落地瞬间被绊了一下，往前扑了两格")
                 .weight(120)
                 .cooldownSeconds(90)
@@ -435,33 +469,39 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_cobweb_touch", "沾了一身蛛网", TrollTier.ANNOYING)
-                .desc("你路过的地方多了一团蛛网，腿立刻变重")
+        TrollEvents.reg(TrollEvent.of("move_cobweb_touch", "沾了一身蛛网", TrollTier.NIGHTMARE)
+                .desc("你路过的地方多了一团蛛网，腿立刻沉了下来。")
                 .weight(110)
                 .cooldownSeconds(110)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.setBlock(0, 1, 0, TrollPools.TROLL_BLOCKS[17]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 140, 0);
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 0.8f, 1.1f);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_door_slam", "门自己关上", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_door_slam", "门自己关上", TrollTier.BRUTAL)
                 .desc("你刚走过去，身后的门就砰地合上了")
                 .weight(110)
                 .cooldownSeconds(100)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.surroundWith(TrollPools.TROLL_BLOCKS[1]);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 0.8f);
                     ctx.msg("§7砰。§8你想了想，决定绕路。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_trapdoor_snap", "活板门弹起", TrollTier.ANNOYING)
-                .desc("脚边的活板门突然弹起来敲了你的膝盖")
+        TrollEvents.reg(TrollEvent.of("move_trapdoor_snap", "活板门弹起", TrollTier.NIGHTMARE)
+                .desc("脚边的活板门突然弹起，正中膝盖。")
                 .weight(110)
                 .cooldownSeconds(110)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.placeUnder(TrollPools.TRAP_BLOCKS[0]);
                     ctx.damage("cactus", 1.0f);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 1.5f);
@@ -469,42 +509,50 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_hotbar_jostle", "边走边跳栏", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_hotbar_jostle", "边走边跳栏", TrollTier.BRUTAL)
                 .desc("每走一步，快捷栏就跳一格")
                 .weight(110)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.randomSelectSlot();
                     ctx.actionBar("§7快捷栏：§8「跟着节奏来。」");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_pack_shuffle", "背包跟着颠", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_pack_shuffle", "背包跟着颠", TrollTier.BRUTAL)
                 .desc("剧烈运动导致你的背包完成了一次自动整理")
                 .weight(100)
                 .cooldownSeconds(140)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.shuffleInventory();
                     ctx.msg("§7背包：§8「换了个顺序，惊喜吧。」");
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 0.8f, 1.2f);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_camera_lag", "视角滞后", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("move_camera_lag", "视角滞后", TrollTier.BRUTAL)
                 .desc("镜头比你的头慢半拍，转头像拖着一条尾巴")
                 .weight(110)
                 .cooldownSeconds(130)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.glitch(GlitchIds.SPIN, 60);
                     ctx.actionBar("§7视角同步率：§e" + ctx.ri(30, 80) + "%");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_mouse_heavy", "鼠标变沉", TrollTier.ANNOYING)
-                .desc("准星移动手感突然变得又黏又重")
+        TrollEvents.reg(TrollEvent.of("move_mouse_heavy", "鼠标变沉", TrollTier.NIGHTMARE)
+                .desc("准星突然又黏又重。你瞄哪里，不由你说了算。")
                 .weight(100)
                 .cooldownSeconds(150)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.glitch(GlitchIds.SENS_ZERO, 60);
                     ctx.msg("§7灵敏度：§8「帮你调低了一点，不客气。」");
                 })
@@ -525,11 +573,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_path_detour", "自动绕路", TrollTier.ANNOYING)
-                .desc("导航系统坚持带你走一条更远的路")
+        TrollEvents.reg(TrollEvent.of("move_path_detour", "自动绕路", TrollTier.NIGHTMARE)
+                .desc("导航坚持带你走更远的路。你越急，它绕得越远。")
                 .weight(100)
                 .cooldownSeconds(130)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(2);
                     ctx.scatter(6);
                     ctx.sys("路径规划已更新：§e更远，但『风景更好』§7。");
                 })
@@ -546,33 +596,39 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_boat_leak", "船漏水了", TrollTier.ANNOYING)
-                .desc("船底开始渗水，你只能一边划一边舀")
+        TrollEvents.reg(TrollEvent.of("move_boat_leak", "船漏水了", TrollTier.NIGHTMARE)
+                .desc("船底开始渗水。你只能一边划，一边往外舀。")
                 .weight(100)
                 .cooldownSeconds(130)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 0.8f, 0.9f);
                     ctx.msg("§3你的船：§8「别慌，只是有点漏。」");
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 120, 0);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_minecart_bump", "矿车过减速带", TrollTier.ANNOYING)
-                .desc("轨道上凭空出现一道减速带，你被颠了一下")
+        TrollEvents.reg(TrollEvent.of("move_minecart_bump", "矿车过减速带", TrollTier.NIGHTMARE)
+                .desc("轨道上凭空出现一道减速带。你被颠了一下，方向也变了。")
                 .weight(100)
                 .cooldownSeconds(120)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.launch(0.5);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 1.0f);
                     ctx.actionBar("§7前方：§e减速带§7（谁装的？）");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_saddle_loose", "马鞍松了", TrollTier.ANNOYING)
-                .desc("马鞍的带子松了一格，你开始频繁调整坐姿")
+        TrollEvents.reg(TrollEvent.of("move_saddle_loose", "马鞍松了", TrollTier.NIGHTMARE)
+                .desc("马鞍松了一格。你开始频繁调整坐姿，而马并不在意。")
                 .weight(100)
                 .cooldownSeconds(140)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.spin(ctx.rf(-15f, 15f));
                     ctx.freeze(20);
                     ctx.msg("§7你的坐骑：§8「坐稳点，我要抖一下。」");
@@ -583,11 +639,13 @@ public final class MovementEvents {
         // BRUTAL —— 抓狂：位置、方向、血量，总有一个要丢
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("move_scatter_random", "随机传送", TrollTier.BRUTAL)
-                .desc("你被随机扔到附近某个地方，坐标保密")
+        TrollEvents.reg(TrollEvent.of("move_scatter_random", "随机传送", TrollTier.APOCALYPSE)
+                .desc("你被随机扔到附近某处。坐标保密，回家的路也保密。")
                 .weight(120)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     ctx.scatter(40);
                     ctx.glitch(GlitchIds.SHAKE_BURST, 20);
                     ctx.msg("§c你被扔到了别处。§7具体哪儿，自己看地图。");
@@ -595,11 +653,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_scatter_far", "远距离抛送", TrollTier.BRUTAL)
-                .desc("距离拉到几百格，回家路费请自理")
+        TrollEvents.reg(TrollEvent.of("move_scatter_far", "远距离抛送", TrollTier.NIGHTMARE)
+                .desc("距离被拉到几百格。回家的路费，请自理。")
                 .weight(110)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.breakRandomTool();
                     ctx.scatterFar(600);
                     ctx.glitch(GlitchIds.WORLD_RELOAD, 30);
                     ctx.warn("§c传送完成。§7距离：§e很远§7。");
@@ -607,12 +667,14 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_swap_partner", "和同伴换位", TrollTier.BRUTAL)
-                .desc("你和另一位玩家的位置被强行交换")
+        TrollEvents.reg(TrollEvent.of("move_swap_partner", "和同伴换位", TrollTier.NIGHTMARE)
+                .desc("你和另一名玩家的位置被强行交换，双方都来不及反应。")
                 .weight(110)
                 .cooldownSeconds(200)
                 .when(ctx -> ctx.hasOthers())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(400, 2);
                     ctx.swapWith(ctx.randomOtherPlayer());
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 0.8f);
                     ctx.msg("§7你眨了眨眼，面前的人换了一张脸。");
@@ -620,11 +682,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_launch_sky", "原地弹射", TrollTier.BRUTAL)
-                .desc("脚底像装了弹簧，你被直接送上高空")
+        TrollEvents.reg(TrollEvent.of("move_launch_sky", "原地弹射", TrollTier.APOCALYPSE)
+                .desc("脚底像装了弹簧。你被直接送上高空，落点不在协议里。")
                 .weight(120)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(600, 2);
                     ctx.launch(2.2);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 1.3f);
                     ctx.msg("§7地面迅速远离了你。§8珍惜这几秒吧。");
@@ -637,6 +701,8 @@ public final class MovementEvents {
                 .weight(110)
                 .cooldownSeconds(190)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.lift(20);
                     ctx.glitch(GlitchIds.FOV_WILD, 40);
                     ctx.warn("§c脚下：§7空气。");
@@ -644,11 +710,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_fling_side", "横着甩出去", TrollTier.BRUTAL)
-                .desc("一股巨力从侧面把你甩飞")
+        TrollEvents.reg(TrollEvent.of("move_fling_side", "横着甩出去", TrollTier.NIGHTMARE)
+                .desc("一股巨力从侧面把你整个甩飞出去。")
                 .weight(120)
                 .cooldownSeconds(170)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.breakRandomTool();
                     ctx.fling(ctx.rd(-6.0, 6.0), 1.0, ctx.rd(-6.0, 6.0));
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 0.7f);
                     ctx.msg("§7你飞了出去。方向：§e随机§7。");
@@ -656,11 +724,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_fall_hard", "结结实实摔一跤", TrollTier.BRUTAL)
-                .desc("落地结算一次加倍的摔倒伤害")
+        TrollEvents.reg(TrollEvent.of("move_fall_hard", "结结实实摔一跤", TrollTier.NIGHTMARE)
+                .desc("落地结算一次加倍的摔倒伤害。地面没有让步。")
                 .weight(120)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.lavaPit(1);
                     ctx.damage("fall", 6.0f);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 0.6f);
                     ctx.msg("§c地面：§7「久等了。」");
@@ -668,7 +738,7 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_hidden_pit", "脚下的深坑", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("move_hidden_pit", "脚下的深坑", TrollTier.NIGHTMARE)
                 .desc("你站立的地方被挖成了一个深坑")
                 .weight(110)
                 .cooldownSeconds(220)
@@ -681,11 +751,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_caged", "被关起来", TrollTier.BRUTAL)
-                .desc("四周瞬间升起一圈结实的墙，你成了笼中物")
+        TrollEvents.reg(TrollEvent.of("move_caged", "被关起来", TrollTier.APOCALYPSE)
+                .desc("四周瞬间升起一圈结实的墙。你成了笼子里唯一的内容物。")
                 .weight(110)
                 .cooldownSeconds(200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     ctx.cageWith(TrollPools.EVIL_BLOCKS[0]);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 0.9f);
                     ctx.msg("§7有人给你建了个单间。§8租金面议。");
@@ -706,11 +778,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_ceiling_slam", "头顶突然封顶", TrollTier.BRUTAL)
-                .desc("起跳的瞬间头顶多了一整块天花板，你原地撞了回去")
+        TrollEvents.reg(TrollEvent.of("move_ceiling_slam", "头顶突然封顶", TrollTier.APOCALYPSE)
+                .desc("起跳的瞬间头顶多了一整块天花板。你原路撞了回去。")
                 .weight(110)
                 .cooldownSeconds(190)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.buryAlive();
                     ctx.setBlock(0, 3, 0, TrollPools.EVIL_BLOCKS[0]);
                     ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 160, 1);
                     ctx.damage("flyintowall", 3.0f);
@@ -720,12 +794,14 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_floor_gone", "地板撤了", TrollTier.BRUTAL)
+        TrollEvents.reg(TrollEvent.of("move_floor_gone", "地板撤了", TrollTier.NIGHTMARE)
                 .desc("脚下的方块就地辞职，你负责自由落体")
                 .weight(120)
                 .cooldownSeconds(160)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("wither", 3.0f);
                     ctx.breakUnder();
                     ctx.breakUnder();
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.7f);
@@ -733,11 +809,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_pearl_into_lava", "珍珠送你去泡温泉", TrollTier.BRUTAL)
-                .desc("末影珍珠非常贴心地把你送到了岩浆旁边")
+        TrollEvents.reg(TrollEvent.of("move_pearl_into_lava", "珍珠送你去泡温泉", TrollTier.APOCALYPSE)
+                .desc("末影珍珠非常贴心地把你送到了岩浆边上。")
                 .weight(100)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.lavaPit(2);
                     ctx.setFire(4);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 0.6f);
@@ -746,11 +824,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_boat_eject", "被甩出船外", TrollTier.BRUTAL)
-                .desc("船突然急刹，你以抛物线的方式离开座位")
+        TrollEvents.reg(TrollEvent.of("move_boat_eject", "被甩出船外", TrollTier.APOCALYPSE)
+                .desc("船突然急刹。你以一道抛物线离开座位，落点由它决定。")
                 .weight(110)
                 .cooldownSeconds(180)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.clearInventory();
                     ctx.dismount();
                     ctx.fling(ctx.rd(-4.0, 4.0), 1.2, ctx.rd(-4.0, 4.0));
                     ctx.msg("§7船：§8「到站了，请下车。」");
@@ -771,8 +851,8 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_horse_buck", "马把人甩下去", TrollTier.BRUTAL)
-                .desc("坐骑一个急停，你被留在了原地")
+        TrollEvents.reg(TrollEvent.of("move_horse_buck", "马把人甩下去", TrollTier.NIGHTMARE)
+                .desc("坐骑一个急停，把你留在了原地。它自己走了。")
                 .weight(110)
                 .cooldownSeconds(180)
                 .run(ctx -> {
@@ -798,11 +878,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_gravity_loss", "重力失灵", TrollTier.BRUTAL)
-                .desc("你飘了起来，想去哪全看运气")
+        TrollEvents.reg(TrollEvent.of("move_gravity_loss", "重力失灵", TrollTier.APOCALYPSE)
+                .desc("你飘了起来。想去哪里，全看风向和运气。")
                 .weight(110)
                 .cooldownSeconds(200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(600, 2);
                     ctx.noGravity(100);
                     ctx.glitch(GlitchIds.FOV_WILD, 40);
                     ctx.msg("§7重力：§8「今天请假。」");
@@ -822,11 +904,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_no_control", "方向失控", TrollTier.BRUTAL)
-                .desc("你的朝向被随机重置，起步就撞树")
+        TrollEvents.reg(TrollEvent.of("move_no_control", "方向失控", TrollTier.APOCALYPSE)
+                .desc("你的朝向被随机重置，起步第一件事就是撞上东西。")
                 .weight(120)
                 .cooldownSeconds(160)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     ctx.randomRotation();
                     ctx.glitch(GlitchIds.INVERT_CONTROLS, 60);
                     ctx.msg("§7你转了个身，理由是：§8「随机」§7。");
@@ -834,8 +918,8 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_ice_trap", "冰下是陷阱", TrollTier.BRUTAL)
-                .desc("脚下的冰面下面是空的，你直接穿了进去")
+        TrollEvents.reg(TrollEvent.of("move_ice_trap", "冰下是陷阱", TrollTier.NIGHTMARE)
+                .desc("脚下的冰面下面是空的。你直接穿了过去。")
                 .weight(100)
                 .cooldownSeconds(230)
                 .run(ctx -> {
@@ -847,11 +931,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_deep_drop", "从高处被放下", TrollTier.BRUTAL)
-                .desc("你被抬到高处，然后获准自行下降")
+        TrollEvents.reg(TrollEvent.of("move_deep_drop", "从高处被放下", TrollTier.NIGHTMARE)
+                .desc("你被抬到高处，然后获准自行下降。没有人接。")
                 .weight(110)
                 .cooldownSeconds(220)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.starve();
                     ctx.teleport(ctx.x(), ctx.y() + 24, ctx.z());
                     ctx.glitch(GlitchIds.FOV_ZOOM, 50);
                     ctx.msg("§7脚下：§e很远§7。倒计时：§e现在§7。");
@@ -859,11 +945,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_water_dunk", "被摁进水里", TrollTier.BRUTAL)
-                .desc("有人把你的头按向水面，呼吸条开始倒计时")
+        TrollEvents.reg(TrollEvent.of("move_water_dunk", "被摁进水里", TrollTier.APOCALYPSE)
+                .desc("有人把你的头按向水面，呼吸条开始倒计时。")
                 .weight(110)
                 .cooldownSeconds(190)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.setAir(40);
                     ctx.fling(ctx.rd(-0.6, 0.6), -1.2, ctx.rd(-0.6, 0.6));
                     ctx.msg("§3手：§8「憋着。」");
@@ -871,11 +959,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_far_relocate", "遥远的落点", TrollTier.BRUTAL)
-                .desc("你被送往一千格外，且没有回程票")
+        TrollEvents.reg(TrollEvent.of("move_far_relocate", "遥远的落点", TrollTier.APOCALYPSE)
+                .desc("你被送往一千格之外。没有回程票，也没有坐标。")
                 .weight(100)
                 .cooldownSeconds(260)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.voidPit(1, 10);
                     ctx.scatterFar(1000);
                     ctx.glitch(GlitchIds.BLACKOUT, 30);
                     ctx.warn("§c传送完成。§7这里没有路标。");
@@ -883,12 +973,14 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_trapdoor_pit", "活板门下的洞", TrollTier.BRUTAL)
-                .desc("你踩的活板门下面是一条直通地底的通道")
+        TrollEvents.reg(TrollEvent.of("move_trapdoor_pit", "活板门下的洞", TrollTier.APOCALYPSE)
+                .desc("你踩的活板门下面，是一条直通地底的通道。")
                 .weight(100)
                 .cooldownSeconds(230)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.meteorShower(2, 12.0);
                     ctx.breakUnder();
                     ctx.voidPit(1, 12);
                     ctx.damage("fall", 5.0f);
@@ -897,11 +989,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_tnt_step", "脚下踩到东西", TrollTier.BRUTAL)
-                .desc("你刚刚踩过的地方开始发出滴答声")
+        TrollEvents.reg(TrollEvent.of("move_tnt_step", "脚下踩到东西", TrollTier.APOCALYPSE)
+                .desc("你刚踩过的地方开始发出滴答声。你已经走过去了。")
                 .weight(100)
                 .cooldownSeconds(240)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.spawnTnt(ctx.x(), ctx.y(), ctx.z(), 30);
                     ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 1.2f);
                     ctx.warn("§c滴答。滴答。§7别回头，跑。");
@@ -909,11 +1003,13 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_cactus_run", "仙人掌跑道", TrollTier.BRUTAL)
-                .desc("你的前进路线上铺满了带刺的欢迎毯")
+        TrollEvents.reg(TrollEvent.of("move_cactus_run", "仙人掌跑道", TrollTier.NIGHTMARE)
+                .desc("你前进的路线被铺满了带刺的欢迎毯。")
                 .weight(100)
                 .cooldownSeconds(200)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.breakRandomTool();
                     ctx.scatterBlocks(TrollPools.TROLL_BLOCKS[11], 10);
                     ctx.damage("cactus", 3.0f);
                     ctx.msg("§a路两旁：§7仙人掌。整整两排。");
@@ -925,26 +1021,40 @@ public final class MovementEvents {
         // NIGHTMARE —— 崩溃：位置与性命只能保一个
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("move_scatter_chain", "连环传送", TrollTier.NIGHTMARE)
-                .desc("你被连续抛送多次，落点一次比一次离谱")
+        TrollEvents.reg(TrollEvent.of("move_scatter_chain", "连环传送", TrollTier.OBLIVION)
+                .desc("你会被连续传送。每一次落脚，都刚好在你以为稳定下来的那一瞬间被抽走。")
                 .weight(90)
                 .cooldownSeconds(380)
                 .run(ctx -> {
-                    for (int i = 0; i < 3; i++) {
-                        ctx.later(20 * (i + 1), () -> ctx.scatterFar(500));
-                    }
-                    ctx.glitch(GlitchIds.WORLD_RELOAD, 60);
-                    ctx.title("§4§l转场中", "§7请勿离开座位");
-                    ctx.addRage(16);
+                    ctx.scatter(20);
+                    ctx.msg("§7你落下来了。§8地面是实的。");
+                    // 假安全：刚站稳就被抽走
+                    ctx.later(60, () -> {
+                        ctx.scatterFar(40);
+                        ctx.warn("§4刚站稳就没了。§7这是这一轮的规则。");
+                    });
+                    ctx.later(150, () -> {
+                        ctx.scatterFar(60);
+                        ctx.glitch(GlitchIds.SHAKY, 20 * 8, 3);
+                        ctx.msg("§8第五次。§7你已经开始放弃记方向了。");
+                    });
+                    ctx.later(270, () -> {
+                        ctx.obliterate();
+                        ctx.teleport(ctx.x(), ctx.y() + 30, ctx.z());
+                        ctx.takeRandomItems(2);
+                        ctx.warn("§4最后一次是往上。§7落地的事，等下再算。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_swap_all", "全员换位", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("move_swap_all", "全员换位", TrollTier.APOCALYPSE)
                 .desc("所有人在同一瞬间互相换了位置，秩序清零")
                 .weight(80)
                 .cooldownSeconds(420)
                 .when(ctx -> ctx.hasOthers())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     ctx.swapWith(ctx.randomOtherPlayer());
                     ctx.scatterOther(ctx.randomOtherPlayer(), 40);
                     ctx.pullPlayersToMe(20);
@@ -955,10 +1065,12 @@ public final class MovementEvents {
                 .build());
 
         TrollEvents.reg(TrollEvent.of("move_sky_drop", "从云上扔下来", TrollTier.NIGHTMARE)
-                .desc("你出现在高空，而且重力已经先到一步")
+                .desc("你出现在高空，而重力比你先到一步。")
                 .weight(90)
                 .cooldownSeconds(400)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.scatterFar(120);
                     ctx.teleport(ctx.x(), ctx.y() + 60, ctx.z());
                     ctx.noGravity(1);
                     ctx.glitch(GlitchIds.FOV_ZOOM, 60);
@@ -967,37 +1079,57 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_void_edge", "虚空边缘", TrollTier.NIGHTMARE)
-                .desc("脚边裂开一个直通虚空的深坑")
+        TrollEvents.reg(TrollEvent.of("move_void_edge", "虚空边缘", TrollTier.OBLIVION)
+                .desc("你会被放在虚空边缘。它会先给你一块看起来像地面的东西。")
                 .weight(80)
                 .cooldownSeconds(420)
                 .run(ctx -> {
-                    ctx.voidPit(3, 40);
-                    ctx.damage("outofworld", 4.0f);
-                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 40);
-                    ctx.title("§0§l往下", "§7下面没有底");
-                    ctx.addRage(18);
+                    ctx.teleport(ctx.x(), -60.0, ctx.z());
+                    ctx.glitch(GlitchIds.BLACKOUT, 20 * 8, 3);
+                    ctx.msg("§7脚下有一块石头。§8你可以站在那里。");
+                    // 假安全：那块石头是它放的
+                    ctx.later(80, () -> {
+                        ctx.voidPit(2, 6);
+                        ctx.damage("outofworld", 5.0f);
+                        ctx.warn("§4那块石头也是它放的。§7现在它收回去了。");
+                    });
+                    ctx.later(210, () -> {
+                        ctx.obliterate();
+                        ctx.takeRandomItems(2);
+                        ctx.msg("§8虚空不急着吃掉你。§7它有的是时间。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_bound_long", "长时间定身", TrollTier.NIGHTMARE)
-                .desc("你的双腿被彻底锁死，只能眼睁睁等它过去")
+        TrollEvents.reg(TrollEvent.of("move_bound_long", "长时间定身", TrollTier.OBLIVION)
+                .desc("你的活动范围会被缩到三格。所谓自由，是能在三格之内选方向。")
                 .weight(90)
                 .cooldownSeconds(380)
                 .run(ctx -> {
+                    ctx.cageWith(ctx.pick(TrollPools.EVIL_BLOCKS));
                     ctx.freeze(200);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 1);
-                    ctx.msg("§4腿：§7「我们今天不参与。」");
-                    ctx.addRage(16);
+                    ctx.glitch(GlitchIds.FREEZE_INPUT, 20 * 10, 3);
+                    ctx.title("§8§l活 动 范 围 已 更 新", "§7三格，含你自己");
+                    // 假希望：笼子开了
+                    ctx.later(140, () -> {
+                        ctx.msg("§7笼子好像开了一条缝。");
+                        ctx.later(80, () -> {
+                            ctx.cageWith(ctx.pick(TrollPools.EVIL_BLOCKS));
+                            ctx.obliterate();
+                            ctx.warn("§4缝是画上去的。§7现在连画都没了。");
+                        });
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_elytra_crash", "鞘翅坠毁", TrollTier.NIGHTMARE)
-                .desc("鞘翅在空中突然失效，你以自由落体结束这次旅行")
+        TrollEvents.reg(TrollEvent.of("move_elytra_crash", "鞘翅坠毁", TrollTier.APOCALYPSE)
+                .desc("鞘翅在空中突然失效。这次旅行以自由落体结束。")
                 .weight(90)
                 .cooldownSeconds(400)
                 .when(ctx -> !ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.damageRandomTool(90);
                     ctx.damage("fall", 10.0f);
                     ctx.glitch(GlitchIds.FLASHBANG, 20);
@@ -1006,20 +1138,28 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_horse_abyss", "骑马冲进深渊", TrollTier.NIGHTMARE)
-                .desc("你和坐骑一起踏进了看不到底的地方")
+        TrollEvents.reg(TrollEvent.of("move_horse_abyss", "骑马冲进深渊", TrollTier.OBLIVION)
+                .desc("你会骑上一样东西。它唯一确定的方向，是往下。")
                 .weight(80)
                 .cooldownSeconds(430)
                 .run(ctx -> {
-                    ctx.voidPit(2, 30);
-                    ctx.dismount();
-                    ctx.damage("fall", 8.0f);
-                    ctx.msg("§4马：§7「我先走一步。」");
-                    ctx.addRage(18);
+                    ctx.mount(ctx.pick(TrollPools.RIDEABLE));
+                    ctx.msg("§7你骑上去了。§8它开始跑。");
+                    ctx.later(70, () -> {
+                        ctx.voidPit(3, 12);
+                        ctx.teleport(ctx.x(), -58.0, ctx.z());
+                        ctx.damage("outofworld", 5.0f);
+                        ctx.warn("§4它没有停。§7它只是不打算往上跑。");
+                    });
+                    ctx.later(210, () -> {
+                        ctx.obliterate();
+                        ctx.takeRandomItems(3);
+                        ctx.msg("§8坐骑还在，你也在。§7只是都不在地面上了。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_minecart_hell", "矿车直通岩浆", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("move_minecart_hell", "矿车直通岩浆", TrollTier.APOCALYPSE)
                 .desc("你乘坐的矿车终点站是一池岩浆")
                 .weight(80)
                 .cooldownSeconds(420)
@@ -1033,53 +1173,79 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_pearl_loop", "珍珠连跳", TrollTier.NIGHTMARE)
-                .desc("你的落点被反复重排，每次都是新的惊吓")
+        TrollEvents.reg(TrollEvent.of("move_pearl_loop", "珍珠连跳", TrollTier.OBLIVION)
+                .desc("你会被反复送回同一个点。它会让你相信下一次不一样。")
                 .weight(80)
                 .cooldownSeconds(430)
                 .run(ctx -> {
-                    ctx.later(15, () -> ctx.scatterFar(300));
-                    ctx.later(40, () -> ctx.scatterFar(300));
-                    ctx.later(70, () -> ctx.scatterFar(300));
-                    ctx.glitch(GlitchIds.SCREEN_TEAR, 50);
-                    ctx.warn("§4落点：§7每次都不太一样。");
-                    ctx.addRage(18);
+                    double px = ctx.x();
+                    double py = ctx.y();
+                    double pz = ctx.z();
+                    ctx.msg("§7你被传送了。§8位置变了。");
+                    ctx.later(70, () -> {
+                        ctx.teleport(px, py, pz);
+                        ctx.msg("§7……怎么又是这里。");
+                    });
+                    ctx.later(160, () -> {
+                        ctx.teleport(px, py, pz);
+                        ctx.warn("§4第三次。§7每次落点都一样，包括你现在的朝向。");
+                    });
+                    ctx.later(270, () -> {
+                        ctx.obliterate();
+                        ctx.scatterFar(50);
+                        ctx.takeRandomItems(2);
+                        ctx.msg("§8你以为离开了。§7它只是换了个原点重新开始。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_stone_prison", "石牢", TrollTier.NIGHTMARE)
-                .desc("你被整体浇进石头里，只留一条呼吸缝")
+        TrollEvents.reg(TrollEvent.of("move_stone_prison", "石牢", TrollTier.OBLIVION)
+                .desc("你会在全黑的石牢里醒来。它告诉你钥匙就在你自己身上。")
                 .weight(80)
                 .cooldownSeconds(440)
                 .run(ctx -> {
-                    ctx.cageWith(TrollPools.EVIL_BLOCKS[2]);
-                    ctx.freeze(140);
-                    ctx.damage("flyintowall", 5.0f);
-                    ctx.glitch(GlitchIds.BLACKOUT, 50);
-                    ctx.msg("§4石头：§7「先住下吧。」");
-                    ctx.addRage(19);
+                    ctx.cageWith(ctx.pick(TrollPools.EVIL_BLOCKS));
+                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 20 * 12, 3);
+                    ctx.buryAlive();
+                    ctx.msg("§8钥匙在你身上。§7你自己找。");
+                    ctx.later(150, () -> {
+                        ctx.msg("§7你摸了很久。§8身上什么都没有。");
+                        ctx.later(90, () -> {
+                            ctx.obliterate();
+                            ctx.takeRandomItems(4);
+                            ctx.warn("§4钥匙确实在你身上——在它把你的东西拿走之前。");
+                        });
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_path_lightning", "路径引雷", TrollTier.NIGHTMARE)
-                .desc("你走过的路线被逐格标上了雷击")
+        TrollEvents.reg(TrollEvent.of("move_path_lightning", "路径引雷", TrollTier.OBLIVION)
+                .desc("你走的每一步都会招来落雷。停下也一样，只是慢一点。")
                 .weight(90)
                 .cooldownSeconds(380)
                 .run(ctx -> {
-                    ctx.lightning();
-                    ctx.lightningNear();
+                    for (int i = 0; i < 4; i++) {
+                        ctx.lightningNear();
+                    }
                     ctx.damage("lightning", 5.0f);
-                    ctx.setFire(4);
-                    ctx.warn("§e天：§7「你走的那条路，我看见了。」");
-                    ctx.addRage(16);
+                    ctx.glitch(GlitchIds.FLASHBANG, 20 * 5, 3);
+                    ctx.title("§e§l别 停 下", "§7停下也会被劈，只是慢一点");
+                    ctx.later(130, () -> {
+                        ctx.lightning();
+                        ctx.obliterate();
+                        ctx.takeRandomItems(2);
+                        ctx.warn("§4刚才那一下，是给站着不动的人准备的。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_gravity_long", "长时间失重", TrollTier.NIGHTMARE)
-                .desc("重力被撤走很久，你只能靠撞墙改变方向")
+        TrollEvents.reg(TrollEvent.of("move_gravity_long", "长时间失重", TrollTier.APOCALYPSE)
+                .desc("重力被撤走很久。你只能靠撞墙来改变方向。")
                 .weight(90)
                 .cooldownSeconds(400)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.noGravity(300);
                     ctx.glitch(GlitchIds.FOV_WILD, 60);
                     ctx.msg("§4重力：§7「长时间请假，勿念。」");
@@ -1087,24 +1253,34 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_fall_damage_tax", "摔落伤害加倍", TrollTier.NIGHTMARE)
-                .desc("落地结算时，系统多收了一份手续费")
+        TrollEvents.reg(TrollEvent.of("move_fall_damage_tax", "摔落伤害加倍", TrollTier.OBLIVION)
+                .desc("你每一次落地都会被收一次税，税是你的血。")
                 .weight(90)
                 .cooldownSeconds(390)
                 .run(ctx -> {
-                    ctx.damage("fall", 8.0f);
-                    ctx.damage("fall", 6.0f);
-                    ctx.playHurtSound();
-                    ctx.warn("§4摔落伤害：§7已含服务费。");
-                    ctx.addRage(17);
+                    ctx.teleport(ctx.x(), ctx.y() + 28, ctx.z());
+                    ctx.resetFallDistance();
+                    ctx.msg("§7你被抬高了。§8落地是迟早的事。");
+                    ctx.later(90, () -> {
+                        ctx.damage("fall", 6.0f);
+                        ctx.msg("§7第一次落地。§8税已扣。");
+                    });
+                    ctx.later(190, () -> {
+                        ctx.teleport(ctx.x(), ctx.y() + 34, ctx.z());
+                        ctx.obliterate();
+                        ctx.takeRandomItems(2);
+                        ctx.warn("§4第二次的税更高。§7而且这次连你的东西一起收。");
+                    });
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_teleport_maze", "传送迷宫", TrollTier.NIGHTMARE)
-                .desc("每次你走几步就会被送走，出口不存在")
+        TrollEvents.reg(TrollEvent.of("move_teleport_maze", "传送迷宫", TrollTier.APOCALYPSE)
+                .desc("每走几步就被送走一次。出口不存在，这一点它没告诉你。")
                 .weight(80)
                 .cooldownSeconds(430)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     ctx.later(30, () -> ctx.scatter(30));
                     ctx.later(70, () -> ctx.scatter(30));
                     ctx.later(110, () -> ctx.scatterFar(400));
@@ -1114,17 +1290,20 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_boat_abyss", "船开进虚空", TrollTier.NIGHTMARE)
-                .desc("你的小船载着你驶向了一个没有底的洞")
+        TrollEvents.reg(TrollEvent.of("move_boat_abyss", "船开进虚空", TrollTier.OBLIVION)
+                .desc("你会坐上一条船。它只在一个方向上顺流，而那个方向是往下。")
                 .weight(80)
                 .cooldownSeconds(440)
                 .run(ctx -> {
-                    ctx.voidPit(3, 36);
-                    ctx.dismount();
-                    ctx.damage("outofworld", 5.0f);
-                    ctx.glitch(GlitchIds.FAKE_CORRUPT, 40);
-                    ctx.msg("§4船：§7「我只能送到这儿了。」");
-                    ctx.addRage(19);
+                    ctx.mount(ctx.pick(TrollPools.RIDEABLE));
+                    ctx.glitch(GlitchIds.SPIN, 20 * 10, 2);
+                    ctx.title("§8§l顺 流 而 下", "§7没有桨，也不需要");
+                    ctx.later(110, () -> {
+                        ctx.voidPit(3, 10);
+                        ctx.damage("outofworld", 4.0f);
+                        ctx.obliterate();
+                        ctx.warn("§4流向是它定的。§7终点也是。");
+                    });
                 })
                 .build());
 
@@ -1132,27 +1311,39 @@ public final class MovementEvents {
         // APOCALYPSE —— 地狱：这一趟有去无回
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("move_apocalypse_void", "虚空吞噬", TrollTier.APOCALYPSE)
-                .desc("你脚下的世界被替换成了虚空，装备和地面一起消失")
+        TrollEvents.reg(TrollEvent.of("move_apocalypse_void", "虚空吞噬", TrollTier.OBLIVION)
+                .desc("整个区域会被抽成虚空，只留你脚下那一格当诱饵。")
                 .weight(50)
                 .cooldownSeconds(900)
                 .once()
                 .run(ctx -> {
-                    ctx.clearInventory();
-                    ctx.voidPit(4, 60);
-                    ctx.damage("outofworld", 12.0f);
-                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 70);
-                    ctx.title("§0§l虚空已签收", "§7收件人：你");
-                    ctx.addRage(26);
+                    ctx.title("§8§l地 面 已 撤 回", "§7只给你留了一格");
+                    ctx.voidPit(6, 20);
+                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 20 * 10, 3);
+                    ctx.msg("§7你脚下还有一格。§8站好。");
+                    ctx.later(130, () -> {
+                        ctx.voidPit(3, 12);
+                        ctx.buryAlive();
+                        ctx.damage("outofworld", 6.0f);
+                        ctx.warn("§4那一格也是诱饵。§7现在没有了。");
+                    });
+                    ctx.later(290, () -> {
+                        ctx.obliterate();
+                        ctx.stripAll();
+                        ctx.takeRandomItems(3);
+                        ctx.msg("§8虚空不需要你做任何事。§7它只是等。");
+                    });
                 })
                 .build());
 
         TrollEvents.reg(TrollEvent.of("move_apocalypse_sky_throw", "天罚坠落", TrollTier.APOCALYPSE)
-                .desc("你被提到两百格高空，然后开始了漫长的下降")
+                .desc("你被提到两百格高空，然后开始了漫长的下降。")
                 .weight(50)
                 .cooldownSeconds(900)
                 .once()
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     ctx.teleport(ctx.x(), ctx.y() + 200, ctx.z());
                     ctx.glitch(GlitchIds.FOV_ZOOM, 90);
                     ctx.titleToAll("§4§l自由落体", "§7观看者请在安全距离外");
@@ -1160,27 +1351,37 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_apocalypse_lava_pool", "岩浆泳池", TrollTier.APOCALYPSE)
-                .desc("整片地面被换成了滚烫的泳池，深度管够")
+        TrollEvents.reg(TrollEvent.of("move_apocalypse_lava_pool", "岩浆泳池", TrollTier.OBLIVION)
+                .desc("你以为逃出了火，其实只是换了一个更安静的池子。")
                 .weight(50)
                 .cooldownSeconds(900)
                 .once()
                 .run(ctx -> {
-                    ctx.lavaPit(6);
+                    ctx.lavaPit(3);
                     ctx.setFire(10);
-                    ctx.damage("lava", 8.0f);
-                    ctx.glitch(GlitchIds.FLASHBANG, 30);
-                    ctx.title("§6§l温泉开业", "§7水温：§c致命§6");
-                    ctx.addRage(26);
+                    ctx.teleport(ctx.x(), ctx.y() + 12, ctx.z());
+                    ctx.msg("§7你上来了。§8下面是火。");
+                    ctx.later(100, () -> {
+                        ctx.lavaPit(4);
+                        ctx.damage("lava", 6.0f);
+                        ctx.warn("§4池子扩大了。§7它一直在等你跳第二次。");
+                    });
+                    ctx.later(240, () -> {
+                        ctx.obliterate();
+                        ctx.buryAlive();
+                        ctx.msg("§8最安静的那种烫，是先没有痛觉的那种。");
+                    });
                 })
                 .build());
 
         TrollEvents.reg(TrollEvent.of("move_apocalypse_loop", "无尽传送", TrollTier.APOCALYPSE)
-                .desc("你陷入了一场没有尽头的传送循环，方向感彻底报废")
+                .desc("传送没有尽头。方向感在这里是第一个被丢下的东西。")
                 .weight(40)
                 .cooldownSeconds(1000)
                 .once()
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.setExperience(0);
                     for (int i = 0; i < 5; i++) {
                         ctx.later(20 * (i + 1), () -> ctx.scatterFar(800));
                     }
@@ -1191,44 +1392,55 @@ public final class MovementEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_apocalypse_fatal_fall", "必死坠落", TrollTier.APOCALYPSE)
-                .desc("急坠与地面结算同时发生，没有中间商")
+        TrollEvents.reg(TrollEvent.of("move_apocalypse_fatal_fall", "必死坠落", TrollTier.OBLIVION)
+                .desc("它会把你抬到很高的地方，然后认真地告诉你下面很安全。")
                 .weight(40)
                 .cooldownSeconds(1200)
                 .once()
                 .run(ctx -> {
-                    ctx.lift(120);
-                    ctx.later(60, () -> {
-                        ctx.resetFallDistance();
-                        ctx.damage("fall", 40.0f);
-                        ctx.glitch(GlitchIds.FAKE_DEATH, 60);
+                    ctx.teleport(ctx.x(), ctx.y() + 160, ctx.z());
+                    ctx.glitch(GlitchIds.FOV_ZOOM, 20 * 10, 3);
+                    ctx.msg("§a下面很安全。§7你可以直接跳。");
+                    ctx.later(120, () -> {
+                        ctx.voidPit(4, 14);
+                        ctx.damage("fall", 12.0f);
+                        ctx.obliterate();
+                        ctx.warn("§4「安全」是它说的。§7你信了，这才是重点。");
                     });
-                    ctx.fakeDeathScreen("落地方式：垂直");
-                    ctx.addRage(30);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("move_apocalypse_no_ground", "世界失去地面", TrollTier.APOCALYPSE)
-                .desc("你周围的立足之处被成片抹去，只剩天与虚空")
+        TrollEvents.reg(TrollEvent.of("move_apocalypse_no_ground", "世界失去地面", TrollTier.OBLIVION)
+                .desc("地面会在你最需要它的时候缺席。它会提前通知你，然后照做。")
                 .weight(40)
                 .cooldownSeconds(1200)
                 .once()
                 .run(ctx -> {
-                    ctx.breakUnder();
-                    ctx.scatterBlocks(TrollPools.TRAP_BLOCKS[0], 24);
-                    ctx.boomDestructive(ctx.x() + 2, ctx.y() - 1, ctx.z() + 2, 5.0f);
-                    ctx.glitch(GlitchIds.SCREEN_TEAR, 80);
-                    ctx.title("§8§l大地退场", "§7请自行寻找落脚点");
-                    ctx.addRage(28);
+                    ctx.title("§8§l地面将不再提供", "§7提前通知是它唯一的礼貌");
+                    ctx.glitch(GlitchIds.FREEZE_INPUT, 20 * 8, 2);
+                    ctx.msg("§7你收到了通知。§8你开始跑。");
+                    ctx.later(90, () -> {
+                        ctx.voidPit(5, 18);
+                        ctx.buryAlive();
+                        ctx.damage("outofworld", 5.0f);
+                        ctx.warn("§4通知是真的。§7地面也真的没了。");
+                    });
+                    ctx.later(250, () -> {
+                        ctx.obliterate();
+                        ctx.takeRandomItems(3);
+                        ctx.msg("§8它从不骗你。§7它只是不需要骗你。");
+                    });
                 })
                 .build());
 
         TrollEvents.reg(TrollEvent.of("move_apocalypse_fake_crash", "移动导致崩溃", TrollTier.APOCALYPSE)
-                .desc("这次位移在客户端上表现为一次完整崩溃，纯视觉")
+                .desc("这次位移在客户端上表现为一次完整崩溃。纯视觉，但足够真。")
                 .weight(40)
                 .cooldownSeconds(1200)
                 .once()
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("outofworld", 8.0f);
                     ctx.glitch(GlitchIds.FAKE_CRASH, 110);
                     ctx.glitch(GlitchIds.FAKE_CORRUPT, 110);
                     ctx.scatterFar(120);

@@ -65,18 +65,20 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_tripwire_ambush", "满地绊线", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_tripwire_ambush", "满地绊线", TrollTier.BRUTAL)
                 .desc("在你周围铺一层绊线，走两步就响一声")
                 .weight(150)
                 .cooldownSeconds(45)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.damage("magic", 1.5f);
                     ctx.scatterBlocks(TrollPools.TRAP_BLOCKS[T_TRIPWIRE], 18);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 1.6f);
                     ctx.msg("§e地上全是绊线§7，触发一次响一次，祝你好运。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_note_jumpscare", "没人碰它也在响", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_note_jumpscare", "没人碰它也在响", TrollTier.ANNOYING)
                 .desc("四周塞满音符盒，然后把音量一次拉满")
                 .weight(150)
                 .cooldownSeconds(40)
@@ -88,7 +90,7 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_falling_scaffold", "头顶施工", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_falling_scaffold", "头顶施工", TrollTier.ANNOYING)
                 .desc("从六格高处砸下一块脚手架，吓你一跳但不疼")
                 .weight(140)
                 .cooldownSeconds(45)
@@ -99,7 +101,7 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_falling_sand_puff", "沙包警告", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_falling_sand_puff", "沙包警告", TrollTier.ANNOYING)
                 .desc("天上掉一坨沙子，纯粹是为了让你抬头")
                 .weight(140)
                 .cooldownSeconds(45)
@@ -110,18 +112,20 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_whisper_corner", "墙角有人说话", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_whisper_corner", "墙角有人说话", TrollTier.BRUTAL)
                 .desc("极轻的环境恐怖音，加一句假聊天，纯心理战")
                 .weight(150)
                 .cooldownSeconds(50)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.soundSelf(ctx.pick(TrollPools.AMBIENT_CREEPY), 0.7f, 0.8f);
                     ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "别找了，我不在你后面");
                     ctx.msg("§8你确定刚才没有说话声吗。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_fake_quest_popup", "新任务已接取", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_fake_quest_popup", "新任务已接取", TrollTier.ANNOYING)
                 .desc("凭空弹出一个根本完不成的任务")
                 .weight(130)
                 .cooldownSeconds(60)
@@ -131,17 +135,19 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_fake_achievement_popup", "恭喜获奖", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_fake_achievement_popup", "恭喜获奖", TrollTier.BRUTAL)
                 .desc("给你发一个羞辱性的假成就")
                 .weight(130)
                 .cooldownSeconds(60)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.effectRandom(240, 1);
                     ctx.fakeAchievement(ctx.pick(TrollPools.FAKE_ACHIEVEMENTS), "奖杯材质：空气");
                     ctx.particle(ctx.pick(TrollPools.TAUNT_PARTICLES), 25);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_ore_tease_sparkle", "这绝对是钻石", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_ore_tease_sparkle", "这绝对是钻石", TrollTier.ANNOYING)
                 .desc("周围瞬间冒出一堆高级矿，但它们一块也带不走")
                 .weight(140)
                 .cooldownSeconds(55)
@@ -153,7 +159,7 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_fake_save_scare", "正在保存世界", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_fake_save_scare", "正在保存世界", TrollTier.ANNOYING)
                 .desc("假装自动保存，顺便给你一句假提示")
                 .weight(120)
                 .cooldownSeconds(60)
@@ -163,7 +169,7 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_redstone_click", "机关已启动", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_redstone_click", "机关已启动", TrollTier.ANNOYING)
                 .desc("身边铺红石块和拉杆，声音很唬人，功能为零")
                 .weight(140)
                 .cooldownSeconds(45)
@@ -187,11 +193,13 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_fake_nether_portal", "下界门已激活", TrollTier.PRANK)
+        TrollEvents.reg(TrollEvent.of("trap_fake_nether_portal", "下界门已激活", TrollTier.BRUTAL)
                 .desc("周围撒黑曜石加传送门粒子，然后告诉你还差一块")
                 .weight(130)
                 .cooldownSeconds(70)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.scatterBlocks(TrollPools.EVIL_BLOCKS[E_OBSIDIAN], 8);
                     ctx.particle(ctx.pick(TrollPools.SPOOKY_PARTICLES), 40);
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 0.9f, 0.8f);
@@ -203,78 +211,92 @@ public final class TrapEvents {
         // ANNOYING —— 烦人，会皱眉
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("trap_web_ankle", "脚踝上的蛛网", TrollTier.ANNOYING)
-                .desc("脚下铺一整片蛛网，走路像在糖浆里游泳")
+        TrollEvents.reg(TrollEvent.of("trap_web_ankle", "脚踝上的蛛网", TrollTier.NIGHTMARE)
+                .desc("脚下铺满蛛网：你不是不能走，是只能一格一格地挪，而它已经在门口站好了")
                 .weight(160)
                 .cooldownSeconds(70)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
-                    ctx.placeFloor(TrollPools.TRAP_BLOCKS[T_COBWEB], 1);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 100, 0);
-                    ctx.msg("§7你的移动速度已被模组回收。");
+                    ctx.placeFloor(TrollPools.TRAP_BLOCKS[T_COBWEB], 2);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 1);
+                    ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 1.0f, 0.7f);
+                    ctx.msg("§8从你被粘住的那一刻起，你就不再是在逃跑，只是在挪。");
+                    ctx.addRage(8);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_berry_bush_step", "甜甜的陷阱", TrollTier.ANNOYING)
-                .desc("脚边种满甜浆果丛，每一步都在献血")
+        TrollEvents.reg(TrollEvent.of("trap_berry_bush_step", "甜甜的陷阱", TrollTier.NIGHTMARE)
+                .desc("脚边种满甜浆果丛，每一步都在献血；等你走出去，血条已经不够再跑一次了")
                 .weight(150)
                 .cooldownSeconds(80)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
                     ctx.placeFloor(TrollPools.TRAP_BLOCKS[T_BERRY], 2);
-                    ctx.damage("cactus", 1.5f);
-                    ctx.msg("§c甜浆果丛已种植§7，请光脚踩进去试试。");
+                    ctx.damage("cactus", 2.0f);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 0);
+                    ctx.msg("§c浆果：§7甜的。§c代价：§7你的。");
+                    ctx.addRage(8);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_powder_snow_sink", "脚下是雪", TrollTier.ANNOYING)
-                .desc("地板换成细雪，你会慢慢沉下去，而且爬不出来")
+        TrollEvents.reg(TrollEvent.of("trap_powder_snow_sink", "脚下是雪", TrollTier.NIGHTMARE)
+                .desc("地板换成细雪，你会慢慢沉下去、爬不出来，而沉下去的每一秒都在扣血")
                 .weight(150)
                 .cooldownSeconds(90)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
                     ctx.placeFloor(TrollPools.TRAP_BLOCKS[T_POWDER_SNOW], 2);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 120, 0);
-                    ctx.msg("§f细雪§7：一种会让你怀疑人生的建筑材料。");
+                    ctx.freeze(60);
+                    ctx.damage("freeze", 2.0f);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 240, 1);
+                    ctx.msg("§b雪很安静。安静到你能听见自己在往下沉。");
+                    ctx.addRage(9);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_honey_floor", "被地板黏住了", TrollTier.ANNOYING)
-                .desc("脚下换蜂蜜块，你连转身都要申请审批")
+        TrollEvents.reg(TrollEvent.of("trap_honey_floor", "被地板黏住了", TrollTier.NIGHTMARE)
+                .desc("脚下换蜂蜜块，你连转身都要申请审批；而你申请的时候，它已经走到你背后了")
                 .weight(150)
                 .cooldownSeconds(75)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
-                    ctx.setBlock(0, -1, 0, TrollPools.TRAP_BLOCKS[T_HONEY]);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 120, 1);
-                    ctx.msg("§6你被地板黏住了§7，解约流程请咨询模组作者。");
+                    ctx.placeFloor(TrollPools.TRAP_BLOCKS[T_HONEY], 2);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 220, 1);
+                    ctx.spawnHostileBehind(ctx.pick(TrollPools.HOSTILE));
+                    ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.6f);
+                    ctx.msg("§6甜的东西最容易让人走不动。这不是比喻。");
+                    ctx.addRage(9);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_campfire_floor", "免费的篝火", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("trap_campfire_floor", "免费的篝火", TrollTier.BRUTAL)
                 .desc("脚边支起营火，站着不动就算露天烧烤")
                 .weight(150)
                 .cooldownSeconds(85)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     ctx.placeFloor(TrollPools.TRAP_BLOCKS[T_CAMPFIRE], 1);
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.8f);
                     ctx.msg("§6篝火已点燃§7，请勿离开火堆（也请勿站在火堆里）。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_cauldron_soak", "你被泡了", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("trap_cauldron_soak", "你被泡了", TrollTier.BRUTAL)
                 .desc("四周摆满炼药锅，再往你脚下灌水，体验湿身")
                 .weight(130)
                 .cooldownSeconds(90)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.takeRandomItems(1);
                     ctx.surroundWith(TrollPools.TRAP_BLOCKS[T_CAULDRON]);
                     ctx.placeFloor(TrollPools.EVIL_BLOCKS[4], 1);
                     ctx.msg("§9你已经湿透了§7，这是炼药流程的一部分。");
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_dispenser_volley", "发射器齐射", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("trap_dispenser_volley", "发射器齐射", TrollTier.BRUTAL)
                 .desc("四面架起发射器，再朝你脸上丢一堆投射物")
                 .weight(140)
                 .cooldownSeconds(90)
@@ -290,7 +312,7 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_piston_sandwich", "活塞三明治", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("trap_piston_sandwich", "活塞三明治", TrollTier.BRUTAL)
                 .desc("用活塞把你夹在中间，动一下都费劲")
                 .weight(140)
                 .cooldownSeconds(100)
@@ -302,32 +324,40 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_freeze_static", "定身术", TrollTier.ANNOYING)
-                .desc("短时间冻结，手还能动，脚不听使唤")
+        TrollEvents.reg(TrollEvent.of("trap_freeze_static", "定身术", TrollTier.NIGHTMARE)
+                .desc("短时间冻结：手还能动，脚不听使唤，你只能原地等着被处理")
                 .weight(140)
                 .cooldownSeconds(90)
                 .run(ctx -> {
-                    ctx.freeze(120);
+                    ctx.freeze(80);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 200, 1);
                     ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 1.0f, 0.6f);
-                    ctx.msg("§b你的双腿已被模组临时接管。");
+                    ctx.later(60, () -> ctx.damage("magic", 2.0f));
+                    ctx.msg("§8你想动。指令发出去了。脚没有收到。");
+                    ctx.addRage(9);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_gravity_float", "失重十秒", TrollTier.ANNOYING)
-                .desc("让你飘起来，落地方式由重力决定")
+        TrollEvents.reg(TrollEvent.of("trap_gravity_float", "失重十秒", TrollTier.NIGHTMARE)
+                .desc("让你飘起来，落地方式由重力决定——而重力今天心情不好")
                 .weight(130)
                 .cooldownSeconds(90)
                 .run(ctx -> {
-                    ctx.noGravity(100);
-                    ctx.msg("§7重力已下线§8，坠机责任自负§7。");
+                    ctx.noGravity(200);
+                    ctx.lift(10);
+                    ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 1.0f, 1.2f);
+                    ctx.msg("§7你浮起来了。没有降落伞，也没有人接着你。");
+                    ctx.addRage(9);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_mount_piggy", "强制骑猪", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("trap_mount_piggy", "强制骑猪", TrollTier.BRUTAL)
                 .desc("往你胯下塞一只动物，然后立刻把它收走")
                 .weight(140)
                 .cooldownSeconds(80)
                 .run(ctx -> {
+                    // [v3.0.0 残酷化] 本事件等级已上调，补足与等级相称的痛感
+                    ctx.exhaust(12.0f);
                     ctx.mount(ctx.pick(TrollPools.FARM_ANIMALS));
                     ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 1.2f);
                     ctx.msg("§e这是你的新坐骑§7，租期§c三秒§7。");
@@ -336,19 +366,21 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_void_pit_shallow", "浅坑陷阱", TrollTier.ANNOYING)
-                .desc("脚下挖一个三格浅坑，摔不死但很丢人")
+        TrollEvents.reg(TrollEvent.of("trap_void_pit_shallow", "浅坑陷阱", TrollTier.NIGHTMARE)
+                .desc("脚下挖穿几层，摔不死，但足够让你在坑底抬头看很久")
                 .weight(140)
                 .cooldownSeconds(80)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
-                    ctx.voidPit(1, 3);
-                    ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.0f, 0.9f);
-                    ctx.msg("§7这是一个坑§8，字面意义上的§7。");
+                    ctx.voidPit(1, 6);
+                    ctx.damage("fall", 2.0f);
+                    ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 0.7f);
+                    ctx.msg("§8坑不深。但爬上去的路，是它给你的下一道题。");
+                    ctx.addRage(8);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_lava_pit_small", "温泉水疗", TrollTier.ANNOYING)
+        TrollEvents.reg(TrollEvent.of("trap_lava_pit_small", "温泉水疗", TrollTier.BRUTAL)
                 .desc("脚下铺一格岩浆，配置关闭时会退化成岩浆块（也够疼）")
                 .weight(130)
                 .cooldownSeconds(100)
@@ -360,13 +392,15 @@ public final class TrapEvents {
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_scatter_junk_blocks", "满地都是石头", TrollTier.ANNOYING)
-                .desc("周围随机撒一堆方块，挡住你的路还不给理由")
+        TrollEvents.reg(TrollEvent.of("trap_scatter_junk_blocks", "满地都是石头", TrollTier.NIGHTMARE)
+                .desc("周围随机撒一堆方块：挡住你的路、堵住你的门，而且没人会来清理")
                 .weight(150)
                 .cooldownSeconds(70)
                 .run(ctx -> {
-                    ctx.scatterBlocks(TrollPools.TROLL_BLOCKS[B_COBBLE], 24);
-                    ctx.msg("§7你周围多了一堆§8圆石§7，搬运费自理。");
+                    ctx.scatterBlocks(ctx.pick(TrollPools.TROLL_BLOCKS), 20);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 160, 0);
+                    ctx.msg("§7这条路现在是石头的地盘，你只是路过。");
+                    ctx.addRage(7);
                 })
                 .build());
 
@@ -374,167 +408,182 @@ public final class TrapEvents {
         // BRUTAL —— 抓狂，会骂人
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("trap_anvil_drop", "铁砧雨", TrollTier.BRUTAL)
-                .desc("六块铁砧从天上排队砸下来，砸不死但很疼")
+        TrollEvents.reg(TrollEvent.of("trap_anvil_drop", "铁砧雨", TrollTier.APOCALYPSE)
+                .desc("六块铁砧排队砸下来：砸不死，但足够让你记住每一次落点的声音")
                 .weight(58)
                 .cooldownSeconds(200)
                 .run(ctx -> {
-                    ctx.meteorShower(6, 18);
-                    ctx.particle(ctx.pick(TrollPools.BOOM_PARTICLES), 40);
-                    ctx.title("§c§l低头", "§7天上有点东西。");
-                    ctx.addRage(14);
+                    ctx.meteorShower(6, 18.0);
+                    ctx.damage("fall", 2.0f);
+                    ctx.sound(ctx.pick(TrollPools.IMPACT), 1.4f, 0.6f);
+                    ctx.msg("§8第一块是提醒，第二块是教训，后面四块纯粹是它想砸。");
+                    ctx.addRage(12);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_hidden_tnt", "地板下有东西", TrollTier.BRUTAL)
-                .desc("往你脚边埋一枚带长引信的 TNT，让你听完倒计时")
+        TrollEvents.reg(TrollEvent.of("trap_hidden_tnt", "地板下有东西", TrollTier.NIGHTMARE)
+                .desc("脚边埋一枚长引信 TNT：它给你足够的时间听完倒计时，也足够的时间想明白跑不掉")
                 .weight(55)
                 .cooldownSeconds(210)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
-                    ctx.voidPit(1, 2);
-                    ctx.spawnTnt(ctx.x(), ctx.y(), ctx.z(), 70);
-                    ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 1.4f);
-                    ctx.msg("§c滴。§e滴。§c滴。§7——你还有三秒半。");
-                    ctx.addRage(16);
+                    ctx.spawnTnt(ctx.x() + ctx.rd(-1.0, 1.0), ctx.y(), ctx.z() + ctx.rd(-1.0, 1.0), 50);
+                    ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.4f, 1.0f);
+                    ctx.breakUnder();
+                    ctx.msg("§e引信很长。§8长到你有时间后悔刚才那个决定。");
+                    ctx.addRage(9);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_void_pit_deep", "十二格自由落体", TrollTier.BRUTAL)
-                .desc("脚下挖出十二格深的坑，爬上来是你的问题")
+        TrollEvents.reg(TrollEvent.of("trap_void_pit_deep", "十二格自由落体", TrollTier.APOCALYPSE)
+                .desc("脚下挖出十二格深坑：摔下去不会死，但爬上来之前它有的是时间做事")
                 .weight(52)
                 .cooldownSeconds(220)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
                     ctx.voidPit(2, 12);
-                    ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.6f);
-                    ctx.msg("§8坑已挖好§7，深度十二格，梯子自备。");
-                    ctx.addRage(15);
+                    ctx.damage("fall", 3.0f);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 260, 1);
+                    ctx.msg("§8坑底很安静。安静到你开始怀疑上面已经没人在等你了。");
+                    ctx.addRage(12);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_lava_pit_bath", "岩浆浴缸", TrollTier.BRUTAL)
-                .desc("脚下一整片岩浆，配置关闭也会变成滚烫的岩浆块")
+        TrollEvents.reg(TrollEvent.of("trap_lava_pit_bath", "岩浆浴缸", TrollTier.NIGHTMARE)
+                .desc("脚下一整片岩浆，配置关闭也会变成滚烫的岩浆块——总之你脚下不会有好东西")
                 .weight(50)
                 .cooldownSeconds(230)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
                     ctx.lavaPit(2);
-                    ctx.setFire(6);
-                    ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.8f);
-                    ctx.msg("§4岩浆浴缸已注水§7，请勿在里面呼吸。");
-                    ctx.addRage(18);
+                    ctx.setFire(8);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 260, 1);
+                    ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.2f, 0.7f);
+                    ctx.addRage(11);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_freeze_solid", "彻底冻住", TrollTier.BRUTAL)
-                .desc("长时间冻结，你只能眼睁睁看着怪走过来")
+        TrollEvents.reg(TrollEvent.of("trap_freeze_solid", "彻底冻住", TrollTier.APOCALYPSE)
+                .desc("长时间冻结：你只能眼睁睁看着它们走过来，一步、一步，走得很慢")
                 .weight(50)
                 .cooldownSeconds(240)
                 .run(ctx -> {
-                    ctx.freeze(320);
-                    ctx.glitch(GlitchIds.FREEZE_INPUT, 80, 1);
-                    ctx.msg("§b你已被冻结§8，思考是唯一被允许的动作§7。");
-                    ctx.addRage(16);
+                    ctx.freeze(160);
+                    for (int i = 0; i < 3; i++) {
+                        ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 6);
+                    }
+                    ctx.damage("freeze", 2.0f);
+                    ctx.title("§b§l别动", "§8它们也不急");
+                    ctx.addRage(13);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_gravity_off", "重力请了年假", TrollTier.BRUTAL)
-                .desc("失重两百多 tick，你会飘到不该去的高度")
+        TrollEvents.reg(TrollEvent.of("trap_gravity_off", "重力请了年假", TrollTier.APOCALYPSE)
+                .desc("失重两百多 tick，你会一路飘到不该去的高度，然后在它选定的时刻掉下来")
                 .weight(50)
                 .cooldownSeconds(230)
                 .run(ctx -> {
-                    ctx.noGravity(220);
-                    ctx.launch(0.9);
-                    ctx.msg("§7重力暂时离职§8，回来时会通知你的落点§7。");
-                    ctx.addRage(15);
+                    ctx.noGravity(420);
+                    ctx.lift(30);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 240, 0);
+                    ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 1.2f, 0.8f);
+                    ctx.later(120, () -> {
+                        ctx.launch(0.5);
+                        ctx.msg("§8上升的时候你以为自己是自由的。下降的时候你不会这么想。");
+                        ctx.addRage(6);
+                    });
+                    ctx.addRage(12);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_mount_wild", "随机坐骑体验", TrollTier.BRUTAL)
-                .desc("强制塞给你一只随机载具，包含 TNT 这种离谱选项")
+        TrollEvents.reg(TrollEvent.of("trap_mount_wild", "随机坐骑体验", TrollTier.APOCALYPSE)
+                .desc("强制塞给你一只随机载具，然后告诉你这趟没有刹车，也没有终点站")
                 .weight(45)
                 .cooldownSeconds(250)
                 .run(ctx -> {
                     ctx.mount(ctx.pick(TrollPools.RIDEABLE));
-                    ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.0f, 1.0f);
-                    ctx.msg("§e你的新坐骑已到货§7，请不要问它是什么。");
-                    ctx.addRage(14);
+                    ctx.lift(12);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 260, 1);
+                    ctx.soundSelf(ctx.pick(TrollPools.FUNNY), 1.2f, 0.7f);
+                    ctx.msg("§7系好安全带。这里没有安全带。");
+                    ctx.addRage(12);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_dismount_sky", "高空强制下车", TrollTier.BRUTAL)
-                .desc("先把你抬到高空，再把你从坐骑上踹下去")
+        TrollEvents.reg(TrollEvent.of("trap_dismount_sky", "高空强制下车", TrollTier.NIGHTMARE)
+                .desc("先把你抬到高空，再把你从坐骑上踹下去：坐骑留在天上，你负责落地")
                 .weight(50)
                 .cooldownSeconds(220)
                 .run(ctx -> {
-                    ctx.mount(ctx.pick(TrollPools.RIDEABLE));
-                    ctx.lift(45);
+                    ctx.lift(25);
                     ctx.dismount();
-                    ctx.title("§c§l已下车", "§7地面正在接近");
-                    ctx.addRage(17);
+                    ctx.noGravity(40);
+                    ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.3f, 0.8f);
+                    ctx.msg("§8它松手了。你甚至没来得及说再见。");
+                    ctx.addRage(11);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_gravel_roof", "天花板要塌了", TrollTier.BRUTAL)
-                .desc("头顶一层沙砾天花板，全部会掉下来活埋你")
+        TrollEvents.reg(TrollEvent.of("trap_gravel_roof", "天花板要塌了", TrollTier.NIGHTMARE)
+                .desc("头顶一层沙砾天花板，全部会掉下来活埋你；而你已经没有时间挖出去了")
                 .weight(52)
                 .cooldownSeconds(220)
                 .run(ctx -> {
                     for (int dx = -2; dx <= 2; dx++) {
                         for (int dz = -2; dz <= 2; dz++) {
-                            ctx.setBlock(dx, ctx.ri(4, 7), dz, TrollPools.TROLL_BLOCKS[B_GRAVEL]);
+                            if (ctx.chance(0.75)) {
+                                ctx.setBlock(dx, 4, dz, TrollPools.TROLL_BLOCKS[B_GRAVEL]);
+                            }
                         }
                     }
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 260, 1);
                     ctx.sound(ctx.pick(TrollPools.IMPACT), 1.0f, 0.5f);
-                    ctx.msg("§7天花板正在办理§8离职§7手续。");
-                    ctx.addRage(15);
+                    ctx.msg("§7别抬头。抬了也没用。");
+                    ctx.addRage(10);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_tiny_swarm", "微型军团", TrollTier.BRUTAL)
-                .desc("一堆又小又烦的生物把你围起来，打不完也甩不掉")
+        TrollEvents.reg(TrollEvent.of("trap_tiny_swarm", "微型军团", TrollTier.NIGHTMARE)
+                .desc("一堆又小又烦的东西把你围住：打不完、甩不掉，而它们有的是时间")
                 .weight(50)
                 .cooldownSeconds(230)
                 .run(ctx -> {
-                    for (int i = 0; i < 8; i++) {
-                        ctx.giveMobCustomName(
-                                ctx.spawnAny(ctx.pick(TrollPools.TINY_ANNOYING),
-                                        ctx.x() + ctx.ri(-3, 3), ctx.y() + ctx.ri(0, 2), ctx.z() + ctx.ri(-3, 3)),
-                                "§8模组的实习生");
+                    for (int i = 0; i < 7; i++) {
+                        ctx.spawnHostileNear(ctx.pick(TrollPools.TINY_ANNOYING), 5);
                     }
-                    ctx.soundSelf(ctx.pick(TrollPools.CREEPY), 1.0f, 1.4f);
-                    ctx.msg("§7它们没有工资§8，所以特别有干劲§7。");
-                    ctx.addRage(13);
+                    ctx.damage("magic", 2.0f);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 240, 0);
+                    ctx.msg("§8一只不可怕。七只不需要你觉得可怕，它们只需要你累。");
+                    ctx.addRage(10);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_swap_trap", "换位陷阱", TrollTier.BRUTAL)
-                .desc("和另一名玩家原地交换位置，两个人的陷阱都白设了")
+        TrollEvents.reg(TrollEvent.of("trap_swap_trap", "换位陷阱", TrollTier.APOCALYPSE)
+                .desc("和另一名玩家原地交换位置：两个人的陷阱都白设了，但只有一个人是被指定的")
                 .weight(45)
                 .cooldownSeconds(240)
                 .when(ctx -> ctx.hasOthers())
                 .run(ctx -> {
-                    var o = ctx.other();
-                    if (o == null) {
-                        return;
-                    }
-                    ctx.meteorShower(4, 12);
-                    ctx.swapWith(o);
-                    ctx.sendToAll("§8[整人大师] §7有人踩到了换位陷阱。");
+                    ctx.swapWith(ctx.other());
+                    ctx.damageOther(ctx.other(), 2.0f);
+                    ctx.sound(ctx.pick(TrollPools.IMPACT), 1.2f, 0.9f);
+                    ctx.msgToOther(ctx.other(), "§c你和某个人换了位置。是你被换过去了。");
+                    ctx.msg("§8你站到了他的陷阱上。他站到了你的。");
                     ctx.addRage(12);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_web_slow_cell", "蛛网小房间", TrollTier.BRUTAL)
-                .desc("用蛛网和石墙围出一个小房间，你在里面慢慢挪")
+        TrollEvents.reg(TrollEvent.of("trap_web_slow_cell", "蛛网小房间", TrollTier.APOCALYPSE)
+                .desc("用蛛网和石墙围出一个小房间：你在里面慢慢挪，它在外面慢慢等")
                 .weight(48)
                 .cooldownSeconds(230)
                 .run(ctx -> {
-                    ctx.cageWith(TrollPools.TROLL_BLOCKS[B_COBWEB]);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 240, 1);
-                    ctx.msg("§7这是你的房间§8，物业费已收§7。");
-                    ctx.addRage(16);
+                    ctx.surroundWith(TrollPools.TROLL_BLOCKS[B_COBWEB]);
+                    ctx.setBlock(0, 3, 0, TrollPools.TROLL_BLOCKS[B_COBBLE]);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 280, 1);
+                    ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 4);
+                    ctx.msg("§8房间不大，正好够你一个人待着，也正好够它堵在门口。");
+                    ctx.addRage(13);
                 })
                 .build());
 
@@ -542,20 +591,26 @@ public final class TrapEvents {
         // NIGHTMARE —— 崩溃，会砸键盘
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("trap_meteor_barrage", "铁砧暴雨", TrollTier.NIGHTMARE)
-                .desc("十四块铁砧从高空覆盖式轰炸，躲哪儿都挨一下")
+        TrollEvents.reg(TrollEvent.of("trap_meteor_barrage", "铁砧暴雨", TrollTier.OBLIVION)
+                .desc("十四块铁砧覆盖式轰炸；中途会有个声音告诉你屋棚底下能躲，而那个屋棚就在落点正上方")
                 .weight(38)
                 .cooldownSeconds(400)
                 .run(ctx -> {
-                    ctx.meteorShower(14, 28);
-                    ctx.glitch(GlitchIds.SHAKY, 100, 2);
-                    ctx.title("§4§l天上下铁了", "§7没有伞能救你。");
-                    ctx.addRage(24);
+                    ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "往北边那个棚子底下躲！铁砧砸不穿屋顶！");
+                    ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.5f, 0.6f);
+                    ctx.later(40, () -> {
+                        ctx.meteorShower(14, 24.0);
+                        ctx.damage("fall", 3.0f);
+                        ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 320, 1);
+                        ctx.msg("§8棚子是真的。屋顶也是真的。只是铁砧来得比屋顶结实。");
+                        ctx.addRage(16);
+                    });
+                    ctx.addRage(10);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_tnt_carpet", "TNT 地毯", TrollTier.NIGHTMARE)
-                .desc("周围铺满 TNT 方块，再点燃其中三枚")
+        TrollEvents.reg(TrollEvent.of("trap_tnt_carpet", "TNT 地毯", TrollTier.APOCALYPSE)
+                .desc("周围铺满 TNT，再点燃其中三枚：你不知道哪三枚，也不知道该往哪边迈脚")
                 .weight(34)
                 .cooldownSeconds(420)
                 .run(ctx -> {
@@ -563,92 +618,124 @@ public final class TrapEvents {
                         ctx.setBlock(ctx.ri(-3, 3), 0, ctx.ri(-3, 3), TrollPools.TROLL_BLOCKS[B_TNT]);
                     }
                     for (int i = 0; i < 3; i++) {
-                        ctx.spawnTnt(ctx.x() + ctx.ri(-3, 3), ctx.y() + 1, ctx.z() + ctx.ri(-3, 3), ctx.ri(40, 70));
+                        ctx.spawnTnt(ctx.x() + ctx.ri(-3, 3), ctx.y(), ctx.z() + ctx.ri(-3, 3), 40 + i * 15);
                     }
-                    ctx.sound(ctx.pick(TrollPools.ULTRA), 1.0f, 0.8f);
-                    ctx.msg("§c地毯是可燃的§7，这是我最后一次提醒你。");
-                    ctx.addRage(26);
+                    ctx.particle(ctx.pick(TrollPools.BOOM_PARTICLES), 60);
+                    ctx.boomAtPlayer(2.0f);
+                    ctx.msg("§c三枚已经在烧了。剩下的五枚在等你想清楚下一步。");
+                    ctx.addRage(14);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_void_maw", "深渊大口", TrollTier.NIGHTMARE)
-                .desc("脚下挖穿三十格，掉下去基本等于重新开局")
+        TrollEvents.reg(TrollEvent.of("trap_void_maw", "深渊大口", TrollTier.APOCALYPSE)
+                .desc("脚下挖穿三十格：掉下去基本等于重新开局，只差你自己愿不愿意承认")
                 .weight(30)
                 .cooldownSeconds(480)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
-                    ctx.voidPit(3, 30);
-                    ctx.sound(ctx.pick(TrollPools.ULTRA), 1.0f, 0.5f);
-                    ctx.glitch(GlitchIds.BLACKOUT, 60);
-                    ctx.msg("§8你脚下的世界被删掉了三十层§7。");
-                    ctx.addRage(28);
+                    ctx.voidPit(2, 30);
+                    ctx.damage("outofworld", 2.0f);
+                    ctx.glitch(GlitchIds.BLACKOUT, 50);
+                    ctx.soundSelf(ctx.pick(TrollPools.HORROR), 1.5f, 0.6f);
+                    ctx.msg("§8下面什么都没有。上面也没有人拉你。");
+                    ctx.addRage(15);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_lava_lake", "岩浆湖开业", TrollTier.NIGHTMARE)
-                .desc("脚下一整座岩浆湖，站上去的每一秒都在烧钱（和血）")
+        TrollEvents.reg(TrollEvent.of("trap_lava_lake", "岩浆湖开业", TrollTier.OBLIVION)
+                .desc("脚下一整座岩浆湖；它会先给你指一条安全的路，等你跑到一半再让那条路也烧起来")
                 .weight(30)
                 .cooldownSeconds(460)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
-                    ctx.lavaPit(3);
-                    ctx.setFire(12);
-                    ctx.sound(ctx.pick(TrollPools.ULTRA), 1.0f, 0.7f);
-                    ctx.msg("§4岩浆湖已营业§7，退票窗口在岩浆底部。");
-                    ctx.addRage(27);
+                    ctx.lavaPit(2);
+                    ctx.setFire(10);
+                    ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "往东跑！东边是实地！");
+                    ctx.later(60, () -> {
+                        ctx.teleport(ctx.x() + 8, ctx.y(), ctx.z());
+                        ctx.lavaPit(2);
+                        ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 320, 2);
+                        ctx.msg("§8东边确实有实地。实地也确实是热的。");
+                        ctx.addRage(17);
+                    });
+                    ctx.addRage(12);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_freeze_lockdown", "完全封锁", TrollTier.NIGHTMARE)
-                .desc("长时间冻结加输入冻结，你只能看着屏幕上自己被杀")
+        TrollEvents.reg(TrollEvent.of("trap_freeze_lockdown", "完全封锁", TrollTier.APOCALYPSE)
+                .desc("长时间冻结加输入冻结：你只能看着屏幕上自己被杀，连视角都不归你管")
                 .weight(28)
                 .cooldownSeconds(520)
                 .run(ctx -> {
-                    ctx.freeze(700);
+                    ctx.freeze(200);
                     ctx.glitch(GlitchIds.FREEZE_INPUT, 200, 2);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 300, 1);
-                    ctx.title("§b§l已封锁", "§7键盘归模组管了。");
-                    ctx.addRage(26);
+                    for (int i = 0; i < 4; i++) {
+                        ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 5);
+                    }
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 320, 1);
+                    ctx.title("§8§l输入已断开", "§7你还在，只是不能动了");
+                    ctx.addRage(15);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_zero_g_ride", "零重力专车", TrollTier.NIGHTMARE)
-                .desc("失重四百多 tick 并持续抬升，直到世界尽头")
+        TrollEvents.reg(TrollEvent.of("trap_zero_g_ride", "零重力专车", TrollTier.OBLIVION)
+                .desc("失重五百 tick 并持续抬升；中途广播会告诉你终点站到了，然后你才发现「终点站」在半空中")
                 .weight(28)
                 .cooldownSeconds(500)
                 .run(ctx -> {
-                    ctx.noGravity(420);
-                    ctx.lift(60);
-                    ctx.glitch(GlitchIds.FOV_WILD, 120, 2);
-                    ctx.msg("§7本次航班不提供降落服务§8，谢谢乘坐§7。");
-                    ctx.addRage(25);
+                    ctx.noGravity(500);
+                    ctx.lift(20);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 320, 1);
+                    ctx.soundSelf(ctx.pick(TrollPools.AMBIENT_CREEPY), 1.3f, 0.7f);
+                    ctx.later(110, () -> {
+                        ctx.sys("§e[车厢广播] 终点站到了，请所有乘客下车。");
+                        ctx.lift(15);
+                        ctx.msg("§8你四下看了看，没有车站，没有门，也没有「下」这个选项。");
+                        ctx.addRage(17);
+                    });
+                    ctx.addRage(12);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_mount_nightmare", "骑上不该骑的东西", TrollTier.NIGHTMARE)
-                .desc("强制骑上一只精英怪，然后在它头顶劈一道闪电")
+        TrollEvents.reg(TrollEvent.of("trap_mount_nightmare", "骑上不该骑的东西", TrollTier.OBLIVION)
+                .desc("强制骑上一只精英怪，在它头顶劈一道闪电；你以为它在带你逃，其实它只是在往它家走")
                 .weight(26)
                 .cooldownSeconds(540)
                 .run(ctx -> {
                     ctx.mount(ctx.pick(TrollPools.BOSS));
                     ctx.lightning();
-                    ctx.soundSelf(ctx.pick(TrollPools.ULTRA), 1.0f, 0.9f);
-                    ctx.title("§4§l祝旅途愉快", "§7它好像不太高兴。");
-                    ctx.addRage(27);
+                    ctx.setFire(6);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 300, 1);
+                    ctx.glitch(GlitchIds.SHAKY, 100, 2);
+                    ctx.later(90, () -> {
+                        ctx.lift(18);
+                        ctx.dismount();
+                        ctx.spawnHostileNear(ctx.pick(TrollPools.HOSTILE), 4);
+                        ctx.msg("§8它把你带到了它的家。然后它松开了你。");
+                        ctx.addRage(18);
+                    });
+                    ctx.addRage(14);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_iron_maiden", "铁处女", TrollTier.NIGHTMARE)
-                .desc("黑曜石笼子加脚边 TNT，你被关在自己的爆炸现场里")
+        TrollEvents.reg(TrollEvent.of("trap_iron_maiden", "铁处女", TrollTier.OBLIVION)
+                .desc("黑曜石笼子合拢，脚边埋好 TNT；笼子外面有人喊你的名字说来救你了——那是引信在说话")
                 .weight(26)
                 .cooldownSeconds(560)
                 .run(ctx -> {
                     ctx.cageWith(TrollPools.EVIL_BLOCKS[E_OBSIDIAN]);
-                    ctx.lavaPit(1);
-                    ctx.spawnTnt(ctx.x(), ctx.y(), ctx.z(), 60);
-                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 80, 2);
-                    ctx.msg("§8你的房间已经准备好了§7，请享受私人空间。");
-                    ctx.addRage(30);
+                    ctx.setBlock(0, 3, 0, TrollPools.EVIL_BLOCKS[E_BEDROCK]);
+                    ctx.spawnTnt(ctx.x(), ctx.y(), ctx.z(), 70);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 340, 2);
+                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 70, 2);
+                    ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "撑住！我已经看到你了，我马上把你挖出来！");
+                    ctx.later(100, () -> {
+                        ctx.boomAtPlayer(3.0f);
+                        ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "……对不起，我来晚了。");
+                        ctx.msg("§8救援是真的。晚也是真的。只剩下这两样。");
+                        ctx.addRage(19);
+                    });
+                    ctx.addRage(15);
                 })
                 .build());
 
@@ -656,86 +743,121 @@ public final class TrapEvents {
         // APOCALYPSE —— 地狱，会退游戏
         // ================================================================
 
-        TrollEvents.reg(TrollEvent.of("trap_judgement_day", "审判日", TrollTier.APOCALYPSE)
-                .desc("铁砧雨加岩浆湖加假封禁界面，整局只来一次")
+        TrollEvents.reg(TrollEvent.of("trap_judgement_day", "审判日", TrollTier.OBLIVION)
+                .desc("铁砧雨、岩浆湖、假封禁界面；中途会有一次「误判已撤销」的通知，你会相信，然后判决加重")
                 .weight(24)
                 .cooldownSeconds(1200)
                 .once()
                 .run(ctx -> {
-                    ctx.glitch(GlitchIds.FAKE_BAN, 120, 3);
-                    ctx.meteorShower(16, 32);
-                    ctx.lavaPit(3);
-                    ctx.soundToAll(ctx.pick(TrollPools.ULTRA), 1.0f, 0.6f);
-                    ctx.sendToAll("§4[服务器] §c陷阱系统已进入最终阶段。");
-                    ctx.titleToAll("§4§l审判日", "§8陷阱已全部激活");
-                    ctx.addRage(45);
+                    ctx.meteorShower(10, 22.0);
+                    ctx.lavaPit(2);
+                    ctx.glitch(GlitchIds.FAKE_BAN, 90, 3);
+                    ctx.fakeBroadcast("§c[审判] 玩家 " + ctx.playerName() + " 触发了永久封禁程序。");
+                    ctx.later(90, () -> {
+                        ctx.glitch(GlitchIds.FAKE_UPDATE, 60, 1);
+                        ctx.fakeBroadcast("§a[审判] 经复核，本次判决属误判，已撤销。");
+                        ctx.playLevelUp();
+                        ctx.msg("§7（你松了一口气。这是整场审判里唯一一次你能喘气。）");
+                    });
+                    ctx.later(180, () -> {
+                        ctx.fakeBroadcast("§4[审判] 复核中发现新增罪名。判决撤销无效，立即执行。");
+                        ctx.meteorShower(12, 20.0);
+                        ctx.setFire(12);
+                        ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 380, 2);
+                        ctx.glitch(GlitchIds.HARD_BLACKOUT, 90, 3);
+                        ctx.stripAll();
+                        ctx.buryAlive();
+                        ctx.addRage(22);
+                    });
+                    ctx.addRage(14);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_bedrock_tomb", "基岩墓室", TrollTier.APOCALYPSE)
-                .desc("用基岩把你封死在原地，再送你长时间黑屏")
+        TrollEvents.reg(TrollEvent.of("trap_bedrock_tomb", "基岩墓室", TrollTier.OBLIVION)
+                .desc("用基岩把你封死在原地，再撤掉全部视野；当你终于看见一条缝的时候，缝也已经被封上了")
                 .weight(22)
                 .cooldownSeconds(1400)
                 .run(ctx -> {
                     ctx.cageWith(TrollPools.EVIL_BLOCKS[E_BEDROCK]);
-                    ctx.freeze(900);
-                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 200, 3);
-                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 600, 1);
-                    ctx.title("§4§l墓室已封闭", "§8出口正在施工（没有施工队）");
-                    // 保底出口：基岩封死 + 压低血量 + 着火，保证玩家一定会死亡重生，不会永久卡在墓室里
-                    ctx.setHealth(6.0f);
-                    ctx.setFire(20);
-                    ctx.starve();
-                    ctx.addRage(42);
+                    ctx.setBlock(0, 3, 0, TrollPools.EVIL_BLOCKS[E_BEDROCK]);
+                    ctx.glitch(GlitchIds.HARD_BLACKOUT, 90, 3);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 360, 2);
+                    ctx.later(120, () -> {
+                        ctx.glitch(GlitchIds.BLACKOUT, 40);
+                        ctx.msg("§7（墙上出现了一道缝。你朝它伸手。）");
+                    });
+                    ctx.later(200, () -> {
+                        ctx.setBlock(0, 1, 0, TrollPools.EVIL_BLOCKS[E_BEDROCK]);
+                        ctx.msg("§8缝没了。它从来就不是给你留的，只是给你看的。");
+                        ctx.addRage(10);
+                    });
+                    ctx.addRage(18);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_void_banish", "虚空流放", TrollTier.APOCALYPSE)
-                .desc("挖穿六十格深坑加失重，把你直接送进虚空")
+        TrollEvents.reg(TrollEvent.of("trap_void_banish", "虚空流放", TrollTier.OBLIVION)
+                .desc("挖穿脚下六十格加失重，直接把你送进虚空；有人会朝你扔下一根绳子，绳子另一头什么也没有")
                 .weight(22)
                 .cooldownSeconds(1500)
                 .when(ctx -> ctx.isOnGround())
                 .run(ctx -> {
-                    ctx.voidPit(3, 60);
+                    ctx.voidPit(2, 60);
                     ctx.noGravity(300);
-                    ctx.glitch(GlitchIds.FAKE_CORRUPT, 120, 3);
-                    ctx.sound(ctx.pick(TrollPools.ULTRA), 1.0f, 0.5f);
-                    ctx.msg("§4§l你已被流放§r§8，虚空负责接待。");
-                    ctx.addRage(44);
+                    ctx.fling(0.0, -1.5, 0.0);
+                    ctx.glitch(GlitchIds.BLACKOUT, 80);
+                    ctx.fakeChat(ctx.pick(TrollPools.FAKE_NAMES), "抓住这根绳子！我拉你上来！");
+                    ctx.later(90, () -> {
+                        ctx.msg("§8绳子下来了。它的另一端，也在往下掉。");
+                        ctx.damage("outofworld", 3.0f);
+                        ctx.addRage(12);
+                    });
+                    ctx.addRage(18);
                 })
                 .build());
 
-        TrollEvents.reg(TrollEvent.of("trap_tnt_chain_reaction", "连锁反应", TrollTier.APOCALYPSE)
-                .desc("六枚不同引信的 TNT 围着你，按远近依次开花")
+        TrollEvents.reg(TrollEvent.of("trap_tnt_chain_reaction", "连锁反应", TrollTier.OBLIVION)
+                .desc("六枚不同引信的 TNT 围着你按远近依次开花；拆掉最远那枚之后，它会告诉你「拆弹成功」——然后点亮最近的一枚")
                 .weight(20)
                 .cooldownSeconds(1600)
                 .run(ctx -> {
                     for (int i = 0; i < 6; i++) {
-                        ctx.spawnTnt(ctx.x() + ctx.ri(-5, 5), ctx.y() + ctx.ri(1, 4), ctx.z() + ctx.ri(-5, 5),
-                                20 + i * 12);
+                        ctx.spawnTnt(ctx.x() + ctx.rd(-4.0, 4.0), ctx.y(), ctx.z() + ctx.rd(-4.0, 4.0), 30 + i * 20);
                     }
-                    ctx.soundToAll(ctx.pick(TrollPools.ULTRA), 1.0f, 0.7f);
-                    ctx.title("§c§l倒计时", "§7数一数还有几声。");
-                    ctx.addRage(40);
+                    ctx.particle(ctx.pick(TrollPools.BOOM_PARTICLES), 70);
+                    ctx.soundSelf(ctx.pick(TrollPools.IMPACT), 1.5f, 0.6f);
+                    ctx.msg("§e引信在数。你也在数。你们数的不是同一个数。");
+                    ctx.later(110, () -> {
+                        ctx.sys("§a[拆弹] 最远端引信已排除，拆弹成功。");
+                        ctx.playLevelUp();
+                        ctx.msg("§7（你信了。）");
+                    });
+                    ctx.later(170, () -> {
+                        ctx.boomAtPlayer(3.0f);
+                        ctx.setFire(10);
+                        ctx.stripAll();
+                        ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 360, 2);
+                        ctx.glitch(GlitchIds.SHAKE_BURST, 80, 3);
+                        ctx.msg("§8最后一枚一直在等你放松。它等到了。");
+                        ctx.addRage(20);
+                    });
+                    ctx.addRage(14);
                 })
                 .build());
 
         TrollEvents.reg(TrollEvent.of("trap_final_circus", "终极马戏团", TrollTier.APOCALYPSE)
-                .desc("铁砧、岩浆、精英坐骑、假封禁、海量刷屏，一次性全上")
+                .desc("铁砧、岩浆、精英坐骑、假封禁、海量刷屏一次性全上——谢幕的时候没人鼓掌，因为观众也只有你")
                 .weight(20)
                 .cooldownSeconds(1800)
                 .once()
                 .run(ctx -> {
-                    ctx.meteorShower(18, 34);
-                    ctx.lavaPit(3);
+                    ctx.meteorShower(8, 20.0);
+                    ctx.lavaPit(2);
                     ctx.mount(ctx.pick(TrollPools.BOSS));
-                    ctx.spawnTnt(ctx.x() + 4, ctx.y() + 3, ctx.z() + 4, 60);
-                    ctx.glitch(GlitchIds.FAKE_VIRUS, 100, 3);
-                    ctx.glitch(GlitchIds.MASS_CHAT, 140, 3);
-                    ctx.soundToAll(ctx.pick(TrollPools.ULTRA), 1.0f, 0.6f);
-                    ctx.titleToAll("§4§l终极马戏团", "§8请把票根交给下一个受害者");
-                    ctx.sendToAll("§8[模组] §7" + ctx.pick(TrollPools.FAKE_OPERATOR_LINES));
-                    ctx.addRage(50);
+                    ctx.glitch(GlitchIds.FAKE_BAN, 80, 3);
+                    ctx.glitch(GlitchIds.MASS_CHAT, 120, 3);
+                    ctx.effect(ctx.pick(TrollPools.BAD_EFFECTS), 320, 2);
+                    ctx.title("§4§l马戏团开场", "§8本场演出的全部节目都由你一个人完成");
+                    ctx.addRage(18);
                 })
                 .build());
     }

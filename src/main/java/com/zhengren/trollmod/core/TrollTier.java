@@ -2,13 +2,17 @@ package com.zhengren.trollmod.core;
 
 /**
  * 事件残酷等级。数字越大越折磨人。
+ *
+ * <p>第 6 档 {@link #OBLIVION}（绝望）是 v3.0.0 新增的顶层：这一档不追求"有趣"，
+ * 只追求把玩家彻底击溃。</p>
  */
 public enum TrollTier {
     PRANK(1, "小整", "Prank"),
     ANNOYING(2, "烦人", "Annoying"),
     BRUTAL(3, "抓狂", "Brutal"),
     NIGHTMARE(4, "崩溃", "Nightmare"),
-    APOCALYPSE(5, "地狱", "Apocalypse");
+    APOCALYPSE(5, "地狱", "Apocalypse"),
+    OBLIVION(6, "绝望", "Oblivion");
 
     private final int level;
     private final String cn;
@@ -52,8 +56,11 @@ public enum TrollTier {
                 return "§6[" + cn + "]";
             case NIGHTMARE:
                 return "§c[" + cn + "]";
-            default:
+            case APOCALYPSE:
                 return "§4§l[" + cn + "]";
+            default:
+                // 绝望：黑底 + 乱码扰动，视觉上就不像好东西
+                return "§0§l§k||§r§4§l[" + cn + "]§r§0§l§k||";
         }
     }
 }
