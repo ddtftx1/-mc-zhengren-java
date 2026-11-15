@@ -1006,7 +1006,10 @@ public class TrollContext {
         if (GlitchIds.FAKE_KICK.equals(id) && !config.fakeKick) {
             return;
         }
-        int scaled = (int) Math.max(5, ticks * config.glitchPower);
+        // 客户端画面折磨：glitchPower 直接乘，残酷度用「温和放大」避免把玩家屏幕锁死太久
+        double brutalityFactor = 1.0 + (brutality() - 1.0) * 0.4;
+        int scaled = (int) Math.min(6000L,
+                Math.max(5L, (long) (ticks * config.glitchPower * brutalityFactor)));
         GlitchPayload.send(player, id, scaled, power);
     }
 

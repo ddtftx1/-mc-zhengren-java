@@ -411,7 +411,7 @@ public final class GlitchEvents {
         // NIGHTMARE —— 崩溃，会砸键盘
         // ==================================================================
 
-        TrollEvents.reg(TrollEvent.of("glitch_fake_crash_report", "游戏崩了（假）", TrollTier.NIGHTMARE)
+        TrollEvents.reg(TrollEvent.of("glitch_fake_crash_report", "游戏崩了（假）", TrollTier.APOCALYPSE)
                 .desc("弹出完整的假崩溃报告：点退出会真的退出游戏，而你只有三秒决定要不要相信它")
                 .weight(30)
                 .cooldownSeconds(600)

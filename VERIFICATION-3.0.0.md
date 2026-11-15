@@ -5,7 +5,8 @@
 **方法**: 静态源码解析 + 与 `/tmp/src_backup_pre_harden/` 逐 id / 逐文件回归比对 + 编译校验
 **约束**: 只读 `src/`；唯一写入本文件。未跑 clean build（用 `flock /tmp/zr-build.lock bash gradlew compileJava`）。
 
-> 状态：进行中，逐节追加。
+> 状态：**已完成**（§1-§6 针对 v3.0.0 `44d6315`；§7 为 HEAD 前移到 v3.0.1 `d01d701` 后的补充与勘误）。
+> 重要前提：任务给的 `/tmp/src_backup_pre_harden/` **不是 v2 备份**（内含全部 v3 内容），本次额外用 `git show b7ff2a9`（真实 v2.0.0）作基线。详见 §0 与 I-1。
 
 ---
 
@@ -144,7 +145,7 @@ OBLIVION(6, "绝望", "Oblivion");
 | `lift` | 356-358 | `y() + height * brutality()` | ✅ |
 | `heal` | 699-702 | `player.heal((float)(amount / brutality()))` — 除法 ✅ |
 | `meteorShower` | 1249-1252 | `n = min(80, count * brutality())` | ✅ |
-| `takeRandomItem()` | 443-445 | `takeRandomItems(1 + (int)(brutality()/1.5))` | ✅ |
+| `takeRandomItem()` | 443-445 | v3.0.0 实为 `takeRandomItems(1)` → **不缩放** | **❌ 见 D-1** |
 | `dropRandom()` | 538-541 | `takeRandomItems(1 + (int)(brutality()/1.5))` | ✅ |
 | **`takeRandomItems(int n)`** | **452-466** | **方法体完全不引用 `brutality()`** | **❌ 见 D-1** |
 
@@ -152,7 +153,13 @@ OBLIVION(6, "绝望", "Oblivion");
 ```
 * 随机拿走 n 个物品（残酷度越高，语义上的"一个"越接近于"一把"）。
 ```
-但 452-466 行实现为 `while (taken < n && attempts < 40)`，**`n` 未乘任何倍率**。结果：`ctx.takeRandomItem()`（68 处）确实随残酷度放大，而事件里直接写的 `ctx.takeRandomItems(k)`（**203 处**）拿走的数量与 `brutality` 完全无关。这与任务清单里"`takeRandomItems` 是否乘上倍率"的期望不符，且属文档—实现不一致。
+但 452-466 行实现为 `while (taken < n && attempts < 40)`，**`n` 未乘任何倍率**。
+因此 v3.0.0 中，财产类惩罚里唯一真正随残酷度放大的只有 `dropRandom()`（`takeRandomItems(1+brutality()/1.5)`）；
+`ctx.takeRandomItem()`（68 处）与 `ctx.takeRandomItems(k)`（**203 处**）拿走的数量都与 `brutality` 无关，合计 **271 处调用点未接残酷度**，且属文档—实现不一致。
+
+> **勘误（v3.0.1 复核）**：本报告初版此处曾把 `takeRandomItem()` 误写成"有缩放"（实际把 `dropRandom()` 的式子串到了它身上）。
+> 经 `git show 44d6315:...TrollContext.java` 逐行复核，v3.0.0 的 `takeRandomItem()` 就是 `takeRandomItems(1)`，**未缩放**。
+> 真实情况比初版描述**更严重**（271 处而非 203 处）。该缺陷已在 v3.0.1 修复，见 §7。
 
 ### 3.3 TrollScheduler 三件事（均接上）
 
@@ -341,4 +348,127 @@ id 集合本身 0 变化（见 §1），所以重排只动档位、不动事件�
 
 ## 6. 诚实报告：未验证项与缺陷清单
 
-*(待填)*
+### 6.1 结论摘要
+
+| 验证项 | 结果 |
+|---|---|
+| §1 事件表 2000 / 唯一 2000 / 零重复 | **通过** |
+| §1 逐 id 与基线（备份 + 真实 v2.0.0）0 差异 | **通过** |
+| §1 逐文件 `reg(` 数量、desc/run/build 齐全 | **通过** |
+| §2 expansion 无 `net.minecraft`、`END_SERVER_TICK` 仅 2 处 | **通过** |
+| §2 自造 API / 常量池引用（168 ctx + 40 TrollPools + 36 GlitchIds） | **通过**（缺失 0） |
+| §2 编译（真实 compilable） | **通过** |
+| §3 第 6 档 OBLIVION、maxTier=6 | **通过** |
+| §3 惩罚附加 / 连击 / rage / 重生不赦 | **通过** |
+| §3 倍率接入（16 项） | **15 项通过，1 项未接（D-1）** |
+| §3 PunishmentPool 28 条 | **通过** |
+| §4 配置迁移：v2 默认 → 迁移 | **通过**（真实 class 反射实测） |
+| §4 配置迁移：`configVersion=3` → 不改写 | **通过**（真实 class 反射实测） |
+| §5 等级分布 32/218/528/518/446/258 | **精确命中** |
+| §5 危险 API 硬规则（boom/lavaPit/voidPit/obliterate/buryAlive/kill/FAKE_BAN） | **0 违规**（v2 的 3 类老违规已修） |
+| §5 `FAKE_CRASH` 规则 | **1 处真违规（F-2，v2 遗留）+ 17 处口径问题（F-1）** |
+
+### 6.2 缺陷清单（按严重度）
+
+| 编号 | 严重度 | 位置 | 问题 |
+|---|---|---|---|
+| **D-1** | **中** | `core/TrollContext.java:449-466` | `takeRandomItems(int n)` 未乘 `brutality()`，与自身 javadoc 及任务清单矛盾；`takeRandomItem()` 有缩放，导致直接调用 `ctx.takeRandomItems(k)` 的 **203 处**事件财产惩罚不随残酷度增长 |
+| **D-2** | **中** | `core/TrollConfig.java:152-155` | 迁移用 `if (!allowWorldDamage)`，把 v2 用户**明确关闭**的地形破坏强制打开；违反同文件 89-90 行「用户手动改过的设置不会被覆盖」的承诺。实测用例 C/F 复现 |
+| **F-2** | **中** | `events/GlitchEvents.java:419` | `glitch_fake_crash_report` (NIGHTMARE) 使用 `FAKE_CRASH`，违反「FAKE_CRASH 只允许 APOCALYPSE」；v2 已如此，v3 重排漏改（同类事件其他都被升到 APOCALYPSE/OBLIVION） |
+| **D-3** | 低 | `core/TrollConfig.java:141-144` | `maxTier == 5` 无法区分 v2 默认值与用户自选 5，用户上限被抬到 6（注释已承认） |
+| **F-1** | 低 | 17 个 OBLIVION 事件（如 `events/ChaosEvents.java:410`、`mindbreak/MindbreakEvents.java:638`） | `FAKE_CRASH` 出现在比 APOCALYPSE 更高的 OBLIVION 档；按字面规则是违规，按「≥APOCALYPSE」理解可接受 |
+| **F-3** | 低 | `expansion/HallucinationEvents.java:982` | `hall_hard_blackout_br` (BRUTAL) 使用 `HARD_BLACKOUT`；规则未定义，v2 亦如此，仅记录 |
+| **O-1** | 低 | `core/TrollContext.java:997-1010` | `glitch()` 时长只乘 `config.glitchPower`，**不乘** `brutality()`；客户端画面折磨强度不随残酷度变化 |
+| **O-2** | 低 | `core/TrollContext.java:1273-1305`、`:1227` | `voidPit`/`lavaPit` 半径、`spawnTnt` 引信时长未接残酷度（不在任务清单内，但与「爆炸/残酷 ×5」的叙述不一致） |
+| **I-1** | 信息 | `/tmp/src_backup_pre_harden/` | **该"残酷化之前的备份"名不副实**：它含 `PunishmentPool.java`、`TrollTier.OBLIVION`、`brutality` 等全部 v3 内容，与当前源码唯一差异是 `TrollConfig` 的 `configVersion`/`migrateIfNeeded()`。它是「v3 未加迁移修复」的快照。用它做 v2 回归会得到误导性的"零差异" |
+
+### 6.3 未能验证 / 验证强度不足的项
+
+1. **未做端到端游戏内运行**。环境无 Fabric runtime，未启动服务端。因此以下只能静态推断：
+   - 运行时 `TrollEvents.bootstrap()` 实际注册 2000 条且 `TrollRegistry.duplicates()` 为空（静态层面：2000 个唯一 id + 2000 次 `reg(` + 注册表按 id 去重，已足够强，但非运行时证据）；
+   - `AFTER_RESPAWN` 回调在真实服务端的触发与 `PunishmentPool.apply` 的实际效果。已确认 `TrollContext` 中除构造器与 `event()` getter 外**没有任何方法解引用 `event` 字段**，故 `event=null` 的重生上下文不会 NPE（`grep -n '\bevent\b'` 仅 69/73 两行），这是静态上的安全性证据。
+   - 未改动共享的 `run/config/zhengren.json`（备份/恢复都未执行，因为不需要）。
+2. **「1326 处尾巴注入」无法复现**。事件文件中 `v3.0.0` 标记共 979 处，事件块内带 `v3.0.0`/`残酷` 标记的为 **975 / 2000**。无法确定 1326 的统计口径，故**不确认也不否定**该数字。
+3. **「7 位写手重写内容」无法验证**（无作者信息，非代码可判定项）。只能确认：全部 29 个事件文件的 id 与 v2 完全一致，内容层改动没有增删事件。
+4. **`brutality` 的"手感"未验证**：只验证了数值乘子存在与量级，未验证 5× 是否会导致服务端/客户端崩溃（例如 `MAX_BOOM=40` 上限外的级联）。抽样的上限保护确实存在：`scaledTicks ≤ 72000`、`scaledRange ≤ 500`、`setFire ≤ 600`、`MAX_BOOM = 40`、`meteorShower ≤ 80`、`takeRandomItems attempts < 40`。
+5. **未验证 `.weight()` / `.cooldownSeconds()` / `.once()` / `.when()` 在重排后是否仍合理**（不在任务范围）。
+
+### 6.4 无阻塞缺陷
+
+未发现阻塞级（导致编译失败 / 事件表损坏 / 启动崩溃）缺陷。所有 §1、§2 的核心回归项 0 差异。
+最需要 Lead 决策的是 **D-2**（配置迁移会打开地形破坏）与 **D-1**（`takeRandomItems` 未接残酷度）。
+
+---
+
+## 7. 补充与勘误：HEAD 已前移到 v3.0.1（d01d701）
+
+验证期间工作区的 HEAD 从 `44d6315`（v3.0.0）前进到 `d01d701`（**v3.0.1「修复独立验证发现的 2 个中级缺陷」**）。
+`git diff 44d6315 d01d701 -- src` 只改了 2 个文件：`core/TrollConfig.java`（+37/-11）与 `core/TrollContext.java`（+9/-3）——
+**29 个事件文件与事件表完全未动**，因此 §1/§2/§5 的结论对 v3.0.1 同样成立（已重跑解析复核：2000 / 唯一 2000 / 零重复 / 分布 32-218-528-518-446-258）。
+
+### 7.1 D-1 修复验证（`takeRandomItems` 接上残酷度）
+
+`src/main/java/com/zhengren/trollmod/core/TrollContext.java:450-467`（v3.0.1）
+```java
+public int takeRandomItems(int n) {
+    PlayerInventory in = inv();
+    int want = (int) Math.min(in.size(), Math.max(1L, Math.round(n * brutality())));
+    int taken = 0, attempts = 0;
+    while (taken < want && attempts < 40) { ... }
+```
+同时 `takeRandomItem()` 改为 `takeRandomItems(1)`，`dropRandom()` 从 `takeRandomItems(1 + (int)(brutality()/1.5))` 改为 `takeRandomItems(1)`，**两处都是为了配合内部缩放、避免二次放大**。
+
+对抗性复核：
+- ✅ **无二次放大**：`grep` 全部 271 个事件调用点，参数里**没有任何一个含 `brutality`**；core 内部调用者只有 `takeRandomItem()`→`takeRandomItems(1)`、`dropRandom()`→`takeRandomItems(1)`、`PunishmentPool.java:69`→`takeRandomItems(3)`。
+- ✅ **缩放量级合理**（按 `brutalityScale()` 计算 `want`）：`b=1(×0.5) n=1→1, n=3→2`；`b=3(×1.8) n=1→2, n=3→5`；`b=5(×5.0) n=1→5, n=3→15`。
+- ✅ **有上限保护**：`min(in.size(), …)`（玩家背包 41 格），且 `attempts < 40` 防死循环。
+- ⚠️ 副作用（低）：事件里最大的字面参数是 `takeRandomItems(12)`（10 处为 `ri` 之类动态值之外的最大常量），×5 时 = 60 → 被 `in.size()` 截到 41 → **一次清空整个背包**。属"残酷化"预期内，但比 v3.0.0（固定 12 件）明显更狠，值得 Lead 确认是否符合意图。
+- ⚠️ 残留（低）：`want` 上限取 `in.size()`（41），而 `attempts` 上限只有 40，因此当 `want=41` 时最多只能拿到 40 件——1 件的边界误差，无实际影响。
+
+### 7.2 D-2 修复验证（迁移不再无条件打开地形破坏）
+
+`src/main/java/com/zhengren/trollmod/core/TrollConfig.java`（v3.0.1）新增 `looksUntouched` 前置条件：
+```java
+boolean looksUntouched = maxTier == 5
+        && minIntervalSeconds == 20 && maxIntervalSeconds == 75
+        && maxEventsPerMinute == 14
+        && !allowWorldDamage
+        && (disabled == null || disabled.isEmpty())
+        && (targets == null || targets.isEmpty());
+...
+if (looksUntouched && !allowWorldDamage) { allowWorldDamage = true; changed = true; destroyedFlagChanged = true; }
+```
+注意 `looksUntouched` 在 `maxTier = 6` 改写**之前**求值，用的是原始值（正确）。
+
+用真实 v3.0.1 class 文件（`build/classes/java/main` → `/tmp/mclasses2`）反射调用 `migrateIfNeeded()` 的实测结果：
+
+| 用例 | 输入 | 迁移后 | 判定 |
+|---|---|---|---|
+| A v2 全默认 | `maxTier=5, 20-75, 14/分, worldDmg=false` | `cv=3 maxTier=6 8-30 40 worldDmg=`**true** | ✅ 预期迁移 |
+| B `cv=3 maxTier=3` | 同上 + `configVersion=3` | **完全不变** | ✅ 反向用例通过 |
+| C 部分自定义 | `maxTier=4, 45-90, 10/分, worldDmg=false` | `maxTier=4` 保留、间隔保留、**worldDmg=false 保留** | ✅ **D-2 已修复** |
+| F 只贴 v2 默认（仅 maxTier=5） | 全默认 | `worldDmg=true` | ✅ 视为未改动，符合新策略 |
+| G 自定义黑名单 | 全默认 + `disabled=["trap_x"]` | `maxTier=6`、**worldDmg=false**、黑名单保留 | ✅ 保守 |
+| H 自定义白名单 | 全默认 + `targets=["Steve"]` | `maxTier=6`、**worldDmg=false**、白名单保留 | ✅ 保守 |
+
+日志分支也正确：C 走 `"检测到自定义配置，已保留你的设置"`，A 走 `"…允许破坏地形"`，G/H 走 `"…地形破坏开关保持原样"`。
+
+### 7.3 修复后仍存在的残留问题（更新版缺陷清单）
+
+| 编号 | 严重度 | v3.0.1 状态 | 说明 |
+|---|---|---|---|
+| D-1 | 中 | **已修复** | `takeRandomItems` 已接残酷度，无二次放大；见 7.1 的两个低危副作用 |
+| D-2 | 中 | **已修复** | `looksUntouched` 门控生效，自定义配置不再被覆盖 |
+| D-2′ | 低（残留） | 未处理 | v2 中**从未改过任何设置**的配置仍会把 `allowWorldDamage` 由 false 抬为 true。这是"碰巧等于旧默认值"的固有歧义，无法在不增加额外标志位的前提下区分；现策略（只有在整份配置完全未动时才开）已是合理折中 |
+| D-3 | 低 | 未处理 | `maxTier==5` 仍与 v2 默认不可区分，故意设 5 的用户被抬到 6（代码注释已承认） |
+| F-2 | 中 | **未修复** | `events/GlitchEvents.java:419` `glitch_fake_crash_report` (NIGHTMARE) 仍使用 `FAKE_CRASH`；v3.0.1 未触及事件文件（`git diff` 已确认） |
+| F-1 / F-3 / O-1 / O-2 | 低 | 未处理 | 见 §5.2 / §6.2 |
+| I-1 | 信息 | 未处理 | `/tmp/src_backup_pre_harden/` 仍是误导性的"v3 无迁移版"快照，不是 v2 备份 |
+
+### 7.4 对 v3.0.1 的结论
+
+- **两个中级缺陷均已正确修复**，修复方式经真实 class 反射实测 + 调用点全量搜索验证，未引入二次缩放或新的迁移覆盖问题。
+- **未修复的中级问题只剩 F-2**（`glitch_fake_crash_report` 档位与 `FAKE_CRASH` 不匹配），且它是从 v2 继承来的，不影响事件表完整性。
+- 事件表、纪律、自造 API、等级分布（§1/§2/§5）在 `44d6315 → d01d701` 之间**完全未变**，原结论继续有效。
+
+
