@@ -92,6 +92,11 @@ public final class TrollScheduler {
         if (player.isSpectator()) {
             return;
         }
+        // 死亡期间不整活：死后客户端要弹重生界面，此时再下发画面接管类整活会把重生界面顶掉，
+        // 玩家会卡在"已死亡但按不到重生"的死锁里，而服务端仍在照常刷事件。
+        if (player.getHealth() <= 0.0f) {
+            return;
+        }
         if (!cfg.affectCreative && player.isCreative()) {
             return;
         }
@@ -196,6 +201,10 @@ public final class TrollScheduler {
 
     public static boolean fire(MinecraftServer server, ServerPlayerEntity player, TrollConfig cfg,
                                PlayerTrollState st, TrollEvent event) {
+        // 双保险：任何路径（命令、物品、连击、rogue 调用）都不对尸体整活
+        if (player.getHealth() <= 0.0f) {
+            return false;
+        }
         TrollContext ctx = new TrollContext(server, player, cfg, st, RNG, event);
         boolean happened = false;
         try {

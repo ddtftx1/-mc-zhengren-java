@@ -90,6 +90,28 @@ public final class GlitchIds {
             SCREEN_TEAR, MASS_CHAT, HARD_BLACKOUT, FAKE_ACHIEVEMENT, FAKE_SAVING
     };
 
+    /**
+     * 会**接管整块画面**的整活（占满全屏、吞掉 Esc 与点击）。
+     *
+     * <p>这一组必须限时并且**绝不能长于十几秒**：它们会把原版的死亡/重生界面一起顶掉，
+     * 一旦持续过久，玩家会卡在"已死亡但按不到重生"的死锁里，而服务端仍在照常整他。
+     * 服务端在 {@code TrollContext.glitch} 里对它们单独做了时长上限。</p>
+     */
+    public static final String[] SCREEN_TAKEOVER = {
+            FAKE_CRASH, FAKE_KICK, BLACKOUT, HARD_BLACKOUT,
+            MENU_TEASE, FAKE_BAN, FAKE_UPDATE, WORLD_RELOAD
+    };
+
+    /** 该整活是否会接管整块画面。 */
+    public static boolean isScreenTakeover(String id) {
+        for (String s : SCREEN_TAKEOVER) {
+            if (s.equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private GlitchIds() {
     }
 }

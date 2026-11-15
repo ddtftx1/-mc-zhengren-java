@@ -1,6 +1,7 @@
 package com.zhengren.trollmod.client;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -47,6 +48,24 @@ public final class ClientGlitchManager {
     private static int lockedSlot = 0;
     private static Screen ownScreen = null;
 
+    /**
+     * 会接管整块画面的整活：它们占满全屏、吞掉 Esc 与点击。
+     *
+     * <p>这一组必须受"硬上限"保护 —— 它们会把原版的死亡/重生界面一起顶掉。</p>
+     */
+    private static final java.util.Set<String> SCREEN_GLITCHES = java.util.Set.of(
+            "fakecrash", "fakekick", "blackout", "hard_blackout",
+            "menu_tease", "fake_ban", "fake_update", "world_reload");
+
+    /**
+     * 画面接管类整活的硬上限（tick）。无论服务端怎么续期，连续占用到这个时长就强制释放。
+     * 这是防"永远卡在黑屏点不动"死锁的最后一道保险：300 tick = 15 秒。
+     */
+    private static final int MAX_SCREEN_HOLD = 300;
+
+    /** 画面接管类整活已连续占用的 tick 数。 */
+    private static int screenHold = 0;
+
     private ClientGlitchManager() {
     }
 
@@ -74,6 +93,13 @@ public final class ClientGlitchManager {
 
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null) {
+            return;
+        }
+        // 死亡时不允许"画面接管"类整活抢屏：否则会把原版的死亡/重生界面顶掉，
+        // 玩家永远按不到重生按钮（曾经的真实死锁）。
+        if (SCREEN_GLITCHES.contains(id)
+                && (mc.player.getHealth() <= 0.0f || mc.currentScreen instanceof DeathScreen)) {
+            clear(id);
             return;
         }
         if ("fakecrash".equals(id)) {
@@ -192,6 +218,34 @@ public final class ClientGlitchManager {
             ACTIVE.clear();
             restore(mc);
             return;
+        }
+
+        // ==============================================================
+        // 安全阀 1：玩家死亡时绝不接管画面
+        // --------------------------------------------------------------
+        // 曾经的真实死锁：玩家死亡 -> 客户端弹出重生界面 -> 下一 tick 被
+        // setScreen(BlackoutScreen) 顶掉 -> 永远按不到"重生"按钮；
+        // 而服务端以为玩家还在线，继续刷事件、继续下发黑屏，形成死锁。
+        // ==============================================================
+        if (p.getHealth() <= 0.0f || mc.currentScreen instanceof DeathScreen) {
+            releaseScreenGlitches(mc);
+            return;
+        }
+
+        // ==============================================================
+        // 安全阀 2：画面接管类整活的硬上限
+        // --------------------------------------------------------------
+        // 服务端可能不断续期（ACTIVE.merge 取 max 而不是覆盖），一旦连续占用
+        // 超过 MAX_SCREEN_HOLD，就强制释放，保证玩家一定能拿回控制权。
+        // ==============================================================
+        if (isHoldingScreen()) {
+            screenHold++;
+            if (screenHold > MAX_SCREEN_HOLD) {
+                releaseScreenGlitches(mc);
+                return;
+            }
+        } else {
+            screenHold = 0;
         }
 
         if (has("hidehud")) {
@@ -317,22 +371,53 @@ public final class ClientGlitchManager {
         lockedSlot = mc.player == null ? 0 : mc.player.getInventory().selectedSlot;
     }
 
-    public static void restore(MinecraftClient mc) {
-        if (!saved || mc.options == null) {
-            saved = false;
-            return;
+    /** 当前是否有"画面接管"类整活在起作用。 */
+    private static boolean isHoldingScreen() {
+        for (String id : SCREEN_GLITCHES) {
+            if (ACTIVE.containsKey(id)) {
+                return true;
+            }
         }
-        try {
-            mc.options.hudHidden = oldHudHidden;
-            mc.options.getFov().setValue(oldFov);
-            mc.options.getMouseSensitivity().setValue(oldSens);
-        } catch (Throwable ignored) {
+        return false;
+    }
+
+    /** 是否是本模组自己弹出来的整活界面（只有这些才允许我们关掉）。 */
+    private static boolean isOwnScreen(Screen s) {
+        return s instanceof FakeCrashScreen || s instanceof FakeKickScreen || s instanceof BlackoutScreen
+                || s instanceof TitleScreen || s instanceof FakeBanScreen
+                || s instanceof FakeUpdatingScreen;
+    }
+
+    /**
+     * 立刻清掉所有"画面接管"类整活，并把屏幕还给玩家。其他整活（抖动、假聊天等）不受影响。
+     *
+     * <p>这是死锁保险：死亡时、以及连续占用超过 {@link #MAX_SCREEN_HOLD} 时会调用。</p>
+     */
+    private static void releaseScreenGlitches(MinecraftClient mc) {
+        for (String id : SCREEN_GLITCHES) {
+            ACTIVE.remove(id);
+            POWER.remove(id);
         }
-        Screen cur = mc.currentScreen;
-        if (cur instanceof FakeCrashScreen || cur instanceof FakeKickScreen || cur instanceof BlackoutScreen
-                || cur instanceof TitleScreen || cur instanceof FakeBanScreen
-                || cur instanceof FakeUpdatingScreen) {
+        if (isOwnScreen(mc.currentScreen)) {
             mc.setScreen(null);
+        }
+        screenHold = 0;
+    }
+
+    public static void restore(MinecraftClient mc) {
+        // 先把屏幕还给玩家（即使从未 saveOnce 过，也不能让别人替我们留着一个打不开的界面）
+        if (isOwnScreen(mc.currentScreen)) {
+            mc.setScreen(null);
+        }
+        screenHold = 0;
+        // 只有确实保存过原始设置时才回写，否则会把玩家的真实设置覆盖成默认值
+        if (saved && mc.options != null) {
+            try {
+                mc.options.hudHidden = oldHudHidden;
+                mc.options.getFov().setValue(oldFov);
+                mc.options.getMouseSensitivity().setValue(oldSens);
+            } catch (Throwable ignored) {
+            }
         }
         ownedScreen(null);
         saved = false;
@@ -345,8 +430,7 @@ public final class ClientGlitchManager {
     public static void reset(MinecraftClient mc) {
         ACTIVE.clear();
         POWER.clear();
-        if (saved) {
-            restore(mc);
-        }
+        screenHold = 0;
+        restore(mc);
     }
 }

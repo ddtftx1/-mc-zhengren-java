@@ -1006,10 +1006,22 @@ public class TrollContext {
         if (GlitchIds.FAKE_KICK.equals(id) && !config.fakeKick) {
             return;
         }
-        // 客户端画面折磨：glitchPower 直接乘，残酷度用「温和放大」避免把玩家屏幕锁死太久
-        double brutalityFactor = 1.0 + (brutality() - 1.0) * 0.4;
-        int scaled = (int) Math.min(6000L,
-                Math.max(5L, (long) (ticks * config.glitchPower * brutalityFactor)));
+        // 玩家已死亡时不下发任何画面整活：否则会把原版的死亡/重生界面顶掉，
+        // 玩家将卡在"已死亡但按不到重生"的死锁里。
+        if (player.getHealth() <= 0.0f) {
+            return;
+        }
+        final int scaled;
+        if (GlitchIds.isScreenTakeover(id)) {
+            // 画面接管类：绝不放大、绝不超过 15 秒。
+            // 这类效果会占满全屏并吞掉 Esc/点击，时长过长会把玩家彻底锁在屏幕里。
+            scaled = (int) Math.min(300L, Math.max(5L, (long) ticks));
+        } else {
+            // 普通画面折磨：glitchPower 直接乘，残酷度温和放大
+            double brutalityFactor = 1.0 + (brutality() - 1.0) * 0.4;
+            scaled = (int) Math.min(6000L,
+                    Math.max(5L, (long) (ticks * config.glitchPower * brutalityFactor)));
+        }
         GlitchPayload.send(player, id, scaled, power);
     }
 

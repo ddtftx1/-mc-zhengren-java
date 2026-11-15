@@ -26,9 +26,9 @@ public class TrollConfig {
     /** 允许出现的最高残酷等级 1-6（6 = 绝望） */
     public int maxTier = 6;
     /** 两次事件之间的最小间隔（秒） */
-    public int minIntervalSeconds = 8;
+    public int minIntervalSeconds = 60;
     /** 两次事件之间的最大间隔（秒） */
-    public int maxIntervalSeconds = 30;
+    public int maxIntervalSeconds = 60;
     /** 随着游戏时间推移越来越狠 */
     public boolean escalation = true;
     /** 是否在聊天栏提示刚刚发生了什么 */
@@ -84,13 +84,13 @@ public class TrollConfig {
     public boolean chatMangle = true;
 
     /**
-     * 配置文件版本（v3.0.0 新增）。
+     * 配置文件版本。用于把**旧版本的默认值**逐级迁移到当前默认值。
      *
-     * <p>用于把**旧版本的默认值**迁移到新版本的默认值。判断依据是"当前值是否恰好等于旧默认值"——
-     * 因此用户手动改过的设置不会被覆盖，而从未动过的设置会自动跟上新版本的残酷默认值。</p>
+     * <p>当前值 {@code 4}（v3.1.0）。历史：
+     * {@code 3} = v3.0.0 残酷默认值；{@code 4} = v3.1.0 把事件间隔默认改为 60 秒。</p>
      *
-     * <p>初始值必须是 {@code 0}（未标记）而不是 {@code 3}：Gson 对没有该字段的旧 JSON 会保留
-     * 字段初始值，若初始值就是 3，迁移将永远不会触发。</p>
+     * <p>初始值必须是 {@code 0}（未标记）而不是当前版本号：Gson 对没有该字段的旧 JSON
+     * 会保留字段初始值，若初始值就是最新版号，迁移将永远不会触发。</p>
      */
     public int configVersion = 0;
 
@@ -126,60 +126,71 @@ public class TrollConfig {
     }
 
     /**
-     * 旧配置迁移。只在 {@code configVersion < 3} 时执行一次。
+     * 旧配置迁移。按 {@code configVersion} 逐级向后迁移，只在需要时执行。
      *
      * <p>两条原则：</p>
      * <ol>
-     *   <li><b>不覆盖用户的自定义</b>：只有"当前值仍等于 v2 旧默认值"的项才改写。</li>
+     *   <li><b>不覆盖用户的自定义</b>：只有"当前值仍等于上一版默认值"的项才改写。</li>
      *   <li><b>破坏性开关更保守</b>：{@code allowWorldDamage} 的 v2 默认值是 {@code false}，
-     *       与"用户刻意关掉"无法区分。因此只有在**整份配置看起来完全没被动过**时才会打开它，
-     *       否则原样保留——否则会毁掉服主精心保护的建筑。</li>
+     *       与"用户刻意关掉"无法区分。因此只有在**整份配置看起来完全没被动过**时才会打开它。</li>
      * </ol>
      *
-     * <p>{@code maxTier} 必须迁移：v2 的默认/上限是 5，而 v3 新增了第 6 档「绝望」，
-     * 不迁移的话那 258 个事件永远不会被抽到。</p>
+     * <p>迁移链：v2(≤2) → v3(3) → v4(4)。</p>
      */
     private void migrateIfNeeded() {
-        if (configVersion >= 3) {
+        int from = configVersion;
+        if (from >= 4) {
             return;
         }
         boolean changed = false;
         boolean destroyedFlagChanged = false;
 
-        // 整份配置是否完全是 v2 的默认样子
-        boolean looksUntouched = maxTier == 5
-                && minIntervalSeconds == 20 && maxIntervalSeconds == 75
-                && maxEventsPerMinute == 14
-                && !allowWorldDamage
-                && (disabled == null || disabled.isEmpty())
-                && (targets == null || targets.isEmpty());
+        // ---------------- v2 -> v3：默认值全面放开 ----------------
+        if (from < 3) {
+            boolean looksUntouched = maxTier == 5
+                    && minIntervalSeconds == 20 && maxIntervalSeconds == 75
+                    && maxEventsPerMinute == 14
+                    && !allowWorldDamage
+                    && (disabled == null || disabled.isEmpty())
+                    && (targets == null || targets.isEmpty());
 
-        // maxTier：旧默认/旧上限 5 → 新的 6（否则「绝望」档不可达）
-        if (maxTier == 5) {
-            maxTier = 6;
-            changed = true;
-        }
-        // 节奏：旧默认 20~75 秒 / 14 次每分钟 → 新默认 8~30 秒 / 40 次
-        if (minIntervalSeconds == 20 && maxIntervalSeconds == 75) {
-            minIntervalSeconds = 8;
-            maxIntervalSeconds = 30;
-            changed = true;
-        }
-        if (maxEventsPerMinute == 14) {
-            maxEventsPerMinute = 40;
-            changed = true;
-        }
-        // 地形破坏：只在整份配置未被改动过时才跟随新默认值
-        if (looksUntouched && !allowWorldDamage) {
-            allowWorldDamage = true;
-            changed = true;
-            destroyedFlagChanged = true;
+            // maxTier：旧默认/旧上限 5 → 新的 6（否则「绝望」档不可达）
+            if (maxTier == 5) {
+                maxTier = 6;
+                changed = true;
+            }
+            // 节奏：旧默认 20~75 秒 → v3 的 8~30 秒
+            if (minIntervalSeconds == 20 && maxIntervalSeconds == 75) {
+                minIntervalSeconds = 8;
+                maxIntervalSeconds = 30;
+                changed = true;
+            }
+            if (maxEventsPerMinute == 14) {
+                maxEventsPerMinute = 40;
+                changed = true;
+            }
+            // 地形破坏：只在整份配置未被改动过时才跟随新默认值
+            if (looksUntouched && !allowWorldDamage) {
+                allowWorldDamage = true;
+                changed = true;
+                destroyedFlagChanged = true;
+            }
         }
 
-        configVersion = 3;
+        // ---------------- v3 -> v4：事件间隔默认改为 60 秒 ----------------
+        // v3 的默认是 8~30 秒，事件太密；v4 改为固定 60 秒。
+        // 同样只在值仍等于 v3 默认值时才改，玩家自己设过的间隔不动。
+        if (from < 4 && minIntervalSeconds == 8 && maxIntervalSeconds == 30) {
+            minIntervalSeconds = 60;
+            maxIntervalSeconds = 60;
+            changed = true;
+        }
+
+        configVersion = 4;
         if (changed) {
-            ZhengrenMod.LOGGER.info("[整人大师] 已把旧版默认配置迁移到 v3 残酷默认值"
-                            + "（maxTier=6 / 间隔 8-30s / 每分钟 40{}）",
+            ZhengrenMod.LOGGER.info("[整人大师] 已把旧版默认配置迁移到当前默认值"
+                            + "（maxTier=6 / 间隔 {}-{}s / 每分钟 40{}）",
+                    minIntervalSeconds, maxIntervalSeconds,
                     destroyedFlagChanged ? " / 允许破坏地形" : "；地形破坏开关保持原样");
         } else if (!allowWorldDamage) {
             ZhengrenMod.LOGGER.info("[整人大师] 检测到自定义配置，已保留你的设置"

@@ -108,7 +108,7 @@
 ## 📦 安装
 
 1. 安装 Fabric Loader（1.20.1）。
-2. 把 `fabric-api` 和本模组的 `zhengren-3.0.1.jar` 一起放进 `.minecraft/mods/`。
+2. 把 `fabric-api` 和本模组的 `zhengren-3.1.0.jar` 一起放进 `.minecraft/mods/`。
 3. 启动游戏，**开一个世界，然后开始受苦**。
 4. 想让它停下来？`/zr off`。
 
@@ -122,7 +122,7 @@ cd zhengren-mod
 ./gradlew build        # Windows: gradlew.bat build
 ```
 
-产物：`build/libs/zhengren-3.0.1.jar`
+产物：`build/libs/zhengren-3.1.0.jar`
 
 ### Linux / 中文路径环境的两个坑（合并时实际踩到并已修好）
 
@@ -220,8 +220,8 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
   "configVersion": 3,
   "enabled": true,
   "maxTier": 6,
-  "minIntervalSeconds": 8,
-  "maxIntervalSeconds": 30,
+  "minIntervalSeconds": 60,
+  "maxIntervalSeconds": 60,
   "escalation": true,
   "announce": true,
   "allowWorldDamage": true,
@@ -246,15 +246,15 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 ```
 
 > ⚠️ **v3.0.0 起默认值就是「不留情」**：最高等级 6（绝望）、允许破坏地形、残酷度 5（×5）、
-> 事件间隔 8~30 秒、每分钟上限 40、温和事件 100% 附带残酷惩罚、45% 连击、死亡后追击。
+> 事件间隔 **60 秒**、每分钟上限 40、温和事件 100% 附带残酷惩罚、45% 连击、死亡后追击。
 > 想给自己留活路就把 `brutality` 调小、`maxTier` 调到 3 以下、`allowWorldDamage` 关掉。
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `enabled` | bool | 总开关，等同于 `/zr off` |
 | `maxTier` | 1-6 | 允许出现的最高残酷等级（**6 = 绝望**） |
-| `minIntervalSeconds` | int | 两次事件之间最小间隔 |
-| `maxIntervalSeconds` | int | 两次事件之间最大间隔 |
+| `minIntervalSeconds` | int | 两次事件之间最小间隔（默认 **60**） |
+| `maxIntervalSeconds` | int | 两次事件之间最大间隔（默认 **60**） |
 | `escalation` | bool | 是否随崩溃指数自动加速、加重（v3.0.0 起压得更狠，最多压到 8%，下限 1 秒） |
 | `announce` | bool | 是否在聊天栏提示"刚刚发生了什么" |
 | `allowWorldDamage` | bool | 是否允许**大规模地形改造**（陨石雨的 TNT 模式、岩浆灌溉、大规模爆炸）。v3.0.0 起**默认开启** |
@@ -284,7 +284,7 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 > 🔁 **从 v2.0.0 升级会自动迁移旧配置**
 > `config/zhengren.json` 新增了 `configVersion` 字段。首次以 v3.0.0 启动时会执行一次迁移：
 > 凡是**仍然等于 v2 旧默认值**的项会自动升级到 v3 的残酷默认值
-> （`maxTier` 5→6、间隔 20/75→8/30 秒、每分钟上限 14→40、`allowWorldDamage` false→true）。
+> （`maxTier` 5→6、间隔 20/75→**60/60** 秒、每分钟上限 14→40、`allowWorldDamage` false→true）。
 > **你手动改过的值不会被覆盖**（判断依据就是"是否仍等于旧默认值"）。
 >
 > ⚠️ 这一步很关键：如果不迁移，从 v2 升级的存档会因为 `maxTier=5` 而**永远抽不到那 258 个「绝望」事件**。
@@ -396,6 +396,45 @@ v2.0.0 的问题是有 49% 的事件偏轻（小整+烦人）。v3.0.0 从**四�
 你现在面对的不是"偶尔被整一下"，而是**持续性的围剿**。
 
 > 想把这些全关掉：`/zr brutality 1`、`/zr mode 3`、`/zr off`，或直接改 `config/zhengren.json`。
+
+---
+
+## 🐛 v3.1.0 修复的死锁黑屏（重要）
+
+**症状**：全黑屏幕，中间有**闪烁的三个点**，一直不解开；物品栏一打开就被关掉；
+能隐约看出自己是**红色倒地（死亡）状态但其实还活着**；视角剧烈抽搐；看不到地面，
+像是在很高的高空；而外面的游戏仍在正常运行、继续触发事件。
+
+**根因**：`BlackoutScreen`（就是那个黑屏 + `§8...` 三点）被
+`ClientGlitchManager.apply()` **每个 tick 强制抢屏**：
+
+```java
+if (has("blackout") && !(mc.currentScreen instanceof BlackoutScreen)) {
+    mc.setScreen(new BlackoutScreen());   // ← 每 tick 覆盖任何界面
+}
+```
+
+于是：
+
+1. 你打开物品栏 → 下一 tick 被顶掉（所以"一开就关"）
+2. 你死了 → 客户端弹出**重生界面** → 也被顶掉 → **永远按不到重生按钮**
+3. 服务端以为你还在线，调度器**不跳过死亡玩家**，继续刷事件
+4. 事件持续重新下发 `blackout`，而 `ACTIVE.merge(..., Math::max)` 是**续期**不是覆盖 → 永不解开
+5. 死亡位置被 `lift()`/`launch()`（×5 残酷度）顶到高空 → 只能看到天空和远处地面
+
+**三层修复**（客户端两层 + 服务端一层，任何一层都能独立阻断死锁）：
+
+| 层 | 修复 |
+|---|---|
+| 客户端 · 死亡安全阀 | 玩家死亡或正显示重生界面时，**绝不接管画面**，并立刻释放所有画面接管类整活 |
+| 客户端 · 硬上限 | 画面接管类整活连续占用超过 **300 tick（15 秒）** 必定强制释放，无论服务端怎么续期 |
+| 服务端 · 不对尸体整活 | `TrollScheduler` 跳过死亡玩家，且不给死亡玩家下发任何画面整活；画面接管类整活时长**限制在 15 秒内且不随残酷度放大** |
+
+> 另外顺带修掉一个隐患：`restore()` 原来在从未保存过原始设置的情况下也会回写默认值，
+> 会把玩家真实的 FOV / 鼠标灵敏度覆盖掉。现在只有确实保存过才回写。
+>
+> 📌 本次同时把**事件间隔默认从 8~30 秒改为固定 60 秒**（`/zr interval <最小> <最大>` 可改回）。
+> 旧配置会自动迁移：仍等于旧默认值的会跟随新默认，你手动设过的间隔**不会被覆盖**。
 
 ---
 
