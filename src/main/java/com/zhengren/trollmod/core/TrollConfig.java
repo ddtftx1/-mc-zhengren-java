@@ -128,16 +128,33 @@ public class TrollConfig {
     /**
      * 旧配置迁移。只在 {@code configVersion < 3} 时执行一次。
      *
-     * <p>关键点：v2.0.0 的默认 {@code maxTier} 是 5，而 v3.0.0 新增了第 6 档「绝望」。
-     * 若不迁移，从 v2 升级上来的存档会因为 {@code maxTier=5} 而**永远抽不到那 258 个绝望事件**，
-     * 残酷化等于白做。这里只在值仍等于旧默认值时才改写，避免覆盖用户的自定义。</p>
+     * <p>两条原则：</p>
+     * <ol>
+     *   <li><b>不覆盖用户的自定义</b>：只有"当前值仍等于 v2 旧默认值"的项才改写。</li>
+     *   <li><b>破坏性开关更保守</b>：{@code allowWorldDamage} 的 v2 默认值是 {@code false}，
+     *       与"用户刻意关掉"无法区分。因此只有在**整份配置看起来完全没被动过**时才会打开它，
+     *       否则原样保留——否则会毁掉服主精心保护的建筑。</li>
+     * </ol>
+     *
+     * <p>{@code maxTier} 必须迁移：v2 的默认/上限是 5，而 v3 新增了第 6 档「绝望」，
+     * 不迁移的话那 258 个事件永远不会被抽到。</p>
      */
     private void migrateIfNeeded() {
         if (configVersion >= 3) {
             return;
         }
         boolean changed = false;
-        // maxTier：旧默认/旧上限 5 → 新的 6（否则绝望档不可达）
+        boolean destroyedFlagChanged = false;
+
+        // 整份配置是否完全是 v2 的默认样子
+        boolean looksUntouched = maxTier == 5
+                && minIntervalSeconds == 20 && maxIntervalSeconds == 75
+                && maxEventsPerMinute == 14
+                && !allowWorldDamage
+                && (disabled == null || disabled.isEmpty())
+                && (targets == null || targets.isEmpty());
+
+        // maxTier：旧默认/旧上限 5 → 新的 6（否则「绝望」档不可达）
         if (maxTier == 5) {
             maxTier = 6;
             changed = true;
@@ -152,15 +169,21 @@ public class TrollConfig {
             maxEventsPerMinute = 40;
             changed = true;
         }
-        // 地形破坏：旧默认 false → 新默认 true
-        if (!allowWorldDamage) {
+        // 地形破坏：只在整份配置未被改动过时才跟随新默认值
+        if (looksUntouched && !allowWorldDamage) {
             allowWorldDamage = true;
             changed = true;
+            destroyedFlagChanged = true;
         }
+
         configVersion = 3;
         if (changed) {
             ZhengrenMod.LOGGER.info("[整人大师] 已把旧版默认配置迁移到 v3 残酷默认值"
-                    + "（maxTier=6 / 间隔 8-30s / 每分钟 40 / 允许破坏地形）");
+                            + "（maxTier=6 / 间隔 8-30s / 每分钟 40{}）",
+                    destroyedFlagChanged ? " / 允许破坏地形" : "；地形破坏开关保持原样");
+        } else if (!allowWorldDamage) {
+            ZhengrenMod.LOGGER.info("[整人大师] 检测到自定义配置，已保留你的设置"
+                    + "（地形破坏仍为关闭；想体验完整残酷化可改 allowWorldDamage 或 /zr damage true）");
         }
     }
 

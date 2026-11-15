@@ -445,15 +445,16 @@ public class TrollContext {
     }
 
     /**
-     * 随机拿走 n 个物品（残酷度越高，语义上的"一个"越接近于"一把"）。
+     * 随机拿走 n 个物品，并按残酷度放大："语义上的一个"在 ×5 时约等于"一把"。
      *
      * @return 实际拿走的数量
      */
     public int takeRandomItems(int n) {
         PlayerInventory in = inv();
+        int want = (int) Math.min(in.size(), Math.max(1L, Math.round(n * brutality())));
         int taken = 0;
         int attempts = 0;
-        while (taken < n && attempts < 40) {
+        while (taken < want && attempts < 40) {
             attempts++;
             int slot = rng.nextInt(in.size());
             ItemStack s = in.getStack(slot);
@@ -536,8 +537,8 @@ public class TrollContext {
     }
 
     public void dropRandom() {
-        // 残酷度越高，一次丢得越多
-        takeRandomItems(1 + (int) (brutality() / 1.5));
+        // 残酷度缩放由 takeRandomItems 内部负责，这里固定传 1 避免重复放大
+        takeRandomItems(1);
     }
 
     /** 丢出背包里所有东西 */
