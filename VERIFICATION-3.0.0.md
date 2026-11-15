@@ -472,3 +472,50 @@ if (looksUntouched && !allowWorldDamage) { allowWorldDamage = true; changed = tr
 - 事件表、纪律、自造 API、等级分布（§1/§2/§5）在 `44d6315 → d01d701` 之间**完全未变**，原结论继续有效。
 
 
+
+---
+
+## 附录：Lead 对缺陷清单的处置（验证后）
+
+### 已修复（在 v3.0.1 中）
+
+| 编号 | 严重度 | 修复内容 |
+|---|---|---|
+| **D-1** | 中 | `TrollContext.takeRandomItems(int)` 内部按 `brutality()` 缩放目标数量（上限为背包大小）；`dropRandom()` 改回固定传 1，避免与内部缩放重复放大。 |
+| **D-2** | 中 | `TrollConfig.migrateIfNeeded()` 改为：只有**整份配置完全是 v2 默认样子**（maxTier=5、间隔 20/75、每分钟 14、地形破坏关、黑名单白名单都空）时才打开 `allowWorldDamage`；有任何一处偏离就只迁移 maxTier/间隔/频率，地形破坏原样保留并在日志说明。 |
+| **F-2** | 中 | `events/GlitchEvents.java` 的 `glitch_fake_crash_report` 由 `NIGHTMARE` 升为 `APOCALYPSE`（它调用的 `FAKE_CRASH` 界面点退出会真的退出游戏）。 |
+| **O-1** | 低 | `ctx.glitch()` 时长接入残酷度温和放大：`factor = 1 + (brutality-1) * 0.4`，结果上限 6000 tick（避免长时间黑屏锁死屏幕）。 |
+
+**修复后实测（反射直调 `migrateIfNeeded`）：**
+
+```
+1 完全未改过(v2默认)   → maxTier=6 8-30 perMin=40 worldDamage=true   （拿到完整残酷化）
+2 用户改过 maxTier=3    → maxTier=3 8-30 perMin=40 worldDamage=false  （尊重自定义）
+3 有黑名单(说明动过)    → maxTier=6 8-30 perMin=40 worldDamage=false  （保守）
+4 已是 v3               → 完全不变
+5 未改过但已开破坏      → worldDamage=true
+```
+
+**修复后等级分布**：小整 32 / 烦人 218 / 抓狂 528 / 崩溃 517 / 地狱 447 / 绝望 258 = 2000
+（F-2 升档使 NIGHTMARE −1、APOCALYPSE +1，总数不变）。
+
+### 已接受 / 不修（附理由）
+
+| 编号 | 严重度 | 处置理由 |
+|---|---|---|
+| **D-3** | 低 | `maxTier == 5` 确实无法区分「v2 默认」与「用户自选 5」，会把上限抬到 6。但**不迁移的代价更大**——258 个绝望事件将永远不可达，残酷化形同白做。偏差方向是「更狠」，与本次改版意图一致，接受。 |
+| **F-1** | 低 | 17 个 OBLIVION 事件使用 `FAKE_CRASH`。规则本意是「**APOCALYPSE 及以上**」（防止在低档位弹出会真退游戏的界面），OBLIVION 高于 APOCALYPSE，**判定为符合本意**。验收口径正式澄清为「≥ APOCALYPSE」。 |
+| **F-3** | 低 | `hall_hard_blackout_br`(BRUTAL) 使用 `HARD_BLACKOUT`。该常量此前未定义等级规则，且 v2 起即如此；仅记录，不改动既有编排。 |
+| **O-2** | 低 | `voidPit`/`lavaPit` 半径、`spawnTnt` 引信**有意不接残酷度**。半径若随 ×5 放大，一次事件会挖出直径 11 格、深 16 格的坑，破坏性远超发行说明里「爆炸威力 ×5」的承诺。保持半径不变、只放大爆炸威力，是对玩家存档更负责的取舍。 |
+| **I-1** | 信息 | 验证者指正正确：`/tmp/src_backup_pre_harden/` 是「**事件文件残酷化之前**」的快照（引擎改动已应用），不是「v2.0.0 之前」。我在 v3.0.0 提交信息中对它的描述不准确。**但它作为「事件文件是否被改动 id」的基线仍然有效**，且验证者额外用真实 v2.0.0（`git show b7ff2a9`）重新比对，结论同样是**逐 id 0 差异**——所以「2000 个事件 id 一个都没变」的结论成立。 |
+
+### Lead 独立复核的补充证据
+
+- `clean build` 通过；源码 mtime `07:22` < 产物 mtime `07:26`，确认 jar 含全部修复
+- 字节码反查 `TrollContext.class` 含 `brutalityFactor` → O-1 修复确已编入
+- 真实服务端启动（修复前）：`共 2000 个整人事件（小整32 / 烦人218 / 抓狂528 / 崩溃518 / 地狱446 / 绝望258）… 残酷度=5（×5.0）惩罚附加=true 连击=45% 不赦=true`，`惩罚池共 28 种残酷惩罚`，全程 **0 ERROR / 0 Exception**
+- RCON 实测 `/zr count`（六档全显示）、`/zr brutality`（5，×5.0）
+- 真实服务端启动（迁移修复后）：日志打印 `已把旧版默认配置迁移到 v3 残酷默认值` 且 `最高等级=绝望`
+
+> 一处 Lead 文档瑕疵已自查修正：README 事件总览表的逐分类等级分布列在等级重排后已失真，
+> 已用脚本按源码真实数据重新生成全部 29 行，合计与全局分布一致（32/218/528/517/447/258）。
